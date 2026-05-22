@@ -1,0 +1,94 @@
+# Nav2 임시 Action Goal 주행 기록
+
+이 문서는 Day 12 말미에 확인한 Nav2 임시 목표 주행 기록이다. AMCL 자체 설명은 아니지만, AMCL이 정상화된 뒤 Nav2로 넘어갈 때 연결 상태를 확인하는 용도로 남긴다.
+
+---
+
+## 1. 현재 결론
+
+```text
+Nav2 본체는 동작한다.
+RViz Nav2 Goal 버튼은 아직 robot_ns namespace 연결이 맞지 않는다.
+그래서 임시로 ros2 action send_goal 명령으로 목표를 보낸다.
+```
+
+확인한 연결:
+
+```text
+/robot_ns/navigate_to_pose
+bt_navigator
+planner_server
+controller_server
+global/local costmap
+/robot_ns/cmd_vel
+Gazebo diff_drive
+```
+
+---
+
+## 2. 실행 순서
+
+터미널 1:
+
+```bash
+cd $ROS2_WS
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+
+ros2 launch lee_robot_description nav2.launch.py
+```
+
+터미널 2:
+
+```bash
+cd $ROS2_WS
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+
+ros2 launch lee_robot_description nav2_navigation.launch.py
+```
+
+---
+
+## 3. 임시 goal 전송
+
+```bash
+ros2 action send_goal /robot_ns/navigate_to_pose nav2_msgs/action/NavigateToPose \
+"{pose: {header: {frame_id: 'map_robot_ns'}, pose: {position: {x: 0.0, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}}"
+```
+
+성공 판단:
+
+```text
+action feedback이 나온다.
+planner/controller가 동작한다.
+/robot_ns/cmd_vel이 발행된다.
+Gazebo 로봇이 움직인다.
+```
+
+---
+
+## 4. RViz에서 좌표 얻기
+
+RViz의 `Publish Point`를 사용한다.
+
+```bash
+ros2 topic echo /clicked_point
+```
+
+출력의 `point.x`, `point.y`를 action goal의 `x`, `y`에 넣는다.
+
+---
+
+## 5. 다음 단계로 넘길 문제
+
+이 문서는 임시 우회다. Day 13 Nav2 정리에서 다시 다뤄야 한다.
+
+남은 문제:
+
+```text
+RViz Nav2 Goal 버튼과 robot_ns namespace 연결
+behavior tree / planner / controller 설정 정리
+costmap frame/topic 설정 정리
+AMCL localization과 Nav2 navigation launch 분리 기준 정리
+```

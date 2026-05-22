@@ -1,0 +1,200 @@
+# AMCL Topic / TF Diagnostics
+
+AMCL이 안 될 때는 아래 순서대로 확인한다.
+
+---
+
+## 1. 노드 확인
+
+```bash
+ros2 node list
+```
+
+기대 노드 예시:
+
+```text
+/map_server
+/amcl
+/lifecycle_manager_localization
+/robot_ns_robot_state_publisher
+/robot_ns_spawn_turtlebot
+/robot_ns_rviz
+```
+
+노드 상세:
+
+```bash
+ros2 node info /amcl
+ros2 node info /map_server
+```
+
+`/amcl`에서 확인할 것:
+
+```text
+Subscribers:
+  /robot_ns/map
+  /robot_ns/scan
+  /initialpose
+  /robot_ns/tf
+  /robot_ns/tf_static
+
+Publishers:
+  /amcl_pose
+  /particle_cloud
+  /robot_ns/tf
+```
+
+---
+
+## 2. lifecycle 확인
+
+```bash
+ros2 lifecycle get /map_server
+ros2 lifecycle get /amcl
+```
+
+정상:
+
+```text
+active [3]
+```
+
+active가 아니면 lifecycle_manager 또는 파라미터 오류를 본다.
+
+---
+
+## 3. map 확인
+
+```bash
+ros2 topic info /robot_ns/map -v
+ros2 topic echo /robot_ns/map --once
+```
+
+확인 포인트:
+
+```text
+header.frame_id: map_robot_ns
+width > 0
+height > 0
+data 존재
+```
+
+RViz에서 map이 안 보이면:
+
+```text
+Map topic: /robot_ns/map
+Durability Policy: Transient Local
+Fixed Frame: map_robot_ns
+```
+
+---
+
+## 4. scan 확인
+
+```bash
+ros2 topic info /robot_ns/scan -v
+ros2 topic hz /robot_ns/scan
+ros2 topic echo /robot_ns/scan --once
+```
+
+확인 포인트:
+
+```text
+header.frame_id: base_scan
+ranges 배열 존재
+range_min: 0.12 근처
+range_max: 3.5 근처
+```
+
+---
+
+## 5. TF 확인
+
+동적 TF topic이 `/robot_ns/tf`로 remap되어 있으므로 `tf2_echo`에도 remap을 넣는다.
+
+```bash
+ros2 run tf2_ros tf2_echo odom_robot_ns base_footprint \
+  --ros-args \
+  -r /tf:=/robot_ns/tf \
+  -r /tf_static:=/robot_ns/tf_static
+```
+
+initialpose 후:
+
+```bash
+ros2 run tf2_ros tf2_echo map_robot_ns odom_robot_ns \
+  --ros-args \
+  -r /tf:=/robot_ns/tf \
+  -r /tf_static:=/robot_ns/tf_static
+```
+
+정상:
+
+```text
+transform이 계속 출력됨
+```
+
+비정상:
+
+```text
+Invalid frame ID
+Lookup would require extrapolation
+Could not transform
+```
+
+---
+
+## 6. initialpose 확인
+
+```bash
+ros2 topic echo /initialpose --once
+```
+
+RViz 2D Pose Estimate를 찍은 직후 메시지가 나와야 한다.
+
+header:
+
+```text
+frame_id: map_robot_ns
+```
+
+---
+
+## 7. AMCL 출력 확인
+
+```bash
+ros2 topic echo /amcl_pose --once
+ros2 topic echo /particle_cloud --once
+```
+
+`/amcl_pose` 확인 포인트:
+
+```text
+header.frame_id: map_robot_ns
+pose.pose.position.x/y 값 존재
+pose.covariance 존재
+```
+
+`/particle_cloud` 확인 포인트:
+
+```text
+particles 배열 존재
+```
+
+---
+
+## 8. topic과 frame 대응표
+
+| 확인 대상 | 기대값 |
+|---|---|
+| map topic | `/robot_ns/map` |
+| map frame | `map_robot_ns` |
+| scan topic | `/robot_ns/scan` |
+| scan frame | `base_scan` |
+| odom frame | `odom_robot_ns` |
+| base frame | `base_footprint` |
+| tf topic | `/robot_ns/tf` |
+| tf_static topic | `/robot_ns/tf_static` |
+| initialpose topic | `/initialpose` |
+| amcl pose topic | `/amcl_pose` |
+| particle topic | `/particle_cloud` |
