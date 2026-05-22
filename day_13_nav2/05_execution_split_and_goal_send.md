@@ -97,6 +97,8 @@ ros2 launch lee_robot_description nav2_navigation.launch.py
 
 이 launch는 `nav2_bringup`의 navigation stack을 `/robot_ns` namespace로 올린다.
 
+> 이 파일은 공식 `nav2_bringup/launch/navigation_launch.py`를 바로 실행하지 않고, 먼저 `PushRosNamespace(robot_ns)`를 적용한 뒤 include하는 구조를 기준으로 한다. 이렇게 해야 `controller_server`, `planner_server`, `bt_navigator` 같은 Nav2 서버 노드가 `/robot_ns` 아래에 생성되고, `nav2_params.yaml`의 namespace 구조와 실제 node namespace가 맞는다. 관련 오류 사례는 [`troubleshooting/nav2_day13_troubleshooting.md`](troubleshooting/nav2_day13_troubleshooting.md)의 `No critics defined for FollowPath` 항목을 참고한다.
+
 ---
 
 ## 5. Navigation 실행 후 확인

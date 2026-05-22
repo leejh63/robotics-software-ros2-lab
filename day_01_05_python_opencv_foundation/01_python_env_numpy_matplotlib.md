@@ -16,7 +16,7 @@ Day 01의 목적은 Python 문법 전체를 외우는 것이 아니다. 핵심�
 
 ---
 
-## 2. 관련 원본 파일
+## 2. 관련 실습 파일
 
 ```text
 day_1/hello.py
@@ -171,7 +171,7 @@ near_mask = ranges < 1.0
 print(ranges[near_mask])
 ```
 
-여기서 `near_mask`는 bool 배열이다. 이 감각은 나중에 AMCL 실습에서 `valid = ...`로 유효한 LaserScan 값만 골라 계산하는 코드와도 연결된다.
+여기서 `near_mask`는 bool 배열이다. 이 감각은 이후 AMCL 실습에서 `valid = ...`로 유효한 LaserScan 값만 골라 계산하는 코드와도 연결된다.
 
 ---
 
@@ -222,7 +222,7 @@ y = ranges * np.sin(angles)
 
 이 코드는 SLAM을 직접 구현하는 것은 아니지만, `LaserScan.ranges`가 결국 공간상의 점으로 해석될 수 있다는 감각을 만든다.
 
-나중에 `/scan`을 RViz에서 보면 점들이 퍼져 보이는데, 내부적으로는 이런 “각도 + 거리 -> 위치”의 해석이 깔려 있다.
+이후 `/scan`을 RViz에서 보면 점들이 퍼져 보이는데, 내부적으로는 이런 “각도 + 거리 -> 위치”의 해석이 깔려 있다.
 
 ---
 

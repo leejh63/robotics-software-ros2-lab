@@ -109,7 +109,7 @@ ros2 topic list | grep cmd_vel
 
 ### `/robot_ns/scan`이 보인다
 
-아직 성공이 아니다.
+성공으로 판단하지 않는다.
 
 추가로 확인:
 
@@ -123,7 +123,7 @@ SLAM/AMCL/Nav2가 기대하는 scan frame과 맞는가?
 
 ### `/robot_ns/map`이 보인다
 
-아직 Nav2 성공이 아니다.
+Nav2 성공으로 판단하지 않는다.
 
 추가로 확인:
 

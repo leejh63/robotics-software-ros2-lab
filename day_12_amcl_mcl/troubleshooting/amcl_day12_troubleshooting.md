@@ -8,7 +8,7 @@ AMCL 문제는 무작정 파라미터를 바꾸면 더 꼬인다. 아래 순서�
 |---|---|---|---|
 | map이 안 보임 | map_server lifecycle와 map topic | `ros2 lifecycle get /map_server` | map_server inactive, map topic/QoS 문제 |
 | scan이 안 보임 | scan topic과 frame_id | `ros2 topic echo /robot_ns/scan --once` | Gazebo sensor topic, LaserScan QoS, TF 문제 |
-| `/amcl_pose`가 안 나옴 | AMCL lifecycle와 initialpose | `ros2 lifecycle get /amcl` | AMCL inactive, initialpose 누락 |
+| `/amcl_pose` 또는 `/robot_ns/amcl_pose`가 안 나옴 | AMCL lifecycle와 initialpose topic 위치 | `ros2 node list \| grep amcl` | AMCL inactive, initialpose 누락, topic namespace 오해 |
 | `map_robot_ns -> odom_robot_ns` TF가 없음 | AMCL 입력 데이터 | `ros2 run tf2_ros tf2_echo map_robot_ns odom_robot_ns` | initialpose, scan, map, odom TF 중 하나가 끊김 |
 | particle이 퍼져 있음 | map/world 일치와 covariance | RViz `ParticleCloud` 확인 | 초기 위치 오차, map/world 불일치, sensor model 문제 |
 
@@ -105,22 +105,40 @@ ros2 run tf2_ros tf2_echo base_footprint base_scan \
 
 ## 4. /amcl_pose가 안 나옴
 
-확인:
+먼저 AMCL node와 topic이 root인지 namespace 아래인지 확인한다.
+
+```bash
+ros2 node list | sort | grep amcl
+ros2 topic list | sort | grep -E 'initialpose|amcl_pose|particle_cloud'
+```
+
+Root AMCL case라면:
 
 ```bash
 ros2 lifecycle get /amcl
 ros2 node info /amcl
 ros2 topic echo /initialpose --once
+ros2 topic echo /amcl_pose --once
+```
+
+Namespaced AMCL case라면:
+
+```bash
+ros2 lifecycle get /robot_ns/amcl
+ros2 node info /robot_ns/amcl
+ros2 topic echo /robot_ns/initialpose --once
+ros2 topic echo /robot_ns/amcl_pose --once
 ```
 
 가능한 원인:
 
 ```text
 1. /amcl이 active가 아님
-2. /initialpose를 아직 주지 않음
+2. `/initialpose` 또는 `/robot_ns/initialpose`를 아직 주지 않음
 3. /robot_ns/map을 못 받고 있음
 4. /robot_ns/scan을 못 받고 있음
 5. TF 연결이 안 됨
+6. AMCL이 구독하는 initialpose topic과 RViz/CLI가 발행하는 topic이 서로 다름
 ```
 
 ---

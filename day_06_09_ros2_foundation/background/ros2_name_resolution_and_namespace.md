@@ -61,11 +61,11 @@ self.create_publisher(Twist, '/turtle3/cmd_vel', 10)
 
 ## 4. frame name은 topic namespace와 별개다
 
-`camera_lee` 같은 frame 이름은 topic namespace와 자동으로 같이 바뀌지 않는다.
+`camera_frame` 같은 frame 이름은 topic namespace와 자동으로 같이 바뀌지 않는다.
 
 ```text
 /image_raw0 topic에 namespace를 붙여 /robot1/image_raw0로 만들었다고 해서
-header.frame_id가 자동으로 robot1/camera_lee가 되는 것은 아니다.
+header.frame_id가 자동으로 robot1/camera_frame가 되는 것은 아니다.
 ```
 
 frame 이름은 코드나 parameter에서 별도로 맞춰야 한다.

@@ -57,7 +57,7 @@ rclpy.spin(node)
 
 Executor는 callback을 실제로 실행하는 주체다. `rclpy.spin(node)`를 쓰면 기본 executor가 node의 callback들을 처리한다.
 
-초반에는 executor를 깊게 몰라도 되지만, 나중에 여러 callback이 동시에 실행되어야 하거나 action/server/service가 복잡해지면 SingleThreadedExecutor, MultiThreadedExecutor 개념이 중요해진다.
+초반에는 executor를 깊게 몰라도 되지만, 이후 여러 callback이 동시에 실행되어야 하거나 action/server/service가 복잡해지면 SingleThreadedExecutor, MultiThreadedExecutor 개념이 중요해진다.
 
 이번 실습에서는 대부분 단일 node, 단순 callback 구조라 기본 spin으로 충분하다.
 

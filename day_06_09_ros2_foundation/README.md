@@ -1,6 +1,6 @@
 # Day 06~09 ROS2 Foundation README
 
-이 폴더는 `day_67/ws/src`에 들어 있는 실제 ROS2 학습 코드를 기준으로, ROS2의 기본 실행 구조를 다시 정리한 문서 묶음이다.
+이 폴더는 `$ROS2_WS/src`에 들어 있는 실제 ROS2 학습 코드를 기준으로, ROS2의 기본 실행 구조를 다시 정리한 문서 묶음이다.
 
 이 문서 묶음의 방향은 포트폴리오용 설명이 아니라, ROS2 기본기를 실제 실습 흐름과 연결하는 것이다. 목표는 아래에 가깝다.
 
@@ -14,10 +14,10 @@ workspace / package / executable / node / topic / service / action / launch / pa
 
 ## 1. 이 폴더에서 다루는 실제 코드
 
-주요 기준 코드는 `day__.zip` 안의 아래 경로다.
+주요 기준 코드는 `$SOURCE_ARCHIVE` 안의 아래 경로다.
 
 ```text
-day_67/ws/src/
+$ROS2_WS/src/
 ├── this_test/          # Python pub/sub, turtlesim cmd_vel parameter 실습
 ├── lee_pkg/            # C++ pub/sub 실습
 ├── my_if/              # msg/srv/action custom interface 정의
@@ -25,7 +25,7 @@ day_67/ws/src/
 ├── my_robot_action/    # Movelee action server/client
 ├── camera_pkg/         # camera image, Canny, snapshot service, YOLO image/msg
 ├── py_launch_example/  # camera 관련 노드 launch 묶음
-└── tf_pkg_lee/         # TF tree, TF listener, YOLO detection -> object TF
+└── tf_pkg_example/         # TF tree, TF listener, YOLO detection -> object TF
 ```
 
 Day 06~09는 뒤쪽 Gazebo/SLAM/AMCL/Nav2로 넘어가기 전의 기반이다. 그래서 이 폴더에서는 큰 알고리즘보다 아래 질문을 우선한다.
@@ -106,7 +106,7 @@ executable   : image_pub1
 node name    : image_publisher1 또는 launch에서 name='test'
 publish topic: /image_raw0
 message type : sensor_msgs/msg/Image
-frame_id     : camera_lee
+frame_id     : camera_frame
 parameter    : publish_rate, topic_name, image_size
 ```
 

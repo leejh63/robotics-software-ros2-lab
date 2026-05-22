@@ -4,6 +4,14 @@ Day 11 SLAM 기준 topic과 frame을 정리한다.
 
 ---
 
+## 0. 이 표의 역할
+
+이 문서는 Day 11 SLAM 기준의 빠른 참조표다.
+
+전체 topic/frame/message/action 기준은 [`topic_frame_message_action_master_table.md`](topic_frame_message_action_master_table.md)를 본다. 다른 표들의 역할은 [`table_reference_guide.md`](table_reference_guide.md)를 본다.
+
+---
+
 ## 1. Live SLAM topic
 
 | Topic | Type | Publisher | Subscriber | 의미 |

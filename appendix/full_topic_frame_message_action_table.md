@@ -4,6 +4,14 @@
 
 ---
 
+## 0. 이 표의 역할
+
+이 문서는 Day 01~13 범위를 넓게 훑는 확장표다.
+
+최신 기준표는 [`topic_frame_message_action_master_table.md`](topic_frame_message_action_master_table.md)이다. 이 문서는 넓은 범위의 복습용으로 사용하고, 충돌이 보이면 master table을 우선한다. 다른 표들의 역할은 [`table_reference_guide.md`](table_reference_guide.md)를 본다.
+
+---
+
 ## 1. Topic 전체표
 
 | Topic | Message 계열 | 주 사용 단계 | Producer | Consumer | 의미 |
@@ -16,9 +24,9 @@
 | `/robot_ns/tf` | `tf2_msgs/TFMessage` | Day 10~13 | 여러 노드 | 여러 노드 | 동적 TF |
 | `/robot_ns/tf_static` | `tf2_msgs/TFMessage` | Day 10~13 | robot_state_publisher 등 | 여러 노드 | 정적 TF |
 | `/clock` | `rosgraph_msgs/Clock` | Day 10~13 | Gazebo 또는 rosbag | use_sim_time node | 시뮬레이션 시간 |
-| `/initialpose` | `PoseWithCovarianceStamped` | Day 12~13 | RViz 또는 CLI | AMCL | 초기 위치 입력 |
-| `/amcl_pose` | `PoseWithCovarianceStamped` | Day 12~13 | AMCL | RViz, 확인용 | AMCL 추정 pose |
-| `/particle_cloud` | `nav2_msgs/ParticleCloud` 또는 PoseArray 계열 | Day 12~13 | AMCL | RViz | particle 후보군 |
+| `/initialpose` 또는 `/robot_ns/initialpose` | `PoseWithCovarianceStamped` | Day 12~13 | RViz 또는 CLI | AMCL | 초기 위치 입력. AMCL node namespace에 따라 달라질 수 있음 |
+| `/amcl_pose` 또는 `/robot_ns/amcl_pose` | `PoseWithCovarianceStamped` | Day 12~13 | AMCL | RViz, 확인용 | AMCL 추정 pose. AMCL node namespace에 따라 달라질 수 있음 |
+| `/particle_cloud` 또는 `/robot_ns/particle_cloud` | `nav2_msgs/ParticleCloud` 또는 PoseArray 계열 | Day 12~13 | AMCL | RViz | particle 후보군. AMCL node namespace에 따라 달라질 수 있음 |
 | `/robot_ns/global_costmap/costmap` | `nav_msgs/OccupancyGrid` | Day 13 | Nav2 global costmap | planner/RViz | global planning 비용 지도 |
 | `/robot_ns/local_costmap/costmap` | `nav_msgs/OccupancyGrid` | Day 13 | Nav2 local costmap | controller/RViz | local control 비용 지도 |
 | `/robot_ns/plan` | `nav_msgs/Path` | Day 13 | planner_server | RViz, controller | global path |
@@ -27,6 +35,18 @@
 | `/robot_ns/image_raw` | `sensor_msgs/Image` | Day 06~10 | camera driver/plugin | OpenCV/YOLO/RViz | 카메라 이미지 |
 | `/robot_ns/imu` | `sensor_msgs/Imu` | Day 09~10 | Gazebo IMU plugin | RViz/필터/확인용 | IMU 데이터 |
 | `/robot_ns/joint_states` | `sensor_msgs/JointState` | Day 10 | Gazebo/robot state | robot_state_publisher | joint 상태 |
+
+
+### AMCL topic namespace 확인
+
+AMCL 관련 topic은 root에 있을 수도 있고 `/robot_ns` 아래에 있을 수도 있다.
+
+```bash
+ros2 node list | sort | grep amcl
+ros2 topic list | sort | grep -E 'initialpose|amcl_pose|particle_cloud'
+```
+
+자세한 기준은 [`amcl_namespace_cases.md`](amcl_namespace_cases.md)를 본다.
 
 ---
 

@@ -189,7 +189,7 @@ ros2 run camera_pkg yolo_pub_l --ros-args -p model_path:=/absolute/path/to/yolov
 ros2 topic list | grep tf
 ros2 run tf2_tools view_frames
 ros2 run tf2_ros tf2_echo odom_robot_ns base_link_robot_ns
-ros2 run tf2_ros tf2_echo camera_lee object_person_lee_0
+ros2 run tf2_ros tf2_echo camera_frame object_person_0
 ```
 
 원인 후보:

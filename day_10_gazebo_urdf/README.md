@@ -25,7 +25,7 @@ Xacro/URDF로 로봇 구조 작성
 이 문서의 기준은 아래 패키지다.
 
 ```text
-day_67/ws/lee_robot_description/
+$ROS2_WS/lee_robot_description/
 ```
 
 주의할 점은 이 패키지가 일반적인 `ws/src/` 아래가 아니라, 현재 압축본에서는 `ws/lee_robot_description/` 위치에 있다는 것이다. 문서에서는 실제 파일 위치를 기준으로 설명한다.

@@ -11,7 +11,7 @@ ROS2에서 가장 먼저 잡아야 할 것은 이름 체계다. `workspace`, `pa
 이번 코드의 기준 workspace는 아래 구조다.
 
 ```text
-day_67/ws/
+$ROS2_WS/
 ├── src/
 │   ├── this_test/
 │   ├── lee_pkg/
@@ -20,7 +20,7 @@ day_67/ws/
 │   ├── my_robot_action/
 │   ├── camera_pkg/
 │   ├── py_launch_example/
-│   └── tf_pkg_lee/
+│   └── tf_pkg_example/
 ├── build/      # colcon build 결과
 ├── install/    # ros2 run/launch가 찾는 설치 결과
 └── log/        # build 로그
@@ -55,7 +55,7 @@ source install/setup.bash
 | `my_robot_service` | `ament_python` | `setup.py`의 `console_scripts` |
 | `my_robot_action` | `ament_python` | `setup.py`의 `console_scripts` |
 | `py_launch_example` | `ament_python` | `setup.py`의 `data_files`에 launch 설치 |
-| `tf_pkg_lee` | `ament_python` | `setup.py`의 `console_scripts`와 launch 설치 |
+| `tf_pkg_example` | `ament_python` | `setup.py`의 `console_scripts`와 launch 설치 |
 | `lee_pkg` | `ament_cmake` | `CMakeLists.txt`의 `add_executable`와 `install` |
 | `my_if` | `ament_cmake` | `rosidl_generate_interfaces` |
 
@@ -139,7 +139,7 @@ Topic은 데이터가 흐르는 채널 이름이고, message type은 데이터 �
 | `/image_edge1` | `sensor_msgs/msg/Image` | `camera_pkg/imageOPENlee.py` |
 | `/image_yolo1` | `sensor_msgs/msg/Image` | `camera_pkg/imageYOLOlee.py` |
 | `/img_yolo1` | `my_if/msg/ObjectDetectionArray` | `camera_pkg/imgYOLOlee.py` |
-| `/tf` | `tf2_msgs/msg/TFMessage` | `tf_pkg_lee` 관련 노드 |
+| `/tf` | `tf2_msgs/msg/TFMessage` | `tf_pkg_example` 관련 노드 |
 | `/tf_static` | `tf2_msgs/msg/TFMessage` | static transform publisher |
 
 Publisher와 Subscriber는 topic 이름만 같아서는 부족하다. message type도 같아야 한다.
@@ -183,12 +183,12 @@ test:
 
 ## 7. topic 이름과 frame 이름은 다르다
 
-`imagePlee.py`는 `/image_raw0` topic으로 `sensor_msgs/Image`를 발행한다. 그런데 메시지 안의 `header.frame_id`는 `camera_lee`다.
+`imagePlee.py`는 `/image_raw0` topic으로 `sensor_msgs/Image`를 발행한다. 그런데 메시지 안의 `header.frame_id`는 `camera_frame`다.
 
 ```text
 topic name : /image_raw0
 message    : sensor_msgs/msg/Image
-frame_id   : camera_lee
+frame_id   : camera_frame
 ```
 
 이 둘을 섞으면 안 된다.
@@ -196,8 +196,8 @@ frame_id   : camera_lee
 | 구분 | 예시 | 의미 |
 |---|---|---|
 | topic | `/image_raw0` | 이미지 데이터가 흘러가는 채널 |
-| frame | `camera_lee` | 이 이미지가 어느 좌표계 기준 센서에서 왔는지 나타내는 이름 |
-| TF | `base_link_robot_ns -> camera_lee` | 좌표계 사이의 위치/자세 관계 |
+| frame | `camera_frame` | 이 이미지가 어느 좌표계 기준 센서에서 왔는지 나타내는 이름 |
+| TF | `base_link_robot_ns -> camera_frame` | 좌표계 사이의 위치/자세 관계 |
 
 RViz나 TF 기반 알고리즘은 topic만 보는 것이 아니라 `header.frame_id`와 TF tree도 같이 본다.
 

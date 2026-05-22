@@ -6,7 +6,7 @@
 
 ## 1. Workspace / Package / Node
 
-1. `day_67/ws/src/camera_pkg`는 workspace인가 package인가?
+1. `$ROS2_WS/src/camera_pkg`는 workspace인가 package인가?
 2. `camera_pkg/camera_pkg/imagePlee.py`는 package 이름인가 source file 이름인가?
 3. `ros2 run camera_pkg image_pub1`에서 `camera_pkg`와 `image_pub1`은 각각 무엇인가?
 4. `imagePlee.py` 내부의 `super().__init__('image_publisher1')`는 무엇을 정하는가?
@@ -63,7 +63,7 @@
 2. `.msg`, `.srv`, `.action`의 차이는 무엇인가?
 3. `ObjectDetectionArray.msg`에 Header가 필요한 이유는 무엇인가?
 4. interface 파일을 수정한 뒤 왜 다시 build/source해야 하는가?
-5. `camera_pkg`와 `tf_pkg_lee`는 `my_if`의 어떤 message를 사용하는가?
+5. `camera_pkg`와 `tf_pkg_example`는 `my_if`의 어떤 message를 사용하는가?
 
 ---
 
@@ -94,8 +94,8 @@
 
 ```text
 camera_pkg/imagePlee.py는 웹캠 이미지를 sensor_msgs/Image로 바꿔 /image_raw0 topic에 발행한다.
-이 메시지는 header.frame_id=camera_lee를 가지므로, 공간적으로 해석하려면 camera_lee가 TF tree에 연결되어 있어야 한다.
+이 메시지는 header.frame_id=camera_frame를 가지므로, 공간적으로 해석하려면 camera_frame가 TF tree에 연결되어 있어야 한다.
 imgYOLOlee.py는 /image_raw0를 구독해 YOLO detection 결과를 my_if/ObjectDetectionArray로 /img_yolo1에 발행한다.
-tf_broad_yolo.py는 /img_yolo1을 구독하고 bbox 중심과 fixed_depth를 이용해 object_person_lee_0 같은 임시 object frame을 발행한다.
+tf_broad_yolo.py는 /img_yolo1을 구독하고 bbox 중심과 fixed_depth를 이용해 object_person_0 같은 검증용 object frame을 발행한다.
 이 구조는 뒤쪽 SLAM/AMCL/Nav2에서 sensor topic과 TF frame을 함께 봐야 하는 이유를 이해하기 위한 기초 실습이다.
 ```

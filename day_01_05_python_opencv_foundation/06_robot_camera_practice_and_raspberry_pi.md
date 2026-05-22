@@ -20,13 +20,13 @@ Day 05의 Robot Camera Practice는 앞에서 배운 내용을 한 번에 묶는 
 
 ---
 
-## 2. 관련 원본 파일
+## 2. 관련 실습 파일
 
 ```text
 day_4/prac/05_03_Robot-Camera-Practice.py
 day_5/in_rasp_install.md
-day_67/code/05.02.02.Webcam-Kalman.py
-day_67/code/05.02.03.Kalman-NIS-Eval.py
+$SOURCE_NOTES/code/05.02.02.Webcam-Kalman.py
+$SOURCE_NOTES/code/05.02.03.Kalman-NIS-Eval.py
 ```
 
 ---
@@ -152,7 +152,7 @@ N프레임 이상 지속되었는가?
 로그 저장의 목적은 다음이다.
 
 ```text
-실행 결과를 나중에 다시 확인한다.
+실행 결과를 이후 다시 확인한다.
 어떤 frame에서 어떤 객체가 잡혔는지 본다.
 threshold를 바꾸기 전/후를 비교한다.
 실패 사례를 모아서 개선한다.
@@ -188,7 +188,7 @@ ROS2/TurtleBot 관련 설치
 카메라 장치 확인
 ```
 
-이 메모는 나중에 실제 보드에서 실습할 때 중요하다. PC에서는 잘 되던 코드가 보드에서는 아래 이유로 실패할 수 있기 때문이다.
+이 메모는 이후 실제 보드에서 실습할 때 중요하다. PC에서는 잘 되던 코드가 보드에서는 아래 이유로 실패할 수 있기 때문이다.
 
 ```text
 카메라 권한 문제

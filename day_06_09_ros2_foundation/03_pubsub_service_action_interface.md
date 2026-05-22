@@ -27,7 +27,7 @@ Topic은 센서값, 상태값, 명령처럼 계속 갱신되는 데이터를 흘
 | `camera_pkg/imagePlee.py` | `/image_raw0` | `sensor_msgs/msg/Image` | OpenCV/YOLO 관련 노드 |
 | `camera_pkg/imageOPENlee.py` | `/image_edge1` | `sensor_msgs/msg/Image` | viewer/snapshot node |
 | `camera_pkg/imageYOLOlee.py` | `/image_yolo1` | `sensor_msgs/msg/Image` | viewer/snapshot node |
-| `camera_pkg/imgYOLOlee.py` | `/img_yolo1` | `my_if/msg/ObjectDetectionArray` | `tf_pkg_lee/tf_broad_yolo.py` |
+| `camera_pkg/imgYOLOlee.py` | `/img_yolo1` | `my_if/msg/ObjectDetectionArray` | `tf_pkg_example/tf_broad_yolo.py` |
 
 Topic이 적합한 경우:
 

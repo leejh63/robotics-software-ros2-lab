@@ -46,7 +46,7 @@ base frame         base_footprint
 LiDAR frame        base_scan
 ```
 
-PDF나 일반 예제와 가장 많이 다른 부분은 namespace와 frame 이름이다.
+일반 예제와 가장 많이 다른 부분은 namespace와 frame 이름이다.
 
 ```text
 /map      -> /robot_ns/map
@@ -58,6 +58,8 @@ map       -> map_robot_ns
 odom      -> odom_robot_ns
 base_link -> base_footprint
 ```
+
+여기서 `map_robot_ns`, `odom_robot_ns`는 일반 예제의 `map`, `odom`과 역할은 같지만, 여러 robot namespace나 rosbag replay 상황에서 TF frame 충돌을 줄이기 위해 더 구체적으로 붙인 이름이다. 자세한 설명은 [`background/map_odom_namespace_frames.md`](background/map_odom_namespace_frames.md)를 참고한다.
 
 ---
 
@@ -111,6 +113,9 @@ background/initial_pose_covariance_and_convergence.md
 
 background/lifecycle_map_server_amcl.md
   map_server와 amcl이 lifecycle node인 이유
+
+background/map_odom_namespace_frames.md
+  일반 예제의 map/odom과 현재 문서의 map_robot_ns/odom_robot_ns 차이
 ```
 
 ---

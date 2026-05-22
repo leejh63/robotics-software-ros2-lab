@@ -50,8 +50,8 @@ map_server
   -> /robot_ns/map
         ↓
 AMCL
-  -> /amcl_pose
-  -> /particle_cloud
+  -> /amcl_pose 또는 /robot_ns/amcl_pose
+  -> /particle_cloud 또는 /robot_ns/particle_cloud
   -> map_robot_ns -> odom_robot_ns TF
         ↓
 Nav2 planner_server
@@ -124,7 +124,33 @@ appendix/external_package_boundary.md
 
 ---
 
-## 5. Message와 frame_id의 관계
+## 5. 왜 map_robot_ns / odom_robot_ns처럼 쓰는가
+
+일반 예제에서는 `map`, `odom`이라는 frame 이름을 많이 쓴다. 이 학습 노트에서는 같은 역할을 아래 이름으로 기록한다.
+
+```text
+map      -> map_robot_ns
+odom     -> odom_robot_ns
+base     -> base_footprint
+```
+
+이 이름은 topic namespace와 frame 이름을 구분하기 위한 학습용 표기다.
+
+```text
+/robot_ns/map  = topic 이름
+map_robot_ns   = frame 이름
+
+/robot_ns/odom = topic 이름
+odom_robot_ns  = frame 이름
+```
+
+`/robot_ns/scan`처럼 topic을 namespace 아래로 remap해도 `LaserScan.header.frame_id`나 TF 내부 frame 이름이 자동으로 바뀌지는 않는다. 그래서 AMCL/Nav2 parameter의 `global_frame_id`, `odom_frame_id`, `base_frame_id`는 실제 TF tree에 존재하는 frame 이름과 직접 맞춰야 한다.
+
+자세한 설명은 [`../day_12_amcl_mcl/background/map_odom_namespace_frames.md`](../day_12_amcl_mcl/background/map_odom_namespace_frames.md)를 본다.
+
+---
+
+## 6. Message와 frame_id의 관계
 
 ROS2 sensor/navigation 메시지는 대개 header를 가진다.
 
@@ -145,7 +171,7 @@ NavigateToPose goal의 header.frame_id = map_robot_ns
 
 ---
 
-## 6. 단계별 최소 정상 조건
+## 7. 단계별 최소 정상 조건
 
 | 단계 | 최소 정상 조건 |
 |---|---|
@@ -163,7 +189,7 @@ appendix/validation_sequence_gazebo_slam_amcl_nav2.md
 
 ---
 
-## 7. 한 줄 요약
+## 8. 한 줄 요약
 
 ```text
 Gazebo가 센서/구동 데이터를 만들고,

@@ -11,6 +11,16 @@ action 이름과 topic 이름도 다르다.
 
 ---
 
+## 0. 이 표의 역할
+
+이 문서는 이 저장소의 topic/frame/message/action **기준표**다.
+
+다른 표 문서는 Day별 빠른 참조표다. 표현이 다르게 보이면 이 문서를 우선한다.
+
+관련 표의 역할은 [`table_reference_guide.md`](table_reference_guide.md)를 본다.
+
+---
+
 ## 1. 주요 topic 통합표
 
 | Topic | Message Type | 주 발행자 | 주 사용처 | 비고 |
@@ -24,25 +34,48 @@ action 이름과 topic 이름도 다르다.
 | `/robot_ns/imu` | `sensor_msgs/msg/Imu` | Gazebo IMU plugin | RViz, 확장 실습 | 현재 Nav2 핵심 입력은 아님 |
 | `/robot_ns/image_raw` | `sensor_msgs/msg/Image` | Gazebo camera plugin | RViz, vision pipeline | Day 10 이후 camera 연결 |
 | `/robot_ns/joint_states` | `sensor_msgs/msg/JointState` | Gazebo joint state plugin | robot_state_publisher | joint 기반 TF |
-| `/amcl_pose` | `geometry_msgs/msg/PoseWithCovarianceStamped` | AMCL | RViz, localization 확인 | namespace가 문서/launch에 따라 다를 수 있음 |
-| `/particle_cloud` | `nav2_msgs/msg/ParticleCloud` 또는 유사 타입 | AMCL | RViz | particle 분포 시각화 |
-| `/initialpose` | `geometry_msgs/msg/PoseWithCovarianceStamped` | RViz 또는 CLI | AMCL | 초기 위치 힌트 |
+| `/amcl_pose` 또는 `/robot_ns/amcl_pose` | `geometry_msgs/msg/PoseWithCovarianceStamped` | AMCL | RViz, localization 확인 | AMCL node namespace에 따라 달라질 수 있음 |
+| `/particle_cloud` 또는 `/robot_ns/particle_cloud` | `nav2_msgs/msg/ParticleCloud` 또는 유사 타입 | AMCL | RViz | particle 분포 시각화 |
+| `/initialpose` 또는 `/robot_ns/initialpose` | `geometry_msgs/msg/PoseWithCovarianceStamped` | RViz 또는 CLI | AMCL | AMCL이 실제로 subscribe하는 topic에 맞춰야 함 |
 | `/robot_ns/plan` | `nav_msgs/msg/Path` | planner_server | RViz, controller | global path |
 | `/clock` | `rosgraph_msgs/msg/Clock` | Gazebo 또는 rosbag | use_sim_time node | simulation time |
 
 ---
 
+### AMCL topic namespace 주의
+
+AMCL 관련 topic은 root namespace에 있을 수도 있고 robot namespace 아래에 있을 수도 있다. 따라서 `/amcl_pose`만 고정해서 외우지 말고 아래 순서로 확인한다.
+
+```bash
+ros2 node list | sort | grep amcl
+ros2 topic list | sort | grep -E 'initialpose|amcl_pose|particle_cloud'
+```
+
+```text
+/amcl
+  -> /initialpose, /amcl_pose, /particle_cloud 가능성이 높음
+
+/robot_ns/amcl
+  -> /robot_ns/initialpose, /robot_ns/amcl_pose, /robot_ns/particle_cloud 가능성이 높음
+```
+
+상세 기준은 [`amcl_namespace_cases.md`](amcl_namespace_cases.md)를 본다.
+
+---
+
 ## 2. 주요 frame 통합표
 
-| Frame | 의미 | 연결 관계 |
-|---|---|---|
-| `map_robot_ns` | 지도 기준 전역 frame | SLAM 또는 AMCL이 `map_robot_ns -> odom_robot_ns` 관계를 만든다 |
-| `odom_robot_ns` | odometry 기준 지역 frame | `odom_robot_ns -> base_footprint`로 이어진다 |
-| `base_footprint` | 로봇 바닥 중심 frame | navigation에서 base frame으로 자주 사용 |
-| `base_link` | 로봇 본체 frame | URDF link 구조에 따라 사용 |
-| `base_scan` | LiDAR frame | LaserScan의 `header.frame_id`와 연결 |
-| `camera_link` | camera frame | camera image/TF 실습과 연결 |
-| `object_person_lee_0` 등 | YOLO object TF 실습 frame | bbox 기반 시각화용 frame |
+일반 예제의 `map`, `odom`은 이 문서에서 각각 `map_robot_ns`, `odom_robot_ns`로 기록한다. 역할이 바뀐 것이 아니라, robot namespace가 섞이는 상황에서 frame 충돌을 줄이기 위한 표기다. 자세한 배경은 [`../day_12_amcl_mcl/background/map_odom_namespace_frames.md`](../day_12_amcl_mcl/background/map_odom_namespace_frames.md)를 본다.
+
+| Frame | 일반 예제 대응 | 의미 | 연결 관계 |
+|---|---|---|---|
+| `map_robot_ns` | `map` | 지도 기준 전역 frame | SLAM 또는 AMCL이 `map_robot_ns -> odom_robot_ns` 관계를 만든다 |
+| `odom_robot_ns` | `odom` | odometry 기준 지역 frame | `odom_robot_ns -> base_footprint`로 이어진다 |
+| `base_footprint` | `base_link` 또는 `base_footprint` | 로봇 바닥 중심 frame | navigation에서 base frame으로 자주 사용 |
+| `base_link` | `base_link` | 로봇 본체 frame | URDF link 구조에 따라 사용 |
+| `base_scan` | `laser` 또는 `base_scan` | LiDAR frame | LaserScan의 `header.frame_id`와 연결 |
+| `camera_link` | `camera_link` | camera frame | camera image/TF 실습과 연결 |
+| `object_person_0` 등 | 사용자 정의 object frame | YOLO object TF 실습 frame | bbox 기반 시각화용 frame |
 
 핵심 chain:
 

@@ -20,8 +20,8 @@
   -> /image_raw0              sensor_msgs/msg/Image
   -> camera_pkg/imgYOLOlee.py
   -> /img_yolo1               my_if/msg/ObjectDetectionArray
-  -> tf_pkg_lee/tf_broad_yolo.py
-  -> object_person_lee_0      TF frame
+  -> tf_pkg_example/tf_broad_yolo.py
+  -> object_person_0      TF frame
 ```
 
 `/image_yolo1`와 `/img_yolo1`를 반드시 구분해야 한다.
@@ -42,7 +42,7 @@ self.cap = cv2.VideoCapture(0)
 ret, frame = self.cap.read()
 resized = cv2.resize(frame, tuple(self.size))
 img_msg = self.bridge.cv2_to_imgmsg(resized, encoding="bgr8")
-img_msg.header.frame_id = "camera_lee"
+img_msg.header.frame_id = "camera_frame"
 self.publisher_.publish(img_msg)
 ```
 
@@ -52,7 +52,7 @@ ROS2 관점:
 node       : image_publisher1 또는 launch에서 test
 publish    : /image_raw0
 msg type   : sensor_msgs/msg/Image
-frame_id   : camera_lee
+frame_id   : camera_frame
 parameters : publish_rate, topic_name, image_size
 ```
 
@@ -185,7 +185,7 @@ self.create_subscription(
 각 detection에 대해 object frame 이름을 만든다.
 
 ```python
-object_person_lee_0
+object_person_0
 ```
 
 parent frame은 우선순위가 있다.
@@ -196,10 +196,10 @@ parent frame은 우선순위가 있다.
 3. 없으면 fallback_parent_frame 사용
 ```
 
-현재 launch 흐름에서는 image header가 `camera_lee`이므로 보통 object frame은 `camera_lee` 아래에 붙는다.
+현재 launch 흐름에서는 image header가 `camera_frame`이므로 보통 object frame은 `camera_frame` 아래에 붙는다.
 
 ```text
-camera_lee -> object_person_lee_0
+camera_frame -> object_person_0
 ```
 
 ---
@@ -212,9 +212,9 @@ camera_lee -> object_person_lee_0
 camera_pkg/image_pub1
 camera_pkg/yolo_pub_l
 tf2_ros/static_transform_publisher: map_robot_ns -> odom_robot_ns
-tf_pkg_lee/odom_simul: odom_robot_ns -> base_link_robot_ns
-tf2_ros/static_transform_publisher: base_link_robot_ns -> camera_lee
-tf_pkg_lee/tf_broad_yolo: camera_lee -> object_person_lee_0
+tf_pkg_example/odom_simul: odom_robot_ns -> base_link_robot_ns
+tf2_ros/static_transform_publisher: base_link_robot_ns -> camera_frame
+tf_pkg_example/tf_broad_yolo: camera_frame -> object_person_0
 조건부 tf_listener
 조건부 rqt_tf_tree
 조건부 rviz2
@@ -226,8 +226,8 @@ tf_pkg_lee/tf_broad_yolo: camera_lee -> object_person_lee_0
 map_robot_ns
 └── odom_robot_ns
     └── base_link_robot_ns
-        └── camera_lee
-            └── object_person_lee_0
+        └── camera_frame
+            └── object_person_0
 ```
 
 ---
@@ -246,10 +246,10 @@ trans.transform.translation.x = depth
 따라서 정확한 표현은 아래다.
 
 ```text
-2D bbox 중심과 고정 depth를 이용한 임시 object frame 시각화
+2D bbox 중심과 고정 depth를 이용한 검증용 object frame 시각화
 ```
 
-추후 진짜 3D 위치 추정을 하려면 아래 중 하나가 필요하다.
+이후 진짜 3D 위치 추정을 하려면 아래 중 하나가 필요하다.
 
 ```text
 - depth camera
@@ -278,8 +278,8 @@ ros2 topic echo /img_yolo1 --once
 
 # TF 확인
 ros2 run tf2_tools view_frames
-ros2 run tf2_ros tf2_echo camera_lee object_person_lee_0
-ros2 run tf2_ros tf2_echo odom_robot_ns object_person_lee_0
+ros2 run tf2_ros tf2_echo camera_frame object_person_0
+ros2 run tf2_ros tf2_echo odom_robot_ns object_person_0
 ```
 
 ---
@@ -289,7 +289,7 @@ ros2 run tf2_ros tf2_echo odom_robot_ns object_person_lee_0
 이 흐름은 Day 10~13의 sensor/TF 문제로 이어진다.
 
 ```text
-camera_lee frame이 TF tree에 없으면 object frame도 tree에 붙지 않는다.
+camera_frame frame이 TF tree에 없으면 object frame도 tree에 붙지 않는다.
 laser frame이 TF tree에 없으면 SLAM/AMCL/Nav2가 /scan을 제대로 해석하지 못한다.
 map_robot_ns -> odom_robot_ns가 없으면 RViz Fixed Frame을 map_robot_ns로 놓았을 때 로봇이 연결되지 않는다.
 ```

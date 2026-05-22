@@ -1,6 +1,6 @@
 # 09. Runtime Observations Without Code Changes
 
-이 문서는 코드를 수정하지 않고, 현재 학습 코드 상태에서 실행할 때 주의해야 할 부분만 정리한다. 지금 단계의 목적은 문제를 바로 고치는 것이 아니라, 나중에 정리/실행할 때 헷갈리지 않도록 관찰점을 남기는 것이다.
+이 문서는 코드를 수정하지 않고, 현재 학습 코드 상태에서 실행할 때 주의해야 할 부분만 정리한다. 지금 단계의 목적은 문제를 바로 고치는 것이 아니라, 이후 정리/실행할 때 헷갈리지 않도록 관찰점을 남기는 것이다.
 
 ---
 
@@ -114,7 +114,7 @@ YAML에서 topic_name을 바꿔도 실제 발행 topic은 image_raw0 그대로�
 
 ---
 
-## 4. py_launch_example의 config 설치 구조 확인 필요
+## 4. py_launch_example의 config 설치 구조 점검 대상
 
 `py_launch_example/setup.py`에는 아래 설치 규칙이 있다.
 
@@ -158,7 +158,7 @@ viewer_node = Node(
 
 ---
 
-## 6. tf_pkg_lee/robot_ns_yolo_launch.py의 RViz 절대경로
+## 6. tf_pkg_example/robot_ns_yolo_launch.py의 RViz 절대경로
 
 `lee_yolo_launch.py`에는 아래 절대경로가 들어 있다.
 
@@ -171,7 +171,7 @@ arguments=['-d', '$ROS2_WS/rviz_conf_exap.rviz']
 ```text
 사용자 로컬 환경에서는 동작할 수 있다.
 다른 컴퓨터나 다른 workspace 경로에서는 깨질 수 있다.
-나중에 정리할 때는 RViz config를 패키지 share에 넣고 get_package_share_directory()로 찾는 방식이 좋다.
+이후 정리할 때는 RViz config를 패키지 share에 넣고 get_package_share_directory()로 찾는 방식이 좋다.
 ```
 
 ---
@@ -181,14 +181,14 @@ arguments=['-d', '$ROS2_WS/rviz_conf_exap.rviz']
 코드 안에는 아래 frame 이름들이 보인다.
 
 ```text
-camera_lee
+camera_frame
 camera_link_lee
 base_link_robot_ns
 odom_robot_ns
 map_robot_ns
 ```
 
-`imagePlee.py`는 image header를 `camera_lee`로 설정한다. `tf_listener.py` 기본값은 `camera_link_lee`를 source frame으로 둔다. launch에서는 `base_link_robot_ns -> camera_lee` static TF를 만든다.
+`imagePlee.py`는 image header를 `camera_frame`로 설정한다. `tf_listener.py` 기본값은 `camera_link_lee`를 source frame으로 둔다. launch에서는 `base_link_robot_ns -> camera_frame` static TF를 만든다.
 
 관찰:
 
@@ -247,4 +247,4 @@ GUI가 없는 환경, SSH, Docker, WSL DISPLAY 설정이 안 된 환경에서는
 - node name 중복 수정
 ```
 
-현재는 학습 문서화 단계이므로, 위 항목은 “나중에 실행 재현성 개선 단계”에서 다룬다.
+현재는 학습 문서화 단계이므로, 위 항목은 “이후 실행 재현성 개선 단계”에서 다룬다.

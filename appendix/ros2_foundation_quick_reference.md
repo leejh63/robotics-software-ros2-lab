@@ -4,14 +4,14 @@
 
 | 구분 | 예시 | 확인 명령 |
 |---|---|---|
-| workspace | `day_67/ws` | `pwd` |
+| workspace | `$ROS2_WS` | `pwd` |
 | package | `camera_pkg` | `ros2 pkg list` |
 | executable | `image_pub1` | `ros2 pkg executables camera_pkg` |
 | node | `/image_publisher1`, `/test` | `ros2 node list` |
 | topic | `/image_raw0` | `ros2 topic list` |
 | service | `/add_two_num1` | `ros2 service list` |
 | action | `/move_robot1` | `ros2 action list` |
-| frame | `camera_lee` | `ros2 run tf2_tools view_frames` |
+| frame | `camera_frame` | `ros2 run tf2_tools view_frames` |
 | parameter | `publish_rate` | `ros2 param list /node` |
 
 ## 실제 패키지 요약
@@ -25,7 +25,7 @@
 | `my_robot_action` | Movelee action |
 | `camera_pkg` | Image, Canny, Snapshot, YOLO image/msg |
 | `py_launch_example` | launch/parameter 실습 |
-| `tf_pkg_lee` | TF tree, listener, YOLO TF |
+| `tf_pkg_example` | TF tree, listener, YOLO TF |
 
 ## 통신 선택 기준
 

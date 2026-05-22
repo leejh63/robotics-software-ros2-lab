@@ -4,6 +4,14 @@
 
 ---
 
+## 0. 이 표의 역할
+
+이 문서는 Day 13 Nav2 기준의 빠른 참조표다.
+
+Nav2에서 주로 보는 planner/controller/costmap/action topic을 빠르게 확인하는 용도이며, 전체 topic/frame/message/action 기준은 [`topic_frame_message_action_master_table.md`](topic_frame_message_action_master_table.md)를 우선한다. 다른 표들의 역할은 [`table_reference_guide.md`](table_reference_guide.md)를 본다.
+
+---
+
 ## 1. Topic
 
 | topic | type 후보 | 제공 주체 | 소비 주체 | 의미 |
@@ -13,13 +21,23 @@
 | `/robot_ns/odom` | `nav_msgs/msg/Odometry` | Gazebo diff_drive plugin | controller, velocity_smoother | odometry |
 | `/robot_ns/tf` | `tf2_msgs/msg/TFMessage` | AMCL, Gazebo, robot_state_publisher | Nav2, RViz | 동적 TF |
 | `/robot_ns/tf_static` | `tf2_msgs/msg/TFMessage` | robot_state_publisher | Nav2, RViz | 정적 TF |
-| `/amcl_pose` | `geometry_msgs/msg/PoseWithCovarianceStamped` | AMCL | RViz, debug | 추정 pose |
-| `/particle_cloud` | `geometry_msgs/msg/PoseArray` | AMCL | RViz | particle 분포 |
-| `/initialpose` | `geometry_msgs/msg/PoseWithCovarianceStamped` | RViz/user | AMCL | 초기 위치 지정 |
+| `/amcl_pose` 또는 `/robot_ns/amcl_pose` | `geometry_msgs/msg/PoseWithCovarianceStamped` | AMCL | RViz, debug | 추정 pose. AMCL node namespace에 따라 달라질 수 있음 |
+| `/particle_cloud` 또는 `/robot_ns/particle_cloud` | `nav2_msgs/msg/ParticleCloud` 또는 PoseArray 계열 | AMCL | RViz | particle 분포. AMCL node namespace에 따라 달라질 수 있음 |
+| `/initialpose` 또는 `/robot_ns/initialpose` | `geometry_msgs/msg/PoseWithCovarianceStamped` | RViz/user | AMCL | 초기 위치 지정. AMCL node namespace에 맞춰야 함 |
 | `/robot_ns/global_costmap/costmap` | `nav_msgs/msg/OccupancyGrid` | global costmap | RViz, planner | 전역 costmap |
 | `/robot_ns/local_costmap/costmap` | `nav_msgs/msg/OccupancyGrid` | local costmap | RViz, controller | 로컬 costmap |
 | `/robot_ns/plan` | `nav_msgs/msg/Path` | planner_server | controller, RViz | 전역 경로 |
 | `/robot_ns/cmd_vel` | `geometry_msgs/msg/Twist` | controller/velocity_smoother | Gazebo diff_drive plugin | 속도 명령 |
+
+
+AMCL 관련 topic은 `/amcl`이 root에 떠 있는지, `/robot_ns/amcl`처럼 namespace 아래에 떠 있는지에 따라 달라질 수 있다. Nav2에서 localization 상태를 확인할 때는 먼저 아래 명령으로 실제 graph를 본다.
+
+```bash
+ros2 node list | sort | grep amcl
+ros2 topic list | sort | grep -E 'initialpose|amcl_pose|particle_cloud'
+```
+
+상세 기준은 [`amcl_namespace_cases.md`](amcl_namespace_cases.md)를 본다.
 
 ---
 

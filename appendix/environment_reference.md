@@ -1,8 +1,8 @@
-# My Environment Reference
+# Environment Reference
 
-이 문서는 현재 학습 정리본에서 반복적으로 등장하는 **내 환경 기준값**을 한 곳에 모은 것이다.
+이 문서는 학습 정리본에서 반복적으로 등장하는 실행 환경 기준값을 한 곳에 모은 것이다.
 
-문서의 목적은 “정답 환경”을 강제하는 것이 아니라, 내가 실습한 기준을 잊지 않기 위한 것이다.
+문서의 목적은 “정답 환경”을 강제하는 것이 아니라, 명령어 예시를 해석할 때 필요한 기준값을 제공하는 것이다.
 
 ---
 
@@ -24,7 +24,7 @@ $ROS2_WS
 ```text
 lee_robot_description
 camera_pkg
-tf_pkg_lee
+tf_pkg_example
 my_if
 my_robot_service
 my_robot_action

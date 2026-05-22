@@ -134,7 +134,7 @@ SLAM 중에는 SLAM Toolbox가 `map_robot_ns -> odom_robot_ns`를 발행한다.
 
 AMCL 중에는 AMCL이 `map_robot_ns -> odom_robot_ns`를 발행한다.
 
-임시 확인 중에는 static_transform_publisher가 발행할 수 있다.
+확인 과정에서는 static_transform_publisher가 발행할 수 있다.
 
 동시에 켜면 안 좋은 조합:
 
@@ -233,5 +233,5 @@ map 파일이 package share의 maps/가 아니라 workspace root에 있음
 robot_ns namespace와 frame 이름이 학습 도중 여러 단계에서 바뀐 흔적이 있음
 ```
 
-이 내용은 나중에 2주 프로젝트나 포트폴리오용 repo를 만들 때 정리하면 된다.  
+이 내용은 이후 2주 프로젝트나 포트폴리오용 repo를 만들 때 정리하면 된다.  
 지금은 “왜 이렇게 동작하는지”를 이해하는 것이 우선이다.

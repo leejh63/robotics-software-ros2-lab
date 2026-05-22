@@ -17,7 +17,7 @@ blur/edge/contour를 적용한다.
 
 ---
 
-## 2. 관련 원본 파일
+## 2. 관련 실습 파일
 
 ```text
 day_3/opencv_basic.md

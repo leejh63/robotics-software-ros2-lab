@@ -18,7 +18,7 @@ $ROS2_WS/lee_robot_description/
 lee_robot_description은 현재 ws/src 아래가 아니라 ws 루트에 있다.
 ```
 
-일반적인 ROS2 workspace에서는 패키지가 `src/` 아래에 있는 경우가 많지만, 현재 실습 폴더에서는 `day_67/ws/lee_robot_description`에 있다.  
+일반적인 ROS2 workspace에서는 패키지가 `src/` 아래에 있는 경우가 많지만, 현재 실습 폴더에서는 `$ROS2_WS/lee_robot_description`에 있다.  
 그래도 `colcon build` 대상이 되며, install 경로로 복사되면 `ros2 launch lee_robot_description ...` 형태로 실행할 수 있다.
 
 ---

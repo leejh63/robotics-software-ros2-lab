@@ -1,12 +1,12 @@
 # Quick Start
 
-이 문서는 GitHub에서 저장소를 처음 열었을 때 어디부터 보면 되는지 정리한 빠른 시작 문서다.
+이 문서는 저장소를 처음 열었을 때 어디부터 보면 되는지 정리한 빠른 시작 문서입니다.
 
 ---
 
-## 1. 이 저장소를 보는 기준
+## 1. 이 저장소의 기준
 
-이 저장소는 완성 프로젝트가 아니라 ROS2 Navigation 학습 노트다.
+이 브랜치는 `study/ros2-navigation-notes`이며, 완성 프로젝트가 아니라 ROS2 Navigation 학습 노트입니다.
 
 ```text
 목표:
@@ -20,15 +20,14 @@
 
 ---
 
-## 2. 10분 안에 전체 구조만 보기
-
-아래 순서만 보면 저장소의 큰 흐름을 잡을 수 있다.
+## 2. 10분 안에 전체 구조 보기
 
 ```text
 README.md
 → MASTER_INDEX.md
 → appendix/learning_flow_one_page.md
 → appendix/full_pipeline_reference.md
+→ appendix/table_reference_guide.md
 → appendix/topic_frame_message_action_master_table.md
 ```
 
@@ -43,9 +42,7 @@ README.md
 
 ---
 
-## 3. 하루치 학습 흐름대로 보기
-
-날짜별 문서는 실습 흐름을 따라가기 좋다.
+## 3. 날짜별 학습 흐름
 
 | 순서 | 폴더 | 핵심 |
 |---:|---|---|
@@ -58,9 +55,7 @@ README.md
 
 ---
 
-## 4. 개념만 빠르게 정리하기
-
-개념이 헷갈릴 때는 날짜별 문서보다 아래 문서를 먼저 본다.
+## 4. 개념만 빠르게 보기
 
 | 질문 | 문서 |
 |---|---|
@@ -71,9 +66,7 @@ README.md
 
 ---
 
-## 5. 명령어를 실행하기 전에 보기
-
-명령어 문서는 placeholder를 포함한다. 그대로 복사하기 전에 아래 문서를 먼저 확인한다.
+## 5. 명령어 실행 전 확인
 
 ```text
 appendix/command_execution_conventions.md
@@ -81,7 +74,7 @@ appendix/full_command_quick_reference.md
 appendix/validation_sequence_gazebo_slam_amcl_nav2.md
 ```
 
-특히 아래 네 가지를 구분한다.
+특히 아래 네 가지를 구분합니다.
 
 ```text
 package name  예: lee_robot_description
@@ -92,9 +85,7 @@ frame name    예: map_robot_ns
 
 ---
 
-## 6. 문제가 생겼을 때 보기
-
-문제가 발생하면 바로 긴 문서로 들어가지 말고 빠른 진단표를 먼저 본다.
+## 6. 문제가 생겼을 때
 
 ```text
 appendix/troubleshooting_quick_diagnosis.md
@@ -103,7 +94,7 @@ appendix/troubleshooting_quick_diagnosis.md
 → 11_navigation_debug_deep_dives/
 ```
 
-대표적으로 확인할 순서는 다음이다.
+대표 확인 순서:
 
 ```text
 1. node가 떠 있는가?
@@ -113,25 +104,4 @@ appendix/troubleshooting_quick_diagnosis.md
 5. lifecycle node가 active 상태인가?
 6. path는 생기는데 /cmd_vel만 안 나오는가?
 7. Behavior Tree의 어느 단계에서 실패하는가?
-```
-
----
-
-## 7. GitHub 업로드 전 보기
-
-업로드 전에는 아래 세 문서를 확인한다.
-
-```text
-GITHUB_UPLOAD_GUIDE.md
-FINAL_UPLOAD_AUDIT.md
-MODIFICATION_LOG.md
-```
-
-최소 확인 항목:
-
-```text
-[ ] build/, install/, log/, rosbag DB 파일이 포함되지 않았는가?
-[ ] 실제 사용자명, IP, hostname, 홈 경로가 남아 있지 않은가?
-[ ] README.md와 MASTER_INDEX.md 링크가 깨지지 않는가?
-[ ] 이 저장소가 학습 노트라는 점이 README 상단에서 바로 보이는가?
 ```

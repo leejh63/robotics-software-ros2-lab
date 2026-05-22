@@ -4,13 +4,13 @@
 
 ---
 
-## 1. 원본 실습 정리 파일
+## 1. 실습 정리 파일
 
 ```text
-day_67/day_12/README.md
-day_67/day_12/amcl_mcl_beginner_notes_lee.md
-day_67/day_12/amcl_params_lee_example.yaml
-day_67/day_12/12_01_AMCL-MCL.ipynb
+$SOURCE_NOTES/day_12/README.md
+$SOURCE_NOTES/day_12/amcl_mcl_beginner_notes_lee.md
+$SOURCE_NOTES/day_12/amcl_params_lee_example.yaml
+$SOURCE_NOTES/day_12/12_01_AMCL-MCL.ipynb
 ```
 
 역할:
@@ -34,13 +34,13 @@ amcl_params_lee_example.yaml
 ## 2. Day 12 main 문서
 
 ```text
-day_67/day_12/main/amcl_day12_integrated_guide.md
+$SOURCE_NOTES/day_12/main/amcl_day12_integrated_guide.md
 ```
 
 역할:
 
 ```text
-PDF AMCL 실습 흐름을 현재 lee_robot_description 환경에 맞게 다시 번역한 통합 문서
+기존 AMCL 실습 흐름을 현재 lee_robot_description 환경에 맞게 다시 번역한 통합 문서
 ```
 
 이 문서에서 가져온 핵심 기준:
@@ -63,10 +63,10 @@ base frame: base_footprint
 ## 3. 실제 실행 관련 launch/config 파일
 
 ```text
-day_67/ws/lee_robot_description/launch/amcl.launch.py
-day_67/ws/lee_robot_description/launch/amcl_full.launch.py
-day_67/ws/lee_robot_description/config/amcl_param.yaml
-day_67/ws/lee_robot_description/rviz/amcl.rviz
+$ROS2_WS/lee_robot_description/launch/amcl.launch.py
+$ROS2_WS/lee_robot_description/launch/amcl_full.launch.py
+$ROS2_WS/lee_robot_description/config/amcl_param.yaml
+$ROS2_WS/lee_robot_description/rviz/amcl.rviz
 ```
 
 | 파일 | 역할 |
@@ -85,14 +85,14 @@ amcl_full.launch.py는 map_server와 amcl까지 같이 실행한다.
 
 ---
 
-## 4. 명령어/트러블슈팅 원본
+## 4. 명령어/트러블슈팅 실습 자료
 
 ```text
-day_67/day_12/main/commands/amcl_local_cheatsheet.md
-day_67/day_12/main/commands/amcl_current_environment_topics.md
-day_67/day_12/main/commands/amcl_full_launch_progress.md
-day_67/day_12/main/commands/nav2_action_goal_temporary_guide.md
-day_67/day_12/main/troubleshooting/amcl_troubleshooting.md
+$SOURCE_NOTES/day_12/main/commands/amcl_local_cheatsheet.md
+$SOURCE_NOTES/day_12/main/commands/amcl_current_environment_topics.md
+$SOURCE_NOTES/day_12/main/commands/amcl_full_launch_progress.md
+$SOURCE_NOTES/day_12/main/commands/nav2_action_goal_direct_guide.md
+$SOURCE_NOTES/day_12/main/troubleshooting/amcl_troubleshooting.md
 ```
 
 현재 AMCL 범위에 맞춰 아래로 재분리했다.

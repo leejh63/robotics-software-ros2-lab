@@ -5,15 +5,15 @@
 ```bash
 ros2 launch py_launch_example lee_bring_launch.py
 ros2 launch py_launch_example lee_ep_launch.py
-ros2 launch tf_pkg_lee tf_tree_demo_launch.py
-ros2 launch tf_pkg_lee lee_yolo_launch.py
+ros2 launch tf_pkg_example tf_tree_demo_launch.py
+ros2 launch tf_pkg_example lee_yolo_launch.py
 ```
 
 launch argument 확인:
 
 ```bash
 ros2 launch py_launch_example lee_ep_launch.py --show-args
-ros2 launch tf_pkg_lee lee_yolo_launch.py --show-args
+ros2 launch tf_pkg_example lee_yolo_launch.py --show-args
 ```
 
 ---

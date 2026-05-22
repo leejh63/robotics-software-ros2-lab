@@ -15,7 +15,7 @@ camera frame
 
 ---
 
-## 2. 관련 원본 파일
+## 2. 관련 실습 파일
 
 ```text
 day_4/05_02_YOLO-beginner-guide.md
@@ -24,8 +24,8 @@ day_4/prac/05_02_1_YOLO_test.py
 day_4/prac/05_02_YOLO-Kalman.ipynb
 day_4/prac/05_03_Robot-Camera-Practice.py
 day_4/yolo_finetuning_pipeline_md/*
-day_67/code/05.02.02.Webcam-Kalman.py
-day_67/code/05.02.03.Kalman-NIS-Eval.py
+$SOURCE_NOTES/code/05.02.02.Webcam-Kalman.py
+$SOURCE_NOTES/code/05.02.03.Kalman-NIS-Eval.py
 ```
 
 ---
@@ -144,7 +144,7 @@ update
 
 ## 8. 상태 벡터 예시
 
-`day_67/code/05.02.02.Webcam-Kalman.py`의 `BBoxKalmanTracker`는 bbox 중심점을 추적한다.
+`$SOURCE_NOTES/code/05.02.02.Webcam-Kalman.py`의 `BBoxKalmanTracker`는 bbox 중심점을 추적한다.
 
 상태는 다음처럼 볼 수 있다.
 
@@ -207,7 +207,7 @@ Q를 작게 잡음
 
 ## 10. NIS가 왜 나오는가
 
-`day_67/code/05.02.03.Kalman-NIS-Eval.py`는 `nis_log.csv`를 읽어 NIS를 분석한다.
+`$SOURCE_NOTES/code/05.02.03.Kalman-NIS-Eval.py`는 `nis_log.csv`를 읽어 NIS를 분석한다.
 
 NIS는 Normalized Innovation Squared의 줄임말이다.
 
@@ -254,7 +254,7 @@ export
 현재 단계에서는 이 내용을 “이미 학습 모델을 완성했다”로 해석하면 안 된다. 대신 다음처럼 보는 것이 맞다.
 
 ```text
-나중에 특정 객체를 인식하는 프로젝트를 할 때 필요한 절차를 미리 정리한 자료
+이후 특정 객체를 인식하는 프로젝트를 할 때 필요한 절차를 미리 정리한 자료
 ```
 
 실제 프로젝트에서 중요한 것은 모델을 무작정 바꾸는 것이 아니라 데이터셋 품질, 라벨 일관성, 평가 기준, 실환경 테스트다.
@@ -280,9 +280,9 @@ YOLO result
 실제 연결 파일은 아래다.
 
 ```text
-day_67/ws/src/my_if/msg/ObjectDetection.msg
-day_67/ws/src/my_if/msg/ObjectDetectionArray.msg
-day_67/ws/src/camera_pkg/camera_pkg/imgYOLOlee.py
+$ROS2_WS/src/my_if/msg/ObjectDetection.msg
+$ROS2_WS/src/my_if/msg/ObjectDetectionArray.msg
+$ROS2_WS/src/camera_pkg/camera_pkg/imgYOLOlee.py
 ```
 
 이 흐름을 이해하면 “YOLO를 돌렸다”에서 끝나지 않고, detection 결과를 로봇 시스템의 데이터로 바꾸는 관점으로 넘어갈 수 있다.

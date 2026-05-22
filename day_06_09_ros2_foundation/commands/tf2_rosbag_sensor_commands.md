@@ -3,9 +3,9 @@
 ## 1. TF tree demo
 
 ```bash
-ros2 launch tf_pkg_lee tf_tree_demo_launch.py
-ros2 launch tf_pkg_lee tf_tree_demo_launch.py use_listener:=true
-ros2 launch tf_pkg_lee tf_tree_demo_launch.py use_listener:=true use_rqt_tree:=true
+ros2 launch tf_pkg_example tf_tree_demo_launch.py
+ros2 launch tf_pkg_example tf_tree_demo_launch.py use_listener:=true
+ros2 launch tf_pkg_example tf_tree_demo_launch.py use_listener:=true use_rqt_tree:=true
 ```
 
 확인:
@@ -22,9 +22,9 @@ ros2 run rqt_tf_tree rqt_tf_tree
 ## 2. YOLO TF launch
 
 ```bash
-ros2 launch tf_pkg_lee lee_yolo_launch.py
-ros2 launch tf_pkg_lee lee_yolo_launch.py use_listener:=true use_rqt_tree:=true
-ros2 launch tf_pkg_lee lee_yolo_launch.py class_filter:=person object_depth:=1.5 use_listener:=true
+ros2 launch tf_pkg_example lee_yolo_launch.py
+ros2 launch tf_pkg_example lee_yolo_launch.py use_listener:=true use_rqt_tree:=true
+ros2 launch tf_pkg_example lee_yolo_launch.py class_filter:=person object_depth:=1.5 use_listener:=true
 ```
 
 확인:
@@ -33,8 +33,8 @@ ros2 launch tf_pkg_lee lee_yolo_launch.py class_filter:=person object_depth:=1.5
 ros2 topic info /image_raw0
 ros2 topic info /img_yolo1
 ros2 topic echo /img_yolo1 --once
-ros2 run tf2_ros tf2_echo camera_lee object_person_lee_0
-ros2 run tf2_ros tf2_echo odom_robot_ns object_person_lee_0
+ros2 run tf2_ros tf2_echo camera_frame object_person_0
+ros2 run tf2_ros tf2_echo odom_robot_ns object_person_0
 ```
 
 ---

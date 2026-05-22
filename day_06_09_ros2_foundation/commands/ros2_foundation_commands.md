@@ -19,7 +19,7 @@ source install/setup.bash
 interface 패키지를 고친 뒤에는 의존 패키지도 다시 빌드하는 것이 안전하다.
 
 ```bash
-colcon build --symlink-install --packages-select my_if camera_pkg tf_pkg_lee my_robot_service my_robot_action
+colcon build --symlink-install --packages-select my_if camera_pkg tf_pkg_example my_robot_service my_robot_action
 source install/setup.bash
 ```
 
@@ -28,13 +28,13 @@ source install/setup.bash
 ## 2. package / executable 확인
 
 ```bash
-ros2 pkg list | grep -E 'this_test|lee_pkg|my_if|camera_pkg|tf_pkg_lee'
+ros2 pkg list | grep -E 'this_test|lee_pkg|my_if|camera_pkg|tf_pkg_example'
 ros2 pkg executables this_test
 ros2 pkg executables lee_pkg
 ros2 pkg executables camera_pkg
 ros2 pkg executables my_robot_service
 ros2 pkg executables my_robot_action
-ros2 pkg executables tf_pkg_lee
+ros2 pkg executables tf_pkg_example
 ```
 
 ---

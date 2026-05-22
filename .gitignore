@@ -1,0 +1,30 @@
+# ROS2 build outputs
+build/
+install/
+log/
+
+# rosbag / large data
+*.db3
+*.mcap
+metadata.yaml
+
+# archives
+*.zip
+*.tar
+*.tar.gz
+*.7z
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# logs
+*.log

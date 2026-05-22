@@ -5,7 +5,7 @@
 기준 경로:
 
 ```text
-day_67/ws/lee_robot_description/
+$ROS2_WS/lee_robot_description/
 ```
 
 ---

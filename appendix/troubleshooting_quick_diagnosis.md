@@ -80,7 +80,7 @@ ros2 lifecycle get /robot_ns/controller_server
 
 ## 4. 기록할 정보
 
-나중에 다시 분석하려면 최소한 아래 정보를 남긴다.
+이후 다시 분석하려면 최소한 아래 정보를 남긴다.
 
 ```text
 1. 실행한 launch 명령어

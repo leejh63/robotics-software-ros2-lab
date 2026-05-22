@@ -107,7 +107,7 @@ Day 04는 ROS2 perception 실습으로 이어지는 가장 중요한 연결부�
 |---|---|---|
 | `day_5/in_rasp_install.md` | Raspberry Pi 환경 설정 메모 | SSH, netplan, swap, locale, TurtleBot 관련 설치 |
 
-이 파일은 완성된 설치 매뉴얼이라기보다 실제 환경 구축 중 남긴 작업 기록에 가깝다. 나중에 실물 로봇 또는 보드에서 다시 재현할 때 참고용으로 분리해서 보는 것이 좋다.
+이 파일은 완성된 설치 매뉴얼이라기보다 실제 환경 구축 중 남긴 작업 기록에 가깝다. 이후 실물 로봇 또는 보드에서 다시 재현할 때 참고용으로 분리해서 보는 것이 좋다.
 
 ---
 
@@ -115,8 +115,8 @@ Day 04는 ROS2 perception 실습으로 이어지는 가장 중요한 연결부�
 
 | 파일 | 역할 | 학습 포인트 |
 |---|---|---|
-| `day_67/code/05.02.02.Webcam-Kalman.py` | YOLOv8 + Kalman 실시간 webcam 추적 | bbox 중심점 안정화, Q/R 튜닝, NIS 로그 |
-| `day_67/code/05.02.03.Kalman-NIS-Eval.py` | NIS 로그 분석 | 추정 일관성 평가, chi-square 기준 |
+| `$SOURCE_NOTES/code/05.02.02.Webcam-Kalman.py` | YOLOv8 + Kalman 실시간 webcam 추적 | bbox 중심점 안정화, Q/R 튜닝, NIS 로그 |
+| `$SOURCE_NOTES/code/05.02.03.Kalman-NIS-Eval.py` | NIS 로그 분석 | 추정 일관성 평가, chi-square 기준 |
 
 이 두 파일은 Day 05 개념을 더 실험적으로 확장한 코드다. 특히 NIS는 단순히 “필터를 붙였다”가 아니라 “필터 파라미터가 말이 되는지 평가한다”는 방향으로 넘어가는 좋은 학습 포인트다.
 
@@ -128,13 +128,13 @@ Day 01~05 자체는 ROS2 패키지가 아니지만, 뒤에서 아래 파일들�
 
 | 파일 | 연결되는 Day 01~05 개념 |
 |---|---|
-| `day_67/ws/src/camera_pkg/camera_pkg/imagePlee.py` | `cv2.VideoCapture()` + ROS2 Image publish |
-| `day_67/ws/src/camera_pkg/camera_pkg/imageOPENlee.py` | `cv2.Canny()` + Image subscribe/publish |
-| `day_67/ws/src/camera_pkg/camera_pkg/imageYOLOlee.py` | YOLO 결과를 이미지에 그려 재발행 |
-| `day_67/ws/src/camera_pkg/camera_pkg/imgYOLOlee.py` | YOLO 결과를 custom message로 발행 |
-| `day_67/ws/src/camera_pkg/camera_pkg/imageSlee.py` | 이미지 subscribe + snapshot service |
-| `day_67/ws/src/my_if/msg/ObjectDetection.msg` | YOLO bbox/class/conf를 message field로 정의 |
-| `day_67/ws/src/my_if/msg/ObjectDetectionArray.msg` | 여러 detection을 배열로 묶음 |
+| `$ROS2_WS/src/camera_pkg/camera_pkg/imagePlee.py` | `cv2.VideoCapture()` + ROS2 Image publish |
+| `$ROS2_WS/src/camera_pkg/camera_pkg/imageOPENlee.py` | `cv2.Canny()` + Image subscribe/publish |
+| `$ROS2_WS/src/camera_pkg/camera_pkg/imageYOLOlee.py` | YOLO 결과를 이미지에 그려 재발행 |
+| `$ROS2_WS/src/camera_pkg/camera_pkg/imgYOLOlee.py` | YOLO 결과를 custom message로 발행 |
+| `$ROS2_WS/src/camera_pkg/camera_pkg/imageSlee.py` | 이미지 subscribe + snapshot service |
+| `$ROS2_WS/src/my_if/msg/ObjectDetection.msg` | YOLO bbox/class/conf를 message field로 정의 |
+| `$ROS2_WS/src/my_if/msg/ObjectDetectionArray.msg` | 여러 detection을 배열로 묶음 |
 
 즉, Day 01~05의 흐름은 다음처럼 ROS2로 바뀐다.
 

@@ -10,37 +10,42 @@ AMCL이 안 될 때는 아래 순서대로 확인한다.
 ros2 node list
 ```
 
-기대 노드 예시:
+기대 노드 예시는 launch namespace 방식에 따라 달라질 수 있다.
 
 ```text
-/map_server
-/amcl
-/lifecycle_manager_localization
-/robot_ns_robot_state_publisher
-/robot_ns_spawn_turtlebot
-/robot_ns_rviz
+Root AMCL case:
+  /map_server
+  /amcl
+  /lifecycle_manager_localization
+
+Namespaced AMCL case:
+  /robot_ns/map_server
+  /robot_ns/amcl
+  /robot_ns/lifecycle_manager_localization
 ```
 
-노드 상세:
+노드 상세는 실제 존재하는 이름으로 확인한다.
 
 ```bash
 ros2 node info /amcl
+ros2 node info /robot_ns/amcl
 ros2 node info /map_server
+ros2 node info /robot_ns/map_server
 ```
 
-`/amcl`에서 확인할 것:
+`/amcl` 또는 `/robot_ns/amcl`에서 확인할 것:
 
 ```text
 Subscribers:
   /robot_ns/map
   /robot_ns/scan
-  /initialpose
+  /initialpose 또는 /robot_ns/initialpose
   /robot_ns/tf
   /robot_ns/tf_static
 
 Publishers:
-  /amcl_pose
-  /particle_cloud
+  /amcl_pose 또는 /robot_ns/amcl_pose
+  /particle_cloud 또는 /robot_ns/particle_cloud
   /robot_ns/tf
 ```
 
@@ -51,6 +56,9 @@ Publishers:
 ```bash
 ros2 lifecycle get /map_server
 ros2 lifecycle get /amcl
+# namespaced AMCL case라면:
+ros2 lifecycle get /robot_ns/map_server
+ros2 lifecycle get /robot_ns/amcl
 ```
 
 정상:
@@ -146,11 +154,25 @@ Could not transform
 
 ## 6. initialpose 확인
 
+먼저 실제 initialpose topic 이름을 확인한다.
+
+```bash
+ros2 topic list | sort | grep initialpose
+```
+
+Root AMCL case:
+
 ```bash
 ros2 topic echo /initialpose --once
 ```
 
-RViz 2D Pose Estimate를 찍은 직후 메시지가 나와야 한다.
+Namespaced AMCL case:
+
+```bash
+ros2 topic echo /robot_ns/initialpose --once
+```
+
+RViz 2D Pose Estimate를 찍은 직후, AMCL이 구독하는 쪽 topic에 메시지가 나와야 한다.
 
 header:
 
@@ -162,9 +184,24 @@ frame_id: map_robot_ns
 
 ## 7. AMCL 출력 확인
 
+먼저 실제 출력 topic 이름을 확인한다.
+
+```bash
+ros2 topic list | sort | grep -E 'amcl_pose|particle_cloud'
+```
+
+Root AMCL case:
+
 ```bash
 ros2 topic echo /amcl_pose --once
 ros2 topic echo /particle_cloud --once
+```
+
+Namespaced AMCL case:
+
+```bash
+ros2 topic echo /robot_ns/amcl_pose --once
+ros2 topic echo /robot_ns/particle_cloud --once
 ```
 
 `/amcl_pose` 확인 포인트:
@@ -195,6 +232,6 @@ particles 배열 존재
 | base frame | `base_footprint` |
 | tf topic | `/robot_ns/tf` |
 | tf_static topic | `/robot_ns/tf_static` |
-| initialpose topic | `/initialpose` |
-| amcl pose topic | `/amcl_pose` |
-| particle topic | `/particle_cloud` |
+| initialpose topic | `/initialpose` 또는 `/robot_ns/initialpose` |
+| amcl pose topic | `/amcl_pose` 또는 `/robot_ns/amcl_pose` |
+| particle topic | `/particle_cloud` 또는 `/robot_ns/particle_cloud` |

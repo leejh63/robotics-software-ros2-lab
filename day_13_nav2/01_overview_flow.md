@@ -139,7 +139,7 @@ Nav2가 정상적으로 주행하려면 최소한 아래 조건이 맞아야 한
 ```text
 Nav2 서버 자체는 동작한다.
 /robot_ns/navigate_to_pose action goal로는 로봇 주행을 확인했다.
-RViz Nav2 Goal 버튼은 아직 robot_ns namespace 연결이 안 맞는다.
+RViz Nav2 Goal 버튼은 robot_ns namespace 기준 추가 설정이 필요하다.
 ```
 
 따라서 다음과 같이 판단해야 한다.

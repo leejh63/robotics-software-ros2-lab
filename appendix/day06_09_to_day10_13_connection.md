@@ -40,8 +40,8 @@
 | `odom_robot_ns` | odometry 기준 frame | Day 10~13 |
 | `base_footprint` | 2D navigation 로봇 기준 | Day 12~13 |
 | `base_link_robot_ns` | 로봇 본체 기준 | Day 10 |
-| `camera_lee`, `camera_link_lee` | 카메라 기준 | Day 09 |
-| `object_person_lee_0` | YOLO detection object frame | Day 09 |
+| `camera_frame`, `camera_link_lee` | 카메라 기준 | Day 09 |
+| `object_person_0` | YOLO detection object frame | Day 09 |
 
 ## 디버깅 연결
 

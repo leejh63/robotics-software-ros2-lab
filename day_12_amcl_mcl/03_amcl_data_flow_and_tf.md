@@ -18,7 +18,7 @@ AMCL이 위치를 추정하려면 최소한 네 가지가 필요하다.
 | 지도 | `/robot_ns/map` | Day 11에서 만든 static map |
 | LiDAR | `/robot_ns/scan` | 현재 로봇 주변 장애물 거리 |
 | odom TF | `odom_robot_ns -> base_footprint` | 로봇이 상대적으로 얼마나 움직였는지 |
-| 초기 위치 | `/initialpose` | 지도 위에서 처음 어느 근처에 있는지 |
+| 초기 위치 | `/initialpose` 또는 `/robot_ns/initialpose` | 지도 위에서 처음 어느 근처에 있는지 |
 
 ---
 
@@ -28,8 +28,8 @@ AMCL 출력은 세 가지로 보면 된다.
 
 | 출력 | 의미 |
 |---|---|
-| `/amcl_pose` | `map_robot_ns` 기준 현재 추정 위치와 covariance |
-| `/particle_cloud` | 위치 후보 particle들의 분포 |
+| `/amcl_pose` 또는 `/robot_ns/amcl_pose` | `map_robot_ns` 기준 현재 추정 위치와 covariance |
+| `/particle_cloud` 또는 `/robot_ns/particle_cloud` | 위치 후보 particle들의 분포 |
 | `map_robot_ns -> odom_robot_ns` TF | odom drift를 map 기준으로 보정하는 변환 |
 
 중요한 해석:
@@ -39,9 +39,46 @@ AMCL 출력은 세 가지로 보면 된다.
 Nav2와 RViz 좌표계 연결에서 더 중요한 것은 map_robot_ns -> odom_robot_ns TF다.
 ```
 
+### AMCL topic namespace case
+
+AMCL 관련 topic은 launch 구조에 따라 root namespace에 있을 수도 있고, robot namespace 아래에 있을 수도 있다.
+
+```text
+Case A - root AMCL:
+  /amcl
+  /initialpose
+  /amcl_pose
+  /particle_cloud
+
+Case B - namespaced AMCL:
+  /robot_ns/amcl
+  /robot_ns/initialpose
+  /robot_ns/amcl_pose
+  /robot_ns/particle_cloud
+```
+
+중요한 것은 외운 이름으로 바로 echo하지 않는 것이다. 먼저 현재 graph를 확인한다.
+
+```bash
+ros2 node list | sort | grep amcl
+ros2 topic list | sort | grep -E 'initialpose|amcl_pose|particle_cloud'
+ros2 node info /amcl
+ros2 node info /robot_ns/amcl
+```
+
+실제 node가 `/amcl`이면 root AMCL case를 보고, `/robot_ns/amcl`이면 namespaced AMCL case를 본다. 자세한 기준은 [`../appendix/amcl_namespace_cases.md`](../appendix/amcl_namespace_cases.md)를 참고한다.
+
 ---
 
-## 3. 왜 map -> odom TF가 필요한가
+## 3. 왜 map_robot_ns -> odom_robot_ns TF가 필요한가
+
+일반 ROS/Nav2 예제에서는 보통 `map -> odom -> base_link` 구조를 사용한다. 이 학습 노트에서는 같은 구조를 아래처럼 namespace 의미가 드러나는 frame 이름으로 기록한다.
+
+```text
+map_robot_ns -> odom_robot_ns -> base_footprint
+```
+
+즉, `map_robot_ns`는 일반 예제의 `map`, `odom_robot_ns`는 일반 예제의 `odom`에 대응한다. 이렇게 이름을 붙인 이유는 여러 robot namespace, rosbag replay, 다른 사용자의 ROS graph가 섞이는 상황에서 TF frame 충돌을 줄이기 위해서다. 자세한 배경은 [`background/map_odom_namespace_frames.md`](background/map_odom_namespace_frames.md)를 참고한다.
 
 로봇의 바퀴 odom은 짧은 시간에는 부드럽다. 하지만 시간이 지나면 오차가 누적된다.
 
@@ -197,6 +234,8 @@ AMCL이 안 되면 Nav2는 목표 지점까지 이동할 수 없다. 그래서 D
 ```bash
 ros2 lifecycle get /map_server
 ros2 lifecycle get /amcl
-ros2 topic echo /amcl_pose --once
+ros2 topic list | grep -E 'amcl_pose|particle_cloud|initialpose'
+ros2 topic echo /amcl_pose --once            # root AMCL case
+ros2 topic echo /robot_ns/amcl_pose --once   # namespaced AMCL case
 ros2 run tf2_ros tf2_echo map_robot_ns odom_robot_ns --ros-args -r /tf:=/robot_ns/tf -r /tf_static:=/robot_ns/tf_static
 ```

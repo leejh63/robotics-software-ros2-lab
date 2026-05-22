@@ -1,6 +1,6 @@
 # 00. Source Package Map - 실제 코드 기준 전체 지도
 
-이 문서는 `day_67/ws/src`의 실제 패키지들을 ROS2 관점에서 정리한 지도다. 코드를 수정하지 않고, 현재 학습 코드가 어떤 역할을 하는지 해석하는 데 목적이 있다.
+이 문서는 `$ROS2_WS/src`의 실제 패키지들을 ROS2 관점에서 정리한 지도다. 코드를 수정하지 않고, 현재 학습 코드가 어떤 역할을 하는지 해석하는 데 목적이 있다.
 
 ---
 
@@ -15,7 +15,7 @@
 | `my_robot_action` | `ament_python` | action server/client | goal/feedback/result |
 | `camera_pkg` | `ament_python` | camera, OpenCV, YOLO, custom detection msg | sensor_msgs/Image, cv_bridge, parameter |
 | `py_launch_example` | `ament_python` | camera_pkg 노드 묶음 실행 | launch, condition, parameter YAML |
-| `tf_pkg_lee` | `ament_python` | TF tree, TF listener, YOLO detection TF 변환 | /tf, /tf_static, frame_id |
+| `tf_pkg_example` | `ament_python` | TF tree, TF listener, YOLO detection TF 변환 | /tf, /tf_static, frame_id |
 
 ---
 
@@ -98,7 +98,7 @@ my_if/CMakeLists.txt
 my_robot_service -> from my_if.srv import AddTwoNum, LedControl
 my_robot_action  -> from my_if.action import Movelee
 camera_pkg       -> from my_if.msg import ObjectDetection, ObjectDetectionArray
-tf_pkg_lee       -> from my_if.msg import ObjectDetectionArray
+tf_pkg_example       -> from my_if.msg import ObjectDetectionArray
 ```
 
 ---
@@ -196,17 +196,17 @@ Launch는 단순히 명령어를 줄여주는 파일이 아니라 ROS graph 구�
 
 ---
 
-## 9. tf_pkg_lee - TF 실습
+## 9. tf_pkg_example - TF 실습
 
 실제 파일:
 
 ```text
-tf_pkg_lee/tf_pkg_lee/odom_simul.py
-tf_pkg_lee/tf_pkg_lee/tf_tree_simul.py
-tf_pkg_lee/tf_pkg_lee/tf_listener.py
-tf_pkg_lee/tf_pkg_lee/tf_broad_yolo.py
-tf_pkg_lee/launch/tf_tree_demo_launch.py
-tf_pkg_lee/launch/robot_ns_yolo_launch.py
+tf_pkg_example/tf_pkg_example/odom_simul.py
+tf_pkg_example/tf_pkg_example/tf_tree_simul.py
+tf_pkg_example/tf_pkg_example/tf_listener.py
+tf_pkg_example/tf_pkg_example/tf_broad_yolo.py
+tf_pkg_example/launch/tf_tree_demo_launch.py
+tf_pkg_example/launch/robot_ns_yolo_launch.py
 ```
 
 | executable | source file | 역할 |
@@ -230,7 +230,7 @@ tf_pkg_lee/launch/robot_ns_yolo_launch.py
 - imagePlee.py에서 topic_name parameter를 선언하지만 publisher는 image_raw0로 고정된 점
 - py_launch_example의 config 설치 구조와 실제 config 폴더 존재 여부
 - launch에서 RViz 경로가 절대경로로 박혀 있는 점
-- camera_lee / camera_link_lee / base_link_robot_ns 같은 frame 이름 혼용 가능성
+- camera_frame / camera_link_lee / base_link_robot_ns 같은 frame 이름 혼용 가능성
 ```
 
 자세한 내용은 `09_runtime_observations_without_code_changes.md`에 정리했다.

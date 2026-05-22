@@ -56,7 +56,7 @@ ros2 action send_goal /robot_ns/navigate_to_pose nav2_msgs/action/NavigateToPose
 "{pose: {header: {frame_id: 'map_robot_ns'}, pose: {position: {x: 0.0, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}}"
 ```
 
-나중에 고칠 부분:
+이후 고칠 부분:
 
 ```text
 RViz Nav2 panel/action/lifecycle target을 robot_ns namespace 기준으로 맞추기
@@ -120,6 +120,49 @@ FollowPath 설정 indentation이 잘못됨
 controller_plugins의 이름과 하위 FollowPath 키가 불일치
 nav2_bringup navigation_launch.py를 직접 실행하면서 namespace가 기대대로 적용되지 않음
 ```
+
+
+### 실제로 발생했던 namespace 불일치 사례
+
+처음에는 공식 Nav2 하위 launch 파일인 `nav2_bringup`의 `navigation_launch.py`를 직접 실행하려고 했다.
+
+```bash
+ros2 launch nav2_bringup navigation_launch.py \
+  namespace:=robot_ns \
+  params_file:=<nav2_params.yaml>
+```
+
+하지만 이 방식에서는 `namespace:=robot_ns`를 넘겨도 Nav2 서버 노드가 기대한 것처럼 모두 `/robot_ns` 아래에 생성되지 않을 수 있었다.
+
+그 결과 parameter file은 `robot_ns:` 아래 구조를 기준으로 작성되어 있는데, 실제 노드는 아래처럼 root namespace에 떠서 parameter 구조가 어긋날 수 있다.
+
+```text
+/controller_server
+/planner_server
+/bt_navigator
+```
+
+이 상태에서는 `controller_server`가 `FollowPath` 하위의 DWB critic 설정을 제대로 읽지 못하고, `No critics defined for FollowPath` 오류가 발생할 수 있다.
+
+해결은 공식 `navigation_launch.py`를 단독으로 직접 실행하지 않고, 사용자 launch 파일에서 먼저 namespace를 적용한 뒤 그 안에서 include하는 방식이다.
+
+```text
+nav2_navigation.launch.py
+  -> PushRosNamespace(namespace=robot_ns)
+  -> Include nav2_bringup/launch/navigation_launch.py
+  -> params_file = nav2_params.yaml
+```
+
+수정 후 Nav2 주행 서버들은 아래처럼 `/robot_ns` 아래에 생성된다.
+
+```text
+/robot_ns/controller_server
+/robot_ns/planner_server
+/robot_ns/bt_navigator
+/robot_ns/behavior_server
+```
+
+이렇게 실제 node namespace와 `nav2_params.yaml`의 parameter namespace 구조가 일치하면, `FollowPath` plugin과 DWB critic 설정도 정상적으로 로드된다.
 
 ### 확인
 

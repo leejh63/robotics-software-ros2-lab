@@ -93,7 +93,7 @@ interface를 수정한 뒤 build/source를 하지 않으면 기존 타입이 남
 ```text
 ros2 run camera_pkg image_pub1
   -> /image_publisher1
-  -> publish /image_raw0, sensor_msgs/Image, frame_id=camera_lee
+  -> publish /image_raw0, sensor_msgs/Image, frame_id=camera_frame
 
 ros2 run camera_pkg image_edge1
   -> /image_edge_publisher1
@@ -159,7 +159,7 @@ Action server도 먼저 떠 있어야 한다. client는 `wait_for_server()`로 �
 ### tf_tree_demo_launch.py
 
 ```text
-ros2 launch tf_pkg_lee tf_tree_demo_launch.py use_listener:=true use_rqt_tree:=true
+ros2 launch tf_pkg_example tf_tree_demo_launch.py use_listener:=true use_rqt_tree:=true
 ```
 
 실행 흐름:
@@ -181,7 +181,7 @@ rqt_tf_tree
 ### lee_yolo_launch.py
 
 ```text
-ros2 launch tf_pkg_lee lee_yolo_launch.py use_listener:=true use_rqt_tree:=true
+ros2 launch tf_pkg_example lee_yolo_launch.py use_listener:=true use_rqt_tree:=true
 ```
 
 실행 흐름:
@@ -196,9 +196,9 @@ static TF
 odom_simul
   -> odom_robot_ns -> base_link_robot_ns
 static TF
-  -> base_link_robot_ns -> camera_lee
+  -> base_link_robot_ns -> camera_frame
 tf_broad_yolo
-  -> camera_lee -> object_person_lee_0
+  -> camera_frame -> object_person_0
 ```
 
 ---

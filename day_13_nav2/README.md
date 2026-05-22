@@ -22,7 +22,7 @@ Day 13 Nav2
 ## 1. Day 13에서 보는 핵심 파일
 
 ```text
-day_67/ws/lee_robot_description/
+$ROS2_WS/lee_robot_description/
 ├── launch/nav2.launch.py
 ├── launch/nav2_navigation.launch.py
 ├── config/nav2_params.yaml

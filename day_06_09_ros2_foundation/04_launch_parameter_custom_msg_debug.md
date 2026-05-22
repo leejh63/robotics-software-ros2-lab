@@ -23,8 +23,8 @@ namespace/remap을 줄지
 ```text
 py_launch_example/launch/robot_ns_bring_launch.py
 py_launch_example/launch/robot_ns_ep_launch.py
-tf_pkg_lee/launch/tf_tree_demo_launch.py
-tf_pkg_lee/launch/robot_ns_yolo_launch.py
+tf_pkg_example/launch/tf_tree_demo_launch.py
+tf_pkg_example/launch/robot_ns_yolo_launch.py
 ```
 
 ---
@@ -181,7 +181,7 @@ std_msgs/Header header
 ObjectDetection[] detections
 ```
 
-이 구조 덕분에 `camera_pkg/imgYOLOlee.py`는 detection 결과를 명확한 타입으로 발행할 수 있고, `tf_pkg_lee/tf_broad_yolo.py`는 그 메시지를 받아 TF frame으로 바꿀 수 있다.
+이 구조 덕분에 `camera_pkg/imgYOLOlee.py`는 detection 결과를 명확한 타입으로 발행할 수 있고, `tf_pkg_example/tf_broad_yolo.py`는 그 메시지를 받아 TF frame으로 바꿀 수 있다.
 
 ---
 

@@ -13,7 +13,7 @@ Day 12에는 실행 방식이 두 가지 있다.
 
 ## 1. 분리 실행 구조
 
-분리 실행은 PDF 실습 흐름에 가깝다.
+분리 실행은 기존 실습 흐름에 가깝다.
 
 ```text
 터미널 1  Gazebo + robot_state_publisher + spawn_entity + RViz2

@@ -14,7 +14,7 @@ Camera calibration은 다음 정보를 추정하는 과정이다.
 
 ---
 
-## 2. 관련 원본 파일
+## 2. 관련 실습 파일
 
 ```text
 day_4/05_01_OpenCV-Calibration.md
@@ -183,7 +183,7 @@ sensor_msgs/CameraInfo
   -> K, D, R, P 같은 카메라 파라미터
 ```
 
-Day 04 캘리브레이션 결과는 나중에 `CameraInfo`나 camera calibration YAML과 연결될 수 있다.
+Day 04 캘리브레이션 결과는 이후 `CameraInfo`나 camera calibration YAML과 연결될 수 있다.
 
 다만 현재 학습 코드에서는 카메라 보정과 YOLO 추론을 OpenCV 단독 코드로 다뤘고, ROS2 `CameraInfo`까지 완전히 통합한 단계는 아니다. 문서에서는 이 경계를 명확히 해야 한다.
 

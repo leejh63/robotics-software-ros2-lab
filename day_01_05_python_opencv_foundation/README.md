@@ -54,20 +54,20 @@ Day 06~13
 
 ## 2. 실제 기준 자료
 
-이 정리본은 아래 원본을 기준으로 한다.
+이 정리본은 아래 실습 자료를 기준으로 한다.
 
 ```text
-day__.zip/day_1
-day__.zip/day_2
-day__.zip/day_3
-day__.zip/day_4
-day__.zip/day_5
-day__.zip/day_67/code
-day__.zip/day_67/ws/src/camera_pkg
-day__.zip/day_67/ws/src/my_if/msg
+$SOURCE_ARCHIVE/day_1
+$SOURCE_ARCHIVE/day_2
+$SOURCE_ARCHIVE/day_3
+$SOURCE_ARCHIVE/day_4
+$SOURCE_ARCHIVE/day_5
+$SOURCE_NOTES/code
+$ROS2_WS/src/camera_pkg
+$ROS2_WS/src/my_if/msg
 ```
 
-PDF는 전체 흐름 확인용 참고 자료이고, 실제 정리 기준은 코드와 기존 정리 문서다.
+기존 자료는 흐름 확인용 참고이며, 이 정리본은 직접 실습한 코드와 노트를 기준으로 한다.
 
 ---
 
@@ -118,7 +118,7 @@ PDF는 전체 흐름 확인용 참고 자료이고, 실제 정리 기준은 코�
 실제 실습 파일을 기준으로 문서를 보강한다.
 직접 구현한 부분과 라이브러리가 해주는 부분을 구분한다.
 헷갈리는 배경지식은 본문에 추가한다.
-나중에 프로젝트를 할 때 다시 참고할 수 있는 학습 노트로 만든다.
+이후 프로젝트를 할 때 다시 참고할 수 있는 학습 노트로 만든다.
 ```
 
 ---

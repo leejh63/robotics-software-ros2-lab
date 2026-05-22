@@ -64,7 +64,7 @@ sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.ta
 sudo systemctl mask systemd-networkd-wait-online.service
 ```
 
-## 6. swap 임시 추가
+## 6. swap 일시 추가
 
 ```bash
 free -h

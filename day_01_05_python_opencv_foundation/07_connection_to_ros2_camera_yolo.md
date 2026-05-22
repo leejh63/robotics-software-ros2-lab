@@ -172,7 +172,7 @@ ObjectDetection[] detections
 `imagePlee.py`는 Image message의 header에 frame id를 넣는다.
 
 ```python
-img_msg.header.frame_id = "camera_lee"
+img_msg.header.frame_id = "camera_frame"
 ```
 
 이 값은 단순 문자열이 아니라 TF와 연결될 수 있는 좌표계 이름이다.
@@ -182,7 +182,7 @@ image message의 frame_id
   -> 이 이미지가 어느 좌표계의 센서에서 나온 것인지 표시
 ```
 
-나중에 object detection을 TF로 시각화하려면 아래 정보가 필요하다.
+이후 object detection을 TF로 시각화하려면 아래 정보가 필요하다.
 
 ```text
 camera frame

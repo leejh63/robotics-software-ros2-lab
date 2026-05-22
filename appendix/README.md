@@ -1,112 +1,56 @@
-# Appendix README
+# Appendix
 
-이 폴더는 Day별 본문을 읽다가 빠르게 찾아봐야 하는 참조 문서 모음이다.
-
-전체 참조 문서를 appendix에 모으고, 선별 심화 문서는 별도 `10_selected_deep_dives/` 폴더에 분리했다.
+이 폴더는 날짜별 학습 문서를 빠르게 다시 찾아보기 위한 참조 문서 모음입니다.
 
 ---
 
-## 가장 먼저 볼 문서
+## 1. 먼저 볼 문서
 
 ```text
 learning_flow_one_page.md
-content_consistency_map.md
-command_execution_conventions.md
-my_environment_reference.md
-full_command_quick_reference.md
-validation_sequence_gazebo_slam_amcl_nav2.md
-ros2_navigation_debug_order.md
-troubleshooting_quick_diagnosis.md
-troubleshooting_index.md
-topic_frame_message_action_master_table.md
-glossary_ros2_navigation_pipeline.md
-```
-
----
-
-## 선별 심화 문서와 함께 보면 좋은 문서
-
-| 선별 심화 문서 | 같이 보면 좋은 appendix 문서 |
-|---|---|
-| `10_selected_deep_dives/01_tf_topic_namespace_frame_id.md` | `topic_frame_message_action_master_table.md`, `my_environment_reference.md` |
-| `10_selected_deep_dives/02_laserscan_odom_tf_to_slam.md` | `slam_topic_frame_table.md`, `validation_sequence_gazebo_slam_amcl_nav2.md` |
-| `10_selected_deep_dives/03_slam_vs_amcl.md` | `day11_to_day12_amcl_connection.md`, `full_pipeline_reference.md` |
-| `10_selected_deep_dives/04_amcl_parameters_practical_meaning.md` | `amcl_parameter_quick_reference.md`, `amcl_topic_frame_table.md` |
-| `10_selected_deep_dives/05_nav2_goal_to_cmd_vel.md` | `nav2_parameter_quick_reference.md`, `nav2_topic_frame_action_table.md` |
-
----
-
-
-## 중복/충돌 기준
-
-같은 개념이 여러 문서에 반복될 때는 `content_consistency_map.md`를 먼저 확인한다.
-
-```text
-개념 기준 문서가 필요함
-  -> content_consistency_map.md
-
-명령어 실행 기준이 필요함
-  -> command_execution_conventions.md
-
-전체 topic/frame/action 표가 필요함
-  -> topic_frame_message_action_master_table.md
-```
-
----
-
-## 목적별 참조
-
-### 전체 흐름 확인
-
-```text
-learning_flow_one_page.md
-content_consistency_map.md
 full_pipeline_reference.md
-day01_05_to_day06_13_connection.md
-day06_09_to_day10_13_connection.md
-day10_to_day11_slam_connection.md
-day11_to_day12_amcl_connection.md
-day12_to_day13_nav2_connection.md
-```
-
-### 내 환경 기준 확인
-
-```text
-command_execution_conventions.md
-my_environment_reference.md
-full_command_quick_reference.md
-validation_sequence_gazebo_slam_amcl_nav2.md
-```
-
-### topic/frame/action 확인
-
-```text
+table_reference_guide.md
 topic_frame_message_action_master_table.md
-full_topic_frame_message_action_table.md
-topic_frame_table.md
-slam_topic_frame_table.md
-amcl_topic_frame_table.md
-nav2_topic_frame_action_table.md
-```
-
-### 파라미터 확인
-
-```text
-amcl_parameter_quick_reference.md
-nav2_parameter_quick_reference.md
-```
-
-### 문제 해결
-
-```text
 troubleshooting_quick_diagnosis.md
-ros2_navigation_debug_order.md
-troubleshooting_index.md
 ```
 
-### 용어 확인
+---
 
-```text
-glossary_ros2_navigation_pipeline.md
-external_package_boundary.md
-```
+## 2. 주요 기준 문서
+
+| 문서 | 역할 |
+|---|---|
+| [learning_flow_one_page.md](learning_flow_one_page.md) | 전체 학습 흐름 1페이지 요약 |
+| [full_pipeline_reference.md](full_pipeline_reference.md) | Gazebo → SLAM → AMCL → Nav2 연결 흐름 |
+| [command_execution_conventions.md](command_execution_conventions.md) | 명령어 실행 전 package / namespace / topic / frame 구분 |
+| [table_reference_guide.md](table_reference_guide.md) | 여러 topic/frame/action 표의 역할 구분 |
+| [topic_frame_message_action_master_table.md](topic_frame_message_action_master_table.md) | topic/frame/message/action 기준표 |
+| [content_consistency_map.md](content_consistency_map.md) | 중복 설명이 있을 때 기준 문서 판단 |
+| [external_package_boundary.md](external_package_boundary.md) | 직접 작성한 부분과 외부 패키지 경계 |
+| [environment_reference.md](environment_reference.md) | 일반화된 실행 환경 기준 |
+
+---
+
+## 3. 빠른 참조
+
+| 문서 | 용도 |
+|---|---|
+| [full_command_quick_reference.md](full_command_quick_reference.md) | 전체 명령어 빠른 참조 |
+| [full_topic_frame_message_action_table.md](full_topic_frame_message_action_table.md) | 전체 topic/frame/message/action 확장표 |
+| [glossary_ros2_navigation_pipeline.md](glossary_ros2_navigation_pipeline.md) | ROS2 Navigation 용어집 |
+| [ros2_navigation_debug_order.md](ros2_navigation_debug_order.md) | Navigation 문제 진단 순서 |
+| [troubleshooting_quick_diagnosis.md](troubleshooting_quick_diagnosis.md) | 증상별 빠른 진단 |
+| [troubleshooting_index.md](troubleshooting_index.md) | troubleshooting 문서 색인 |
+| [validation_sequence_gazebo_slam_amcl_nav2.md](validation_sequence_gazebo_slam_amcl_nav2.md) | Gazebo → SLAM → AMCL → Nav2 검증 순서 |
+
+---
+
+## 4. Day 연결 문서
+
+| 문서 | 연결 범위 |
+|---|---|
+| [day01_05_to_day06_13_connection.md](day01_05_to_day06_13_connection.md) | Python/OpenCV에서 ROS2 Navigation까지 |
+| [day06_09_to_day10_13_connection.md](day06_09_to_day10_13_connection.md) | ROS2 기초에서 Gazebo/SLAM/AMCL/Nav2까지 |
+| [day10_to_day11_slam_connection.md](day10_to_day11_slam_connection.md) | Gazebo/URDF에서 SLAM까지 |
+| [day11_to_day12_amcl_connection.md](day11_to_day12_amcl_connection.md) | SLAM map에서 AMCL localization까지 |
+| [day12_to_day13_nav2_connection.md](day12_to_day13_nav2_connection.md) | AMCL localization에서 Nav2 navigation까지 |

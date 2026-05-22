@@ -25,7 +25,7 @@ static model
   벽, 박스, 원통, 장애물
 ```
 
-로봇은 world 파일 안에 미리 넣을 수도 있고, 이번 실습처럼 `spawn_entity.py`로 나중에 넣을 수도 있다.
+로봇은 world 파일 안에 미리 넣을 수도 있고, 이번 실습처럼 `spawn_entity.py`로 이후 넣을 수도 있다.
 
 ---
 

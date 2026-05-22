@@ -80,10 +80,10 @@ ros2 launch lee_robot_description slam.launch.py \
 
 ---
 
-### 터미널 2. 임시 map_robot_ns -> odom_robot_ns TF 연결
+### 터미널 2. 확인용 map_robot_ns -> odom_robot_ns TF 연결
 
 지도만 보려면 `map_robot_ns`와 `odom_robot_ns`가 이어져야 RViz2에서 로봇/지도 관계를 볼 수 있다.  
-AMCL을 켜기 전 임시 확인용으로 static transform을 사용할 수 있다.
+AMCL을 켜기 전 확인용으로 static transform을 사용할 수 있다.
 
 ```bash
 cd $ROS2_WS
@@ -99,7 +99,7 @@ ros2 run tf2_ros static_transform_publisher 0 0 0 0 0 0 map_robot_ns odom_robot_
 주의:
 
 ```text
-이 static transform은 임시 확인용이다.
+이 static transform은 확인용이다.
 AMCL을 실행할 때는 AMCL이 map_robot_ns -> odom_robot_ns를 발행해야 한다.
 SLAM/AMCL/static_transform_publisher가 동시에 같은 map_robot_ns -> odom_robot_ns를 발행하면 안 된다.
 ```
@@ -232,5 +232,5 @@ Day 11에서 SLAM이 발행하던 `map_robot_ns -> odom_robot_ns`는 Day 12에�
 map_saver_cli는 /robot_ns/map을 파일로 저장한다.
 map_server는 저장된 파일을 다시 /robot_ns/map topic으로 발행한다.
 map_server는 lifecycle active 상태가 되어야 제대로 동작한다.
-임시 static map_robot_ns -> odom_robot_ns TF는 확인용일 뿐, AMCL 단계에서는 AMCL이 그 역할을 해야 한다.
+확인용 static map_robot_ns -> odom_robot_ns TF는 확인용일 뿐, AMCL 단계에서는 AMCL이 그 역할을 해야 한다.
 ```

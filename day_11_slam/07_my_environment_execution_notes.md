@@ -319,7 +319,7 @@ ros2 topic echo /robot_ns/odom --once
   산출물 의미 정리
   문제 상황 기록
 
-나중에 할 일:
+후속 점검 항목:
   패키지 위치 정리
   map 파일을 package share 아래로 이동
   launch 구조 정리

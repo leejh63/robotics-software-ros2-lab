@@ -27,7 +27,7 @@ lee_robot_description은 일반적인 ws/src 아래 패키지 구조가 아니�
 ## 2. 핵심 파일 목록
 
 ```text
-day_67/ws/lee_robot_description/
+$ROS2_WS/lee_robot_description/
 ├── launch/
 │   ├── nav2.launch.py
 │   └── nav2_navigation.launch.py
@@ -118,6 +118,8 @@ nav2_navigation.launch.py
   -> Include nav2_bringup/launch/navigation_launch.py
   -> params_file = lee_robot_description/config/nav2_params.yaml
 ```
+
+이 구조를 둔 이유는 `nav2_bringup navigation_launch.py`를 직접 실행했을 때 Nav2 서버 노드가 기대한 namespace 아래에 생성되지 않아, `nav2_params.yaml`의 `robot_ns:` parameter 구조와 실제 node namespace가 어긋날 수 있기 때문이다. 이 경우 `controller_server`가 `FollowPath`의 DWB critic 설정을 읽지 못해 `No critics defined for FollowPath` 같은 오류가 발생할 수 있다.
 
 기본 namespace:
 

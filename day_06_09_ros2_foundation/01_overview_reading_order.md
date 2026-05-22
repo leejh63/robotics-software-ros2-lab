@@ -100,9 +100,9 @@ my_if/msg/ObjectDetectionArray.msg
 camera_pkg/imgYOLOlee.py
   -> /img_yolo1 publish
 
-tf_pkg_lee/tf_broad_yolo.py
+tf_pkg_example/tf_broad_yolo.py
   -> /img_yolo1 subscribe
-  -> object_person_lee_0 같은 TF frame publish
+  -> object_person_0 같은 TF frame publish
 ```
 
 이 흐름은 “인식 결과를 좌표계에 붙인다”는 연습이다. 실제 거리 추정은 고정 depth 기반의 단순화이므로 정확한 3D 인식으로 과장하면 안 된다.
@@ -176,7 +176,7 @@ Day 09 TF2/sensor/rosbag
 | package와 node | package는 빌드/배포 단위, node는 실행 중인 프로세스 단위 |
 | file name과 executable | 파일명은 source 파일 이름, executable은 `setup.py`/`CMakeLists.txt`에서 등록한 실행 이름 |
 | topic과 message type | topic은 통신 채널 이름, message type은 데이터 구조 |
-| topic 이름과 frame 이름 | `/image_raw0`는 topic, `camera_lee`는 frame |
+| topic 이름과 frame 이름 | `/image_raw0`는 topic, `camera_frame`는 frame |
 | service와 action | service는 짧은 요청/응답, action은 goal/feedback/result |
 | launch와 shell script | launch는 여러 ROS node와 parameter, condition, namespace를 선언하는 ROS 실행 구성 |
 | TF와 일반 topic | TF는 좌표계 사이의 시간 포함 변환 관계를 관리하는 특수한 데이터 흐름 |

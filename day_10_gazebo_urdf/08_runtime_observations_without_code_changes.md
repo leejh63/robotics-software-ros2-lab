@@ -9,7 +9,7 @@
 현재 `lee_robot_description`은 압축본 기준으로 다음 위치에 있다.
 
 ```text
-day_67/ws/lee_robot_description/
+$ROS2_WS/lee_robot_description/
 ```
 
 일반적인 ROS2 워크스페이스 구조에서는 패키지를 보통 `ws/src/` 아래에 둔다.
@@ -18,7 +18,7 @@ day_67/ws/lee_robot_description/
 ws/src/lee_robot_description/
 ```
 
-현재 구조에서도 colcon이 패키지를 발견할 수는 있지만, 나중에 정식 프로젝트로 정리할 때는 `src/` 아래로 옮기는 편이 일반적이다. 다만 이번 문서 정리에서는 코드/구조를 수정하지 않았다.
+현재 구조에서도 colcon이 패키지를 발견할 수는 있지만, 이후 정식 프로젝트로 정리할 때는 `src/` 아래로 옮기는 편이 일반적이다. 다만 이번 문서 정리에서는 코드/구조를 수정하지 않았다.
 
 ---
 
@@ -170,5 +170,5 @@ slam.world
 
 ```text
 현재 목적: 학습 문서화
-아직 목적이 아닌 것: 패키지 구조 정리, 파일명 변경, launch 리팩토링, topic/frame 설계 변경
+현재 범위에 포함하지 않는 것: 패키지 구조 정리, 파일명 변경, launch 리팩토링, topic/frame 설계 변경
 ```

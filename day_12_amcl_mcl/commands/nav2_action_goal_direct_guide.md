@@ -1,6 +1,6 @@
-# Nav2 임시 Action Goal 주행 기록
+# Nav2 Action Goal 직접 전송 기록
 
-이 문서는 Day 12 말미에 확인한 Nav2 임시 목표 주행 기록이다. AMCL 자체 설명은 아니지만, AMCL이 정상화된 뒤 Nav2로 넘어갈 때 연결 상태를 확인하는 용도로 남긴다.
+이 문서는 Day 12 말미에 확인한 Nav2 목표 직접 전송 기록이다. AMCL 자체 설명은 아니지만, AMCL이 정상화된 뒤 Nav2로 넘어갈 때 연결 상태를 확인하는 용도로 남긴다.
 
 ---
 
@@ -8,8 +8,8 @@
 
 ```text
 Nav2 본체는 동작한다.
-RViz Nav2 Goal 버튼은 아직 robot_ns namespace 연결이 맞지 않는다.
-그래서 임시로 ros2 action send_goal 명령으로 목표를 보낸다.
+RViz Nav2 Goal 버튼은 robot_ns namespace 기준 추가 설정이 필요하다.
+그래서 ros2 action send_goal 명령으로 목표를 직접 보낸다.
 ```
 
 확인한 연결:
@@ -50,7 +50,7 @@ ros2 launch lee_robot_description nav2_navigation.launch.py
 
 ---
 
-## 3. 임시 goal 전송
+## 3. goal 직접 전송
 
 ```bash
 ros2 action send_goal /robot_ns/navigate_to_pose nav2_msgs/action/NavigateToPose \
@@ -82,7 +82,7 @@ ros2 topic echo /clicked_point
 
 ## 5. 다음 단계로 넘길 문제
 
-이 문서는 임시 우회다. Day 13 Nav2 정리에서 다시 다뤄야 한다.
+이 문서는 RViz 버튼 대신 action goal을 직접 보내는 검증 절차를 정리한다.
 
 남은 문제:
 

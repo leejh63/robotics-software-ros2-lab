@@ -73,7 +73,7 @@
 2. `cv_bridge`가 필요한 이유는 무엇인가?
 3. YOLO 결과를 이미지에 그려 publish하는 것과 custom message로 publish하는 것은 무엇이 다른가?
 4. `ObjectDetection.msg`에는 어떤 필드가 있고, 각각 YOLO 결과의 무엇과 연결되는가?
-5. `frame_id = "camera_lee"`는 단순 이름인가, 좌표계 의미를 가질 수 있는가?
+5. `frame_id = "camera_frame"`는 단순 이름인가, 좌표계 의미를 가질 수 있는가?
 6. 단안 카메라 YOLO bbox만으로 정확한 3D 위치를 말하기 어려운 이유는 무엇인가?
 7. JSON log와 rosbag은 각각 어떤 재현성 도구인가?
 

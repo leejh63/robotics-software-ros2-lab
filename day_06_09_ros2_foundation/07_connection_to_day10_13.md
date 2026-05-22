@@ -116,8 +116,8 @@ Day 09 실습의 TF tree:
 map_robot_ns
 └── odom_robot_ns
     └── base_link_robot_ns
-        └── camera_lee
-            └── object_person_lee_0
+        └── camera_frame
+            └── object_person_0
 ```
 
 Day 10~13에서 필요한 TF tree:

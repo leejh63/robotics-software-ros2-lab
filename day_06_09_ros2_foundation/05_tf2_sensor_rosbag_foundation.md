@@ -2,7 +2,7 @@
 
 ## 한 줄 결론
 
-ROS2에서 센서 데이터는 topic으로 흐르고, 그 센서가 로봇의 어디에 붙어 있는지는 TF가 설명한다. rosbag은 이 topic과 TF를 기록해서 나중에 다시 재생하는 도구다.
+ROS2에서 센서 데이터는 topic으로 흐르고, 그 센서가 로봇의 어디에 붙어 있는지는 TF가 설명한다. rosbag은 이 topic과 TF를 기록해서 이후 다시 재생하는 도구다.
 
 ---
 
@@ -14,11 +14,11 @@ ROS2에서 센서 데이터는 topic으로 흐르고, 그 센서가 로봇의 �
 /image_raw0
   -> 이미지 데이터가 흐르는 topic
 
-sensor_msgs/msg/Image.header.frame_id = camera_lee
-  -> 이 이미지가 camera_lee 좌표계 기준이라는 의미
+sensor_msgs/msg/Image.header.frame_id = camera_frame
+  -> 이 이미지가 camera_frame 좌표계 기준이라는 의미
 
-base_link_robot_ns -> camera_lee TF
-  -> camera_lee가 로봇 본체 기준 어디에 붙어 있는지 설명
+base_link_robot_ns -> camera_frame TF
+  -> camera_frame가 로봇 본체 기준 어디에 붙어 있는지 설명
 ```
 
 즉 topic만 있어서는 부족하다. 센서 데이터를 공간적으로 해석하려면 frame과 TF가 필요하다.
@@ -28,12 +28,12 @@ base_link_robot_ns -> camera_lee TF
 ## 2. 이번 코드의 TF 관련 파일
 
 ```text
-tf_pkg_lee/tf_pkg_lee/odom_simul.py
-tf_pkg_lee/tf_pkg_lee/tf_tree_simul.py
-tf_pkg_lee/tf_pkg_lee/tf_listener.py
-tf_pkg_lee/tf_pkg_lee/tf_broad_yolo.py
-tf_pkg_lee/launch/tf_tree_demo_launch.py
-tf_pkg_lee/launch/robot_ns_yolo_launch.py
+tf_pkg_example/tf_pkg_example/odom_simul.py
+tf_pkg_example/tf_pkg_example/tf_tree_simul.py
+tf_pkg_example/tf_pkg_example/tf_listener.py
+tf_pkg_example/tf_pkg_example/tf_broad_yolo.py
+tf_pkg_example/launch/tf_tree_demo_launch.py
+tf_pkg_example/launch/robot_ns_yolo_launch.py
 ```
 
 ---
@@ -135,7 +135,7 @@ parameters=[{
 
 ```text
 target_frame = odom_robot_ns
-source_frame = object_person_lee_0
+source_frame = object_person_0
 ```
 
 조회 실패 유형:
@@ -153,7 +153,7 @@ source_frame = object_person_lee_0
 | topic | 의미 | 예시 |
 |---|---|---|
 | `/tf` | 시간에 따라 바뀌는 동적 transform | `odom_robot_ns -> base_link_robot_ns` |
-| `/tf_static` | 거의 변하지 않는 고정 transform | `base_link_robot_ns -> camera_lee` |
+| `/tf_static` | 거의 변하지 않는 고정 transform | `base_link_robot_ns -> camera_frame` |
 
 동적 TF는 계속 갱신되어야 한다. static TF는 한 번 발행해도 latched처럼 유지된다.
 
@@ -188,7 +188,7 @@ std_msgs/Header header
 
 ```python
 img_msg.header.stamp = self.get_clock().now().to_msg()
-img_msg.header.frame_id = "camera_lee"
+img_msg.header.frame_id = "camera_frame"
 ```
 
 `imgYOLOlee.py`는 이 header를 detection array에 복사한다.
@@ -204,7 +204,7 @@ if msg.header.frame_id:
     return msg.header.frame_id
 ```
 
-이 흐름 때문에 `camera_lee` frame이 TF tree에 연결되어 있어야 YOLO object frame도 tree에 붙는다.
+이 흐름 때문에 `camera_frame` frame이 TF tree에 연결되어 있어야 YOLO object frame도 tree에 붙는다.
 
 ---
 
@@ -232,7 +232,7 @@ trans.transform.translation.z = -normalized_y
 정확한 표현:
 
 ```text
-YOLO bbox 결과를 임시 깊이값과 함께 TF frame으로 시각화하는 실습
+YOLO bbox 결과를 고정 depth 값과 함께 TF frame으로 시각화하는 실습
 ```
 
 부정확한 표현:
@@ -272,7 +272,7 @@ ros2 run rqt_tf_tree rqt_tf_tree
 
 # 특정 frame 사이 변환 조회
 ros2 run tf2_ros tf2_echo odom_robot_ns base_link_robot_ns
-ros2 run tf2_ros tf2_echo odom_robot_ns object_person_lee_0
+ros2 run tf2_ros tf2_echo odom_robot_ns object_person_0
 
 # TF topic 확인
 ros2 topic echo /tf
@@ -291,7 +291,7 @@ Day 10~13의 frame 문제는 Day 09 TF 실습의 확장이다.
 
 ```text
 Day 09:
-map_robot_ns -> odom_robot_ns -> base_link_robot_ns -> camera_lee -> object_person_lee_0
+map_robot_ns -> odom_robot_ns -> base_link_robot_ns -> camera_frame -> object_person_0
 
 Day 10~13:
 map_robot_ns -> odom_robot_ns -> base_footprint/base_link -> laser/camera

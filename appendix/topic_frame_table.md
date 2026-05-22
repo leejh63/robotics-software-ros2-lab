@@ -1,5 +1,11 @@
 # Topic / Frame 정리표 - Day 10 기준
 
+## 0. 이 표의 역할
+
+이 문서는 Day 10 Gazebo/URDF 이후에 처음 정리한 topic-frame 빠른 참조표다.
+
+최신 통합 기준은 [`topic_frame_message_action_master_table.md`](topic_frame_message_action_master_table.md)를 우선한다. 다른 표들의 역할은 [`table_reference_guide.md`](table_reference_guide.md)를 본다.
+
 ROS2에서 topic 이름과 frame 이름은 다르다.  
 Day 10 이후 SLAM/AMCL/Nav2에서 계속 헷갈릴 수 있으므로 이 표를 기준으로 정리한다.
 
@@ -7,7 +13,7 @@ Day 10 이후 SLAM/AMCL/Nav2에서 계속 헷갈릴 수 있으므로 이 표를 
 
 | Topic | 메시지 성격 | 발행 주체 | 사용처 |
 |---|---|---|---|
-| `/robot_ns/cmd_vel` | 속도 명령 | teleop, 회피 노드, 추후 Nav2 controller | Gazebo diff_drive plugin |
+| `/robot_ns/cmd_vel` | 속도 명령 | teleop, 회피 노드, 이후 Nav2 controller | Gazebo diff_drive plugin |
 | `/robot_ns/odom` | Odometry | Gazebo diff_drive plugin | RViz2, SLAM, AMCL/Nav2 |
 | `/robot_ns/scan` | LaserScan | Gazebo LiDAR plugin | RViz2, 회피 노드, SLAM, AMCL |
 | `/robot_ns/imu` | IMU | Gazebo IMU plugin | RViz2, 센서 확인 |

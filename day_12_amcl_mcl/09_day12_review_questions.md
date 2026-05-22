@@ -92,3 +92,15 @@
 ```
 
 이 질문들에 답하기 전에는 Nav2 planner/controller 문제로 넘어가지 않는 것이 좋다. AMCL이 안정되지 않으면 Nav2도 정상적으로 판단하기 어렵다.
+
+---
+
+## 추가 복습 질문 - frame naming
+
+```text
+1. 일반 예제의 map/odom과 이 문서의 map_robot_ns/odom_robot_ns는 어떤 관계인가?
+2. /robot_ns/map과 map_robot_ns는 왜 같은 것이 아닌가?
+3. topic namespace를 remap해도 TF frame 이름이 자동으로 바뀌지 않는 이유는 무엇인가?
+4. AMCL parameter의 global_frame_id와 odom_frame_id가 실제 TF tree와 다르면 어떤 문제가 생기는가?
+5. 왜 이 문서에서는 `map`, `odom` 대신 `map_robot_ns`, `odom_robot_ns`를 쓰는가?
+```

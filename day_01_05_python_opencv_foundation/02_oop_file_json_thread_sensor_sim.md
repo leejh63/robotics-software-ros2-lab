@@ -16,7 +16,7 @@ ROS2를 쓰면 직접 thread를 많이 만들지 않아도 된다. 하지만 sen
 
 ---
 
-## 2. 관련 원본 파일
+## 2. 관련 실습 파일
 
 ```text
 day_2/ioff.py
@@ -127,7 +127,7 @@ ranges = np.array([1.0, 2.0, 3.0])
 json_ready = ranges.tolist()
 ```
 
-이 감각은 나중에 아래 파일들을 이해할 때 도움이 된다.
+이 감각은 이후 아래 파일들을 이해할 때 도움이 된다.
 
 ```text
 camera calibration yaml
@@ -279,7 +279,7 @@ Day 02의 일부 파일은 완성 코드라기보다 실습 중간 상태에 가
 
 ```text
 - Lock을 일부러 주석 처리해서 race condition을 관찰하는 코드
-- TODO가 남아 있는 live_tail 실습 코드
+- 미완성 상태를 관찰하기 위한 live_tail 실습 코드
 - producer의 sleep이 주석 처리되어 매우 빠르게 queue를 채울 수 있는 코드
 - process join이 일부 worker에만 적용될 수 있는 코드
 ```
