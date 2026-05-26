@@ -27,6 +27,8 @@ AMCL: map + scan + odom + TF → estimated pose
   ↓
 Nav2: goal + pose + costmap → path → cmd_vel
   ↓
+Control / Path planning: PID / Dijkstra / A* / RRT / RRT*
+  ↓
 Navigation debugging: rosbag-frame / DWB / Behavior Tree
 ```
 
@@ -75,6 +77,7 @@ Navigation debugging: rosbag-frame / DWB / Behavior Tree
 | 4 | [day_11_slam/README.md](day_11_slam/README.md) | SLAM Toolbox, map 생성, rosbag offline SLAM |
 | 5 | [day_12_amcl_mcl/README.md](day_12_amcl_mcl/README.md) | AMCL, MCL, particle filter, localization |
 | 6 | [day_13_nav2/README.md](day_13_nav2/README.md) | Nav2 lifecycle, planner, controller, goal, cmd_vel |
+| 7 | [day_14_control_and_path_planning/README.md](day_14_control_and_path_planning/README.md) | PID 제어, ros2_control, Dijkstra/A*/RRT/RRT* |
 
 ---
 
@@ -103,9 +106,20 @@ Navigation debugging: rosbag-frame / DWB / Behavior Tree
 | [11_navigation_debug_deep_dives/04_navigation_failure_diagnosis_map.md](11_navigation_debug_deep_dives/04_navigation_failure_diagnosis_map.md) | Navigation failure diagnosis map |
 | [11_navigation_debug_deep_dives/05_navigation_debug_review_questions.md](11_navigation_debug_deep_dives/05_navigation_debug_review_questions.md) | 디버깅 복습 질문 |
 
+
 ---
 
-## 7. Appendix 빠른 참조
+## 7. 실행 코드 프로젝트
+
+| 위치 | 역할 |
+|---|---|
+| [projects/ros2_navigation_lab/README.md](projects/ros2_navigation_lab/README.md) | Day 10~13 Gazebo → SLAM → AMCL → Nav2 실행 검증 workspace |
+| [projects/ros2_pid_arm_lab/README.md](projects/ros2_pid_arm_lab/README.md) | Day 14 PID control 실행 workspace |
+| [projects/path_planning_algorithms_lab/README.md](projects/path_planning_algorithms_lab/README.md) | Day 14 path planning notebook 실행 프로젝트 |
+
+---
+
+## 8. Appendix 빠른 참조
 
 | 문서 | 용도 |
 |---|---|

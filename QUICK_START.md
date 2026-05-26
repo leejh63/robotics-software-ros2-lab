@@ -52,10 +52,50 @@ README.md
 | 4 | [day_11_slam/](day_11_slam/) | SLAM Toolbox와 map 생성 |
 | 5 | [day_12_amcl_mcl/](day_12_amcl_mcl/) | AMCL, particle filter, localization |
 | 6 | [day_13_nav2/](day_13_nav2/) | Nav2 stack, planner, controller, goal, cmd_vel |
+| 7 | [day_14_control_and_path_planning/](day_14_control_and_path_planning/) | PID 제어, ros2_control, Dijkstra/A*/RRT/RRT* |
+
 
 ---
 
-## 4. 개념만 빠르게 보기
+## 4. 실행 코드부터 확인하고 싶을 때
+
+개념 문서가 아니라 실제 실행 가능한 코드를 먼저 보고 싶다면 `projects/` 아래를 확인합니다.
+
+### ROS2 Navigation Lab
+
+```bash
+cd projects/ros2_navigation_lab
+source /opt/ros/humble/setup.bash
+colcon build --symlink-install --packages-select lee_robot_description
+source install/setup.bash
+ros2 launch lee_robot_description nav2.launch.py use_rviz:=false
+```
+
+### ROS2 PID Arm Lab
+
+```bash
+cd projects/ros2_pid_arm_lab
+source /opt/ros/humble/setup.bash
+rosdep install --from-paths src -y --ignore-src
+colcon build --symlink-install --packages-select pid_arm_lab
+source install/setup.bash
+ros2 launch pid_arm_lab full.launch.py
+```
+
+### Path Planning Algorithms Lab
+
+```bash
+cd projects/path_planning_algorithms_lab
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+jupyter notebook notebooks
+```
+
+---
+
+## 5. 개념만 빠르게 보기
 
 | 질문 | 문서 |
 |---|---|
@@ -66,7 +106,7 @@ README.md
 
 ---
 
-## 5. 명령어 실행 전 확인
+## 6. 명령어 실행 전 확인
 
 ```text
 appendix/command_execution_conventions.md
@@ -85,7 +125,7 @@ frame name    예: map_robot_ns
 
 ---
 
-## 6. 문제가 생겼을 때
+## 7. 문제가 생겼을 때
 
 ```text
 appendix/troubleshooting_quick_diagnosis.md

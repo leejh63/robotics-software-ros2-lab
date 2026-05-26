@@ -1,0 +1,374 @@
+# nav2_params.yaml
+# 네 현재 환경 기준으로 수정한 Nav2 Navigation 파라미터
+#
+# 실제 확인된 환경:
+#   TF topic        : /lee/tf, /lee/tf_static
+#   map frame       : map_lee
+#   odom frame      : odom_lee
+#   base frame      : base_footprint
+#   map topic       : /lee/map
+#   scan topic      : /lee/scan
+#   odom topic      : /lee/odom
+#
+# 실행 권장:
+#   전체 실행:
+#     ros2 launch lee_robot_description nav2.launch.py
+#
+#   분리 실행:
+#     터미널 1: ros2 launch lee_robot_description localization.launch.py
+#     터미널 2: ros2 launch lee_robot_description nav2_navigation.launch.py
+#
+#   주의:
+#     nav2.launch.py는 localization.launch.py와 nav2_navigation.launch.py를
+#     함께 include하는 상위 launch다. 따라서 nav2.launch.py 실행 후
+#     nav2_navigation.launch.py를 다시 실행하면 Nav2 stack이 중복 실행될 수 있다.
+#
+#     nav2_bringup navigation_launch.py를 직접 namespace:=lee로 실행하면
+#     Humble에서는 Nav2 노드가 실제 /lee 네임스페이스로 들어가지 않아
+#     FollowPath critics 파라미터와 /lee/tf 연결이 꼬일 수 있다.
+#
+# 중요:
+#   - 이 YAML은 controller/planner/costmap 파라미터를 네 frame/topic에 맞춘 것이다.
+#   - /tf -> /lee/tf, /tf_static -> /lee/tf_static 처리는 YAML이 아니라
+#     namespace/remap에서 해결해야 한다.
+#   - local_costmap에는 static_layer를 넣지 않았다.
+#     local_costmap은 odom_lee 기준 rolling window + /lee/scan 장애물 감지가 핵심이다.
+
+global_costmap:
+  global_costmap:
+    ros__parameters:
+      use_sim_time: true
+      update_frequency: 1.0
+      publish_frequency: 1.0
+
+      global_frame: map_lee
+      robot_base_frame: base_footprint
+
+      robot_radius: 0.22
+      resolution: 0.05
+      track_unknown_space: true
+
+      plugins:
+        - static_layer
+        - obstacle_layer
+        - inflation_layer
+
+      static_layer:
+        plugin: nav2_costmap_2d::StaticLayer
+        enabled: true
+        map_topic: /lee/map
+        map_subscribe_transient_local: true
+
+      obstacle_layer:
+        plugin: nav2_costmap_2d::ObstacleLayer
+        enabled: true
+        observation_sources: scan
+        scan:
+          topic: /lee/scan
+          data_type: LaserScan
+          max_obstacle_height: 2.0
+          clearing: true
+          marking: true
+          raytrace_max_range: 3.0
+          raytrace_min_range: 0.0
+          obstacle_max_range: 2.5
+          obstacle_min_range: 0.0
+
+      inflation_layer:
+        plugin: nav2_costmap_2d::InflationLayer
+        cost_scaling_factor: 3.0
+        inflation_radius: 0.55
+
+      always_send_full_costmap: true
+
+
+local_costmap:
+  local_costmap:
+    ros__parameters:
+      use_sim_time: true
+      update_frequency: 5.0
+      publish_frequency: 2.0
+
+      global_frame: odom_lee
+      robot_base_frame: base_footprint
+
+      rolling_window: true
+      width: 3
+      height: 3
+      resolution: 0.05
+      robot_radius: 0.22
+
+      plugins:
+        - obstacle_layer
+        - inflation_layer
+
+      obstacle_layer:
+        plugin: nav2_costmap_2d::ObstacleLayer
+        enabled: true
+        observation_sources: scan
+        scan:
+          topic: /lee/scan
+          data_type: LaserScan
+          max_obstacle_height: 2.0
+          clearing: true
+          marking: true
+          raytrace_max_range: 3.0
+          raytrace_min_range: 0.0
+          obstacle_max_range: 2.5
+          obstacle_min_range: 0.0
+
+      inflation_layer:
+        plugin: nav2_costmap_2d::InflationLayer
+        cost_scaling_factor: 3.0
+        inflation_radius: 0.55
+
+      always_send_full_costmap: true
+
+
+planner_server:
+  ros__parameters:
+    use_sim_time: true
+    expected_planner_frequency: 20.0
+
+    planner_plugins:
+      - GridBased
+
+    GridBased:
+      plugin: nav2_navfn_planner/NavfnPlanner
+      tolerance: 0.5
+      use_astar: false
+      allow_unknown: true
+
+
+controller_server:
+  ros__parameters:
+    use_sim_time: true
+    controller_frequency: 20.0
+
+    odom_topic: /lee/odom
+
+    min_x_velocity_threshold: 0.001
+    min_y_velocity_threshold: 0.5
+    min_theta_velocity_threshold: 0.001
+
+    failure_tolerance: 0.3
+
+    progress_checker_plugin: progress_checker
+    goal_checker_plugins:
+      - general_goal_checker
+    controller_plugins:
+      - FollowPath
+
+    progress_checker:
+      plugin: nav2_controller::SimpleProgressChecker
+      required_movement_radius: 0.5
+      movement_time_allowance: 10.0
+
+    general_goal_checker:
+      plugin: nav2_controller::SimpleGoalChecker
+      stateful: true
+      xy_goal_tolerance: 0.25
+      yaw_goal_tolerance: 0.25
+
+    FollowPath:
+      plugin: dwb_core::DWBLocalPlanner
+      debug_trajectory_details: true
+
+      min_vel_x: 0.0
+      min_vel_y: 0.0
+      max_vel_x: 0.26
+      max_vel_y: 0.0
+      max_vel_theta: 1.0
+
+      min_speed_xy: 0.0
+      max_speed_xy: 0.26
+      min_speed_theta: 0.0
+
+      acc_lim_x: 2.5
+      acc_lim_y: 0.0
+      acc_lim_theta: 3.2
+
+      decel_lim_x: -2.5
+      decel_lim_y: 0.0
+      decel_lim_theta: -3.2
+
+      vx_samples: 20
+      vy_samples: 5
+      vtheta_samples: 20
+
+      sim_time: 1.7
+      linear_granularity: 0.05
+      angular_granularity: 0.025
+      transform_tolerance: 0.2
+
+      xy_goal_tolerance: 0.25
+      trans_stopped_velocity: 0.25
+      short_circuit_trajectory_evaluation: true
+      stateful: true
+
+      # 이 값이 FollowPath 아래에 없으면
+      # "No critics defined for FollowPath" 에러가 난다.
+      critics:
+        - RotateToGoal
+        - Oscillation
+        - BaseObstacle
+        - GoalAlign
+        - PathAlign
+        - PathDist
+        - GoalDist
+
+      BaseObstacle.scale: 0.02
+
+      PathAlign.scale: 32.0
+      PathAlign.forward_point_distance: 0.1
+
+      GoalAlign.scale: 24.0
+      GoalAlign.forward_point_distance: 0.1
+
+      PathDist.scale: 32.0
+      GoalDist.scale: 24.0
+
+      RotateToGoal.scale: 32.0
+      RotateToGoal.slowing_factor: 5.0
+      RotateToGoal.lookahead_time: -1.0
+
+
+smoother_server:
+  ros__parameters:
+    use_sim_time: true
+    smoother_plugins:
+      - simple_smoother
+
+    simple_smoother:
+      plugin: nav2_smoother::SimpleSmoother
+      tolerance: 1.0e-10
+      max_its: 1000
+      do_refinement: true
+
+
+behavior_server:
+  ros__parameters:
+    use_sim_time: true
+
+    local_costmap_topic: local_costmap/costmap_raw
+    global_costmap_topic: global_costmap/costmap_raw
+    local_footprint_topic: local_costmap/published_footprint
+    global_footprint_topic: global_costmap/published_footprint
+
+    cycle_frequency: 10.0
+
+    behavior_plugins:
+      - spin
+      - backup
+      - drive_on_heading
+      - assisted_teleop
+      - wait
+
+    spin:
+      plugin: nav2_behaviors/Spin
+
+    backup:
+      plugin: nav2_behaviors/BackUp
+
+    drive_on_heading:
+      plugin: nav2_behaviors/DriveOnHeading
+
+    wait:
+      plugin: nav2_behaviors/Wait
+
+    assisted_teleop:
+      plugin: nav2_behaviors/AssistedTeleop
+
+    global_frame: odom_lee
+    robot_base_frame: base_footprint
+    transform_tolerance: 0.1
+
+    simulate_ahead_time: 2.0
+    max_rotational_vel: 1.0
+    min_rotational_vel: 0.4
+    rotational_acc_lim: 3.2
+
+
+bt_navigator:
+  ros__parameters:
+    use_sim_time: true
+    global_frame: map_lee
+    robot_base_frame: base_footprint
+    odom_topic: /lee/odom
+    bt_loop_duration: 10
+    default_server_timeout: 20
+    wait_for_service_timeout: 1000
+
+    navigators:
+      - navigate_to_pose
+      - navigate_through_poses
+
+    navigate_to_pose:
+      plugin: nav2_bt_navigator::NavigateToPoseNavigator
+
+    navigate_through_poses:
+      plugin: nav2_bt_navigator::NavigateThroughPosesNavigator
+
+
+waypoint_follower:
+  ros__parameters:
+    use_sim_time: true
+    loop_rate: 20
+    stop_on_failure: false
+    waypoint_task_executor_plugin: wait_at_waypoint
+
+    wait_at_waypoint:
+      plugin: nav2_waypoint_follower::WaitAtWaypoint
+      enabled: true
+      waypoint_pause_duration: 200
+
+
+velocity_smoother:
+  ros__parameters:
+    use_sim_time: true
+    smoothing_frequency: 20.0
+    scale_velocities: false
+    feedback: OPEN_LOOP
+
+    max_velocity:
+      - 0.26
+      - 0.0
+      - 1.0
+    min_velocity:
+      - -0.26
+      - 0.0
+      - -1.0
+
+    max_accel:
+      - 2.5
+      - 0.0
+      - 3.2
+    max_decel:
+      - -2.5
+      - 0.0
+      - -3.2
+
+    odom_topic: /lee/odom
+    odom_duration: 0.1
+    deadband_velocity:
+      - 0.0
+      - 0.0
+      - 0.0
+    velocity_timeout: 1.0
+
+
+# navigation_launch.py가 lifecycle_manager를 같이 띄우는 경우,
+# launch argument autostart:=true를 쓰면 된다.
+# 직접 lifecycle_manager를 띄우는 경우를 대비한 설정이다.
+lifecycle_manager_navigation:
+  ros__parameters:
+    use_sim_time: true
+    autostart: true
+    node_names:
+      - controller_server
+      - smoother_server
+      - planner_server
+      - behavior_server
+      - bt_navigator
+      - waypoint_follower
+      - velocity_smoother

@@ -15,6 +15,7 @@ Python / NumPy / OpenCV
 → SLAM Toolbox
 → AMCL / MCL / particle filter
 → Nav2 lifecycle / costmap / planner / controller / Behavior Tree
+→ PID control / path planning algorithms
 → rosbag-frame / DWB / Navigation failure debugging
 ```
 
@@ -52,9 +53,23 @@ Python / NumPy / OpenCV
 | [day_11_slam/](day_11_slam/) | SLAM Toolbox, map 생성, map 저장, rosbag offline SLAM |
 | [day_12_amcl_mcl/](day_12_amcl_mcl/) | AMCL, MCL, particle filter, initial pose, localization |
 | [day_13_nav2/](day_13_nav2/) | Nav2 stack, lifecycle, costmap, planner, controller, action goal, `/cmd_vel` |
+| [day_14_control_and_path_planning/](day_14_control_and_path_planning/) | PID 제어, ros2_control, Dijkstra/A*/RRT/RRT* 경로 탐색 |
 | [10_selected_deep_dives/](10_selected_deep_dives/) | 핵심 개념 선별 심화 |
 | [11_navigation_debug_deep_dives/](11_navigation_debug_deep_dives/) | rosbag-frame, DWB, Behavior Tree, navigation failure 디버깅 심화 |
 | [appendix/](appendix/) | 빠른 참조, 용어집, 명령어, topic/frame/action 표, troubleshooting |
+
+
+---
+
+## 실행 코드 프로젝트
+
+학습 노트와 실제 실행 코드는 분리했습니다. `day_*` 폴더는 개념과 흐름 정리이고, `projects/` 아래는 실행 가능한 코드입니다.
+
+| 위치 | 역할 |
+|---|---|
+| [projects/ros2_navigation_lab/](projects/ros2_navigation_lab/) | Gazebo, SLAM, AMCL, Nav2 실행 검증 workspace |
+| [projects/ros2_pid_arm_lab/](projects/ros2_pid_arm_lab/) | Gazebo + ros2_control 기반 1-DOF arm PID 제어 workspace |
+| [projects/path_planning_algorithms_lab/](projects/path_planning_algorithms_lab/) | Dijkstra, A*, RRT, RRT* notebook 실습 |
 
 ---
 
