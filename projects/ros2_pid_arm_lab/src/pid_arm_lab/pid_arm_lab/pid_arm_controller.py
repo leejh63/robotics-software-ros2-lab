@@ -301,8 +301,17 @@ def main(args=None) -> None:
     except KeyboardInterrupt:
         pass
     finally:
-        node.publish_zero_effort()
-        node.destroy_node()
+        try:
+            if rclpy.ok():
+                node.publish_zero_effort()
+        except Exception:
+            pass
+
+        try:
+            node.destroy_node()
+        except KeyboardInterrupt:
+            pass
+
         if rclpy.ok():
             rclpy.shutdown()
 
