@@ -4,34 +4,36 @@
 
 ---
 
-## 1. `nav2.launch.py`와 `nav2_navigation.launch.py`가 분리되어 있음
+## 1. 통합 실행과 분리 실행이 함께 있음
 
 현재 구조는 아래처럼 나뉜다.
 
 ```text
-nav2.launch.py
+localization.launch.py
   simulation + localization
 
 nav2_navigation.launch.py
   navigation stack
+
+nav2.launch.py
+  localization.launch.py + nav2_navigation.launch.py
 ```
 
-이 구조는 학습/디버깅에는 좋다.  
-하지만 실행할 때 두 터미널을 모두 띄워야 한다.
+학습/디버깅에서는 `localization.launch.py`와 `nav2_navigation.launch.py`를 분리 실행할 수 있다. 전체 흐름을 한 번에 볼 때는 `nav2.launch.py`를 사용한다.
 
 ---
 
 ## 2. map_server/amcl 노드 이름과 topic namespace가 다를 수 있음
 
-`nav2.launch.py`에서는 `map_server`, `amcl` 노드 이름에 `/robot_ns` namespace를 직접 붙이지 않는다.
+`localization.launch.py`에서는 `map_server`, `amcl` 노드 이름에 `/lee` namespace를 직접 붙이지 않는다.
 
-하지만 topic remap은 `/robot_ns/map`, `/robot_ns/tf`, `/robot_ns/tf_static` 쪽으로 걸려 있다.
+하지만 topic remap은 `/lee/map`, `/lee/tf`, `/lee/tf_static` 쪽으로 걸려 있다.
 
 그래서 아래 두 상황이 동시에 가능하다.
 
 ```text
 node: /amcl
-topic: /robot_ns/map, /robot_ns/scan, /robot_ns/tf
+topic: /lee/map, /lee/scan, /lee/tf
 ```
 
 노드 이름과 topic 이름을 같은 기준으로 보면 안 된다.
@@ -40,11 +42,9 @@ topic: /robot_ns/map, /robot_ns/scan, /robot_ns/tf
 
 ## 3. `map_yaml` 기본 경로는 workspace root를 추정함
 
-`nav2.launch.py`는 기본 map 경로를 package share directory에서 위로 올라가 workspace root를 추정한 뒤 `slam_map.yaml`을 찾는 구조다.
+`localization.launch.py`는 기본 map 경로를 package share의 `maps/slam_map.yaml`로 둔다.
 
-학습 환경에서는 동작할 수 있지만, 패키지 설치 구조나 위치가 달라지면 깨질 수 있다.
-
-패키지 설치 구조나 위치가 달라질 수 있으므로 실행 시 경로를 명시하는 편이 안전하다.
+world와 다른 map을 써야 할 때는 실행 시 `map_yaml:=...`로 명시한다.
 
 ---
 
@@ -53,7 +53,7 @@ topic: /robot_ns/map, /robot_ns/scan, /robot_ns/tf
 현재 기록 기준:
 
 ```text
-CLI /robot_ns/navigate_to_pose action goal은 주행 확인됨
+CLI /lee/navigate_to_pose action goal은 주행 확인됨
 RViz Nav2 Goal 버튼은 namespace/action 연결 문제가 있을 수 있음
 ```
 
@@ -61,14 +61,14 @@ RViz Nav2 Goal 버튼은 namespace/action 연결 문제가 있을 수 있음
 
 ---
 
-## 5. `/robot_ns/cmd_vel` publisher 충돌 가능성
+## 5. `/lee/cmd_vel` publisher 충돌 가능성
 
-Day 10의 wall follower, teleop, 직접 만든 test publisher, Nav2 controller가 동시에 `/robot_ns/cmd_vel`에 publish하면 충돌할 수 있다.
+Day 10의 wall follower, teleop, 직접 만든 test publisher, Nav2 controller가 동시에 `/lee/cmd_vel`에 publish하면 충돌할 수 있다.
 
 확인:
 
 ```bash
-ros2 topic info /robot_ns/cmd_vel -v
+ros2 topic info /lee/cmd_vel -v
 ```
 
 자율주행 테스트 중에는 teleop이나 wall follower를 꺼두는 것이 좋다.
@@ -86,7 +86,7 @@ local_costmap
 ```
 
 이건 이상한 설정이 아니다.  
-local costmap은 `odom_robot_ns` 기준 rolling window로 주변 장애물을 보는 것이 핵심이기 때문이다.
+local costmap은 `odom_lee` 기준 rolling window로 주변 장애물을 보는 것이 핵심이기 때문이다.
 
 ---
 
@@ -104,8 +104,8 @@ controller_plugins 이름과 FollowPath 키 불일치
 확인:
 
 ```bash
-ros2 param get /robot_ns/controller_server controller_plugins
-ros2 param get /robot_ns/controller_server FollowPath.critics
+ros2 param get /lee/controller_server controller_plugins
+ros2 param get /lee/controller_server FollowPath.critics
 ```
 
 ---

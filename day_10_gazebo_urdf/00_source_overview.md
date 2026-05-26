@@ -5,7 +5,7 @@
 기준 경로:
 
 ```text
-$ROS2_WS/lee_robot_description/
+projects/ros2_navigation_lab/src/lee_robot_description/
 ```
 
 ---
@@ -71,7 +71,8 @@ ros2 run lee_robot_description lidar_wall_follower.py
 |---|---|
 | `urdf/turtlebot.xacro` | 로봇 본체 구조 정의. link, joint, visual, collision, inertial, 센서 부착 위치 포함 |
 | `urdf/turtlebot_gaze.xacro` | Gazebo용 물리 속성 및 plugin 정의 |
-| `urdf/turtle_from_xacro.urdf` | Xacro 변환 결과물. 사람이 확인하기 위한 산출물 성격 |
+
+현재 폴더에는 xacro 변환 결과물인 `.urdf` 산출물을 저장해 두지 않는다. 사람이 확인해야 할 때만 `xacro` 명령으로 별도 생성한다.
 
 ### `turtlebot.xacro`에서 만들어지는 주요 frame/link
 
@@ -102,11 +103,11 @@ camera_joint         base_link -> camera_link, fixed
 
 | plugin | 연결 대상 | ROS2 입출력 |
 |---|---|---|
-| `libgazebo_ros_diff_drive.so` | `wheel_left_joint`, `wheel_right_joint` | subscribe `/robot_ns/cmd_vel`, publish `/robot_ns/odom`, TF |
-| `libgazebo_ros_joint_state_publisher.so` | wheel joints | publish `/robot_ns/joint_states` |
-| `libgazebo_ros_ray_sensor.so` | `base_scan` | publish `/robot_ns/scan` |
-| `libgazebo_ros_imu_sensor.so` | `imu_link` | publish `/robot_ns/imu` |
-| `libgazebo_ros_camera.so` | `camera_link` | publish `/robot_ns/image_raw`, `/robot_ns/camera_info` |
+| `libgazebo_ros_diff_drive.so` | `wheel_left_joint`, `wheel_right_joint` | subscribe `/lee/cmd_vel`, publish `/lee/odom`, TF |
+| `libgazebo_ros_joint_state_publisher.so` | wheel joints | publish `/lee/joint_states` |
+| `libgazebo_ros_ray_sensor.so` | `base_scan` | publish `/lee/scan` |
+| `libgazebo_ros_imu_sensor.so` | `imu_link` | publish `/lee/imu` |
+| `libgazebo_ros_camera.so` | `camera_link` | publish `/lee/image_raw`, `/lee/camera_info` |
 
 ---
 
@@ -115,14 +116,14 @@ camera_joint         base_link -> camera_link, fixed
 | 파일 | 역할 |
 |---|---|
 | `launch/display.launch.py` | Gazebo 없이 RViz2에서 로봇 모델/TF 확인 |
-| `launch/gaze.launch.py` | Gazebo world, robot_state_publisher, spawn_entity, RViz2, LiDAR 회피 노드 통합 실행 |
+| `launch/gazebo.launch.py` | Gazebo world, robot_state_publisher, spawn_entity, RViz2, LiDAR 회피 노드 통합 실행 |
+| `launch/gazebo_slam.launch.py` | `slam.launch.py`를 include하는 SLAM 실행용 wrapper |
 | `launch/slam.launch.py` | Day 11 SLAM Toolbox 실행과 연결 |
-| `launch/amcl.launch.py` | AMCL 단독 실행 성격 |
-| `launch/amcl_full.launch.py` | map_server + AMCL + lifecycle 구성을 함께 실행 |
-| `launch/nav2.launch.py` | 이름은 Nav2지만 실제로는 Gazebo + localization 준비 성격이 강함 |
+| `launch/localization.launch.py` | Gazebo + map_server + AMCL + lifecycle 구성을 함께 실행 |
+| `launch/nav2.launch.py` | `localization.launch.py`와 `nav2_navigation.launch.py`를 함께 include하는 상위 launch |
 | `launch/nav2_navigation.launch.py` | `nav2_bringup/navigation_launch.py`를 포함하여 navigation stack 실행 |
 
-Day 10에서 직접 중요한 파일은 `display.launch.py`와 `gaze.launch.py`이다. 나머지는 Day 11~13에서 다시 자세히 다룬다.
+Day 10에서 직접 중요한 파일은 `display.launch.py`와 `gazebo.launch.py`이다. 나머지는 Day 11~13에서 다시 자세히 다룬다.
 
 ---
 
@@ -130,7 +131,7 @@ Day 10에서 직접 중요한 파일은 `display.launch.py`와 `gaze.launch.py`�
 
 | 파일 | 역할 |
 |---|---|
-| `worlds/robot_ns_world.world` | Gazebo 기본 실습 world |
+| `worlds/lee_world.world` | 작은 방 형태의 기본 실습 world |
 | `worlds/simple_maze.world` | 미로/장애물 형태의 world |
 | `worlds/slam.world` | SLAM 실습에 쓰기 좋은 구조화된 world |
 
@@ -152,7 +153,6 @@ world
 | 파일 | 역할 |
 |---|---|
 | `rviz/turtlebot.rviz` | Day 10 로봇 모델/센서 확인용 RViz 설정 |
-| `rviz/gaze,rviz.rviz` | Gazebo 확인용 RViz 설정으로 추정 |
 | `rviz/slam.rviz` | Day 11 SLAM 확인용 RViz 설정 |
 | `rviz/amcl.rviz` | Day 12 AMCL 확인용 RViz 설정 |
 
@@ -164,7 +164,7 @@ RViz 설정 파일은 코드가 아니라 시각화 설정이다. Fixed Frame, d
 
 | 파일 | 역할 |
 |---|---|
-| `scripts/lidar_wall_follower.py` | `/robot_ns/scan`을 읽고 `/robot_ns/cmd_vel`을 발행하는 간단한 정면 장애물 회피 노드 |
+| `scripts/lidar_wall_follower.py` | `/lee/scan`을 읽고 `/lee/cmd_vel`을 발행하는 간단한 정면 장애물 회피 노드 |
 
 `lidar_wall_follower.py`의 동작은 엄밀한 wall following보다 단순 장애물 회피에 가깝다.
 
@@ -188,20 +188,20 @@ ros2 launch lee_robot_description display.launch.py
 ### Gazebo 통합 실행
 
 ```bash
-ros2 launch lee_robot_description gaze.launch.py
+ros2 launch lee_robot_description gazebo.launch.py
 ```
 
-### 회피 노드 없이 Gazebo만 확인
+### 회피 노드 포함 실행
 
 ```bash
-ros2 launch lee_robot_description gaze.launch.py use_avoidance:=false
+ros2 launch lee_robot_description gazebo.launch.py use_avoidance:=true
 ```
 
 ### 토픽 확인
 
 ```bash
-ros2 topic list | grep /robot_ns
-ros2 topic echo /robot_ns/scan --qos-reliability best_effort --once
-ros2 topic echo /robot_ns/odom --once
-ros2 topic echo /robot_ns/joint_states --once
+ros2 topic list | grep /lee
+ros2 topic echo /lee/scan --qos-reliability best_effort --once
+ros2 topic echo /lee/odom --once
+ros2 topic echo /lee/joint_states --once
 ```

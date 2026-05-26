@@ -5,10 +5,10 @@
 Topic은 ROS2 메시지가 흐르는 통신 채널이다.
 
 ```text
-/robot_ns/scan
-/robot_ns/odom
-/robot_ns/cmd_vel
-/robot_ns/image_raw
+/lee/scan
+/lee/odom
+/lee/cmd_vel
+/lee/image_raw
 ```
 
 Topic 이름은 remap이나 namespace로 바꿀 수 있다.
@@ -24,7 +24,7 @@ base_link
 base_footprint
 base_scan
 camera_link
-odom_robot_ns
+odom_lee
 map
 ```
 
@@ -37,15 +37,15 @@ Frame 이름은 메시지의 `header.frame_id`, URDF link 이름, plugin 설정 
 Namespace는 topic/service/action/node 이름을 묶는 이름공간이다.
 
 ```text
-/scan -> /robot_ns/scan
-/odom -> /robot_ns/odom
-/cmd_vel -> /robot_ns/cmd_vel
+/scan -> /lee/scan
+/odom -> /lee/odom
+/cmd_vel -> /lee/cmd_vel
 ```
 
 하지만 namespace를 쓴다고 frame 이름이 자동으로 바뀌지는 않는다.
 
 ```text
-Topic: /robot_ns/scan
+Topic: /lee/scan
 Frame: base_scan
 ```
 

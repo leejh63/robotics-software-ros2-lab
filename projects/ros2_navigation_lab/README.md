@@ -147,7 +147,7 @@ ros2 node list | sort | grep bt_navigator
 
 ---
 
-## 주요 frame과 topic
+## 기본 frame과 topic
 
 | 항목 | 값 |
 |---|---|
@@ -187,11 +187,17 @@ ros2 node list | sort | grep bt_navigator
 
 ---
 
-## 제한 사항
+## Namespace / Frame 인자
 
-이 패키지는 고정된 `/lee` namespace 기준으로 구성되어 있습니다. `namespace:=...` 인자만 바꿔서 범용 multi-robot 패키지처럼 사용할 수 있는 상태는 아닙니다.
+Gazebo, SLAM, localization launch는 기본값으로 `/lee`, `map_lee`, `odom_lee`를 사용하지만 아래 인자로 바꿀 수 있습니다.
 
-namespace를 바꾸려면 URDF plugin namespace, Nav2 parameter, RViz config, topic remap, TF frame 가정을 함께 수정해야 합니다.
+```bash
+ros2 launch lee_robot_description gazebo.launch.py namespace:=robot1 odom_frame:=odom_robot1 entity_name:=turtlebot
+ros2 launch lee_robot_description gazebo_slam.launch.py namespace:=robot1 map_frame:=map_robot1 odom_frame:=odom_robot1
+ros2 launch lee_robot_description localization.launch.py namespace:=robot1 map_frame:=map_robot1 odom_frame:=odom_robot1
+```
+
+Nav2 navigation parameter와 RViz 설정은 아직 기본 `/lee`, `map_lee`, `odom_lee` 기준입니다. `namespace:=...`만 바꿔서 완전한 multi-robot template처럼 사용할 수 있는 상태는 아니며, Nav2 params/RViz display topic도 함께 맞춰야 합니다.
 
 ---
 

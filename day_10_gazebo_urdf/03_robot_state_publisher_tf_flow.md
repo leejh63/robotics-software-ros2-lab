@@ -22,7 +22,7 @@ robot_state_publisher
 
 `robot_description`은 보통 URDF XML 문자열을 담는 파라미터다.
 
-`display.launch.py`와 `gaze.launch.py`에서는 아래 흐름으로 만들어진다.
+`display.launch.py`와 `gazebo.launch.py`에서는 아래 흐름으로 만들어진다.
 
 ```text
 xacro executable
@@ -57,7 +57,7 @@ TF는 좌표계 사이의 관계를 나타낸다.
 | topic | 의미 | 예시 |
 |---|---|---|
 | `/tf_static` | 시간이 지나도 변하지 않는 고정 관계 | `base_link -> camera_link`, `base_link -> base_scan` |
-| `/tf` | 시간이 지나면서 바뀌는 관계 | `odom_robot_ns -> base_footprint`, wheel 회전 관련 동적 TF |
+| `/tf` | 시간이 지나면서 바뀌는 관계 | `odom_lee -> base_footprint`, wheel 회전 관련 동적 TF |
 
 고정 joint는 한 번 알려주면 되므로 `/tf_static`에 가깝고, 움직이는 joint나 로봇 위치는 계속 바뀌므로 `/tf`에 가깝다.
 
@@ -67,16 +67,16 @@ TF는 좌표계 사이의 관계를 나타낸다.
 
 URDF에는 joint 구조가 있지만, 움직이는 joint의 현재 값은 들어 있지 않다.
 
-예를 들어 바퀴 joint는 `continuous` joint다. 현재 바퀴가 몇 rad 회전했는지는 Gazebo가 계산해서 `/robot_ns/joint_states`로 발행한다.
+예를 들어 바퀴 joint는 `continuous` joint다. 현재 바퀴가 몇 rad 회전했는지는 Gazebo가 계산해서 `/lee/joint_states`로 발행한다.
 
 ```text
 Gazebo joint_state plugin
         ↓
-/robot_ns/joint_states
+/lee/joint_states
         ↓
 robot_state_publisher
         ↓
-/robot_ns/tf
+/lee/tf
 ```
 
 즉 `robot_state_publisher`는 다음 두 정보를 함께 사용한다.
@@ -91,7 +91,7 @@ joint_states
 
 ---
 
-## 5. display.launch.py와 gaze.launch.py의 차이
+## 5. display.launch.py와 gazebo.launch.py의 차이
 
 ### 5.1 display.launch.py
 
@@ -106,16 +106,16 @@ RViz2 실행
 
 이 모드에서는 사용자가 GUI로 joint 값을 바꾸거나, non-GUI publisher로 기본 joint state를 공급한다.
 
-### 5.2 gaze.launch.py
+### 5.2 gazebo.launch.py
 
-`gaze.launch.py`는 Gazebo와 연결되는 통합 실행이다.
+`gazebo.launch.py`는 Gazebo와 연결되는 통합 실행이다.
 
 ```text
 xacro -> robot_description
 robot_state_publisher 실행
 Gazebo 실행
 spawn_entity.py 실행
-Gazebo joint_state plugin이 /robot_ns/joint_states 발행
+Gazebo joint_state plugin이 /lee/joint_states 발행
 RViz2 실행
 ```
 
@@ -128,24 +128,24 @@ RViz2 실행
 현재 launch 파일은 isolation을 위해 아래 remap을 사용한다.
 
 ```text
-/robot_description -> /robot_ns/robot_description
-/tf                -> /robot_ns/tf
-/tf_static         -> /robot_ns/tf_static
-/joint_states      -> /robot_ns/joint_states
+/robot_description -> /lee/robot_description
+/tf                -> /lee/tf
+/tf_static         -> /lee/tf_static
+/joint_states      -> /lee/joint_states
 ```
 
 이 구조의 장점:
 
 ```text
 여러 사람이 같은 ROS_DOMAIN_ID에서 작업할 때 topic 충돌을 줄일 수 있다.
-/robot_ns 아래로 로봇 관련 topic을 모을 수 있다.
+/lee 아래로 로봇 관련 topic을 모을 수 있다.
 ```
 
 주의점:
 
 ```text
 ROS2의 많은 도구는 기본적으로 /tf, /tf_static을 본다.
-따라서 /robot_ns/tf, /robot_ns/tf_static을 쓸 경우 RViz2, tf2_tools, SLAM, AMCL, Nav2 쪽에서도 remap이 맞아야 한다.
+따라서 /lee/tf, /lee/tf_static을 쓸 경우 RViz2, tf2_tools, SLAM, AMCL, Nav2 쪽에서도 remap이 맞아야 한다.
 ```
 
 ---
@@ -155,10 +155,10 @@ ROS2의 많은 도구는 기본적으로 /tf, /tf_static을 본다.
 중요한 점은 topic remap과 frame 이름 변경은 다르다는 것이다.
 
 ```text
-/tf -> /robot_ns/tf
+/tf -> /lee/tf
   topic 이름 remap
 
-base_link -> robot_ns/base_link
+base_link -> lee/base_link
   이런 frame 이름 변경은 자동으로 일어나지 않음
 ```
 
@@ -170,10 +170,10 @@ base_link
 base_scan
 camera_link
 imu_link
-odom_robot_ns
+odom_lee
 ```
 
-따라서 namespace `/robot_ns`를 쓴다고 해서 frame 이름이 자동으로 `/robot_ns/base_link`가 되는 것은 아니다.
+따라서 namespace `/lee`를 쓴다고 해서 frame 이름이 자동으로 `/lee/base_link`가 되는 것은 아니다.
 
 ---
 
@@ -181,19 +181,19 @@ odom_robot_ns
 
 ```bash
 # robot_description 확인
-ros2 param get /robot_ns_robot_state_publisher robot_description
+ros2 param get /robot_state_publisher robot_description
 
 # TF topic 확인
-ros2 topic echo /robot_ns/tf --once
-ros2 topic echo /robot_ns/tf_static --once
+ros2 topic echo /lee/tf --once
+ros2 topic echo /lee/tf_static --once
 
 # joint state 확인
-ros2 topic echo /robot_ns/joint_states --once
+ros2 topic echo /lee/joint_states --once
 
 # TF tree PDF 생성
 ros2 run tf2_tools view_frames --ros-args \
-  -r /tf:=/robot_ns/tf \
-  -r /tf_static:=/robot_ns/tf_static
+  -r /tf:=/lee/tf \
+  -r /tf_static:=/lee/tf_static
 ```
 
 ---

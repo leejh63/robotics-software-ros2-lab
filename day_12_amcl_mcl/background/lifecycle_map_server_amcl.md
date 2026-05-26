@@ -117,7 +117,7 @@ ros2 node info /amcl
 
 ## 6. 통합 런치에서의 lifecycle
 
-`amcl_full.launch.py`는 아래를 포함한다.
+`localization.launch.py`는 아래를 포함한다.
 
 ```text
 lifecycle_manager_localization

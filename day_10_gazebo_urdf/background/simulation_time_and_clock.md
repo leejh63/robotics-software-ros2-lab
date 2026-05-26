@@ -50,7 +50,7 @@ Moved backwards in time
 ```bash
 ros2 topic echo /clock --once
 ros2 topic info /clock -v
-ros2 param get /robot_ns_robot_state_publisher use_sim_time
+ros2 param get /robot_state_publisher use_sim_time
 ros2 param get /rviz use_sim_time
 ```
 

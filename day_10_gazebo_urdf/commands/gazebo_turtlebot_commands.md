@@ -22,13 +22,13 @@ ros2 pkg executables lee_robot_description
 
 ```bash
 xacro ./lee_robot_description/urdf/turtlebot.xacro \
-  -o ./lee_robot_description/urdf/turtle_from_xacro.urdf
+  -o ./lee_robot_description/urdf/turtlebot.urdf
 ```
 
 변환 결과 확인:
 
 ```bash
-head -40 ./lee_robot_description/urdf/turtle_from_xacro.urdf
+head -40 ./lee_robot_description/urdf/turtlebot.urdf
 ```
 
 ---
@@ -52,31 +52,31 @@ ros2 launch lee_robot_description display.launch.py use_joint_state_gui:=false
 기본 실행:
 
 ```bash
-ros2 launch lee_robot_description gaze.launch.py
+ros2 launch lee_robot_description gazebo.launch.py
 ```
 
 회피 노드 없이 실행:
 
 ```bash
-ros2 launch lee_robot_description gaze.launch.py use_avoidance:=false
+ros2 launch lee_robot_description gazebo.launch.py use_avoidance:=false
 ```
 
 RViz 없이 실행:
 
 ```bash
-ros2 launch lee_robot_description gaze.launch.py use_rviz:=false
+ros2 launch lee_robot_description gazebo.launch.py use_rviz:=false
 ```
 
 spawn 높이 변경:
 
 ```bash
-ros2 launch lee_robot_description gaze.launch.py spawn_z:=0.2
+ros2 launch lee_robot_description gazebo.launch.py spawn_z:=0.2
 ```
 
 launch argument 확인:
 
 ```bash
-ros2 launch lee_robot_description gaze.launch.py --show-args
+ros2 launch lee_robot_description gazebo.launch.py --show-args
 ```
 
 ---
@@ -84,65 +84,65 @@ ros2 launch lee_robot_description gaze.launch.py --show-args
 ## 5. Topic 확인
 
 ```bash
-ros2 topic list | grep /robot_ns
+ros2 topic list | grep /lee
 ```
 
 센서 확인:
 
 ```bash
-ros2 topic echo /robot_ns/scan --qos-reliability best_effort --once
-ros2 topic echo /robot_ns/imu --once
-ros2 topic echo /robot_ns/image_raw --once
-ros2 topic echo /robot_ns/camera_info --once
+ros2 topic echo /lee/scan --qos-reliability best_effort --once
+ros2 topic echo /lee/imu --once
+ros2 topic echo /lee/image_raw --once
+ros2 topic echo /lee/camera_info --once
 ```
 
 주기 확인:
 
 ```bash
-ros2 topic hz /robot_ns/scan --qos-reliability best_effort
-ros2 topic hz /robot_ns/odom
-ros2 topic hz /robot_ns/joint_states
+ros2 topic hz /lee/scan --qos-reliability best_effort
+ros2 topic hz /lee/odom
+ros2 topic hz /lee/joint_states
 ```
 
 타입 확인:
 
 ```bash
-ros2 topic type /robot_ns/scan
-ros2 topic type /robot_ns/odom
-ros2 topic type /robot_ns/cmd_vel
+ros2 topic type /lee/scan
+ros2 topic type /lee/odom
+ros2 topic type /lee/cmd_vel
 ```
 
 ---
 
 ## 6. TF 확인
 
-이 실습 구성에서는 `/tf`, `/tf_static`이 `/robot_ns/tf`, `/robot_ns/tf_static`으로 remap되어 있을 수 있다.
+이 실습 구성에서는 `/tf`, `/tf_static`이 `/lee/tf`, `/lee/tf_static`으로 remap되어 있을 수 있다.
 
 ```bash
-ros2 topic echo /robot_ns/tf --once
-ros2 topic echo /robot_ns/tf_static --once
+ros2 topic echo /lee/tf --once
+ros2 topic echo /lee/tf_static --once
 ```
 
 TF tree 생성:
 
 ```bash
 ros2 run tf2_tools view_frames --ros-args \
-  -r /tf:=/robot_ns/tf \
-  -r /tf_static:=/robot_ns/tf_static
+  -r /tf:=/lee/tf \
+  -r /tf_static:=/lee/tf_static
 ```
 
 특정 transform 확인:
 
 ```bash
-ros2 run tf2_ros tf2_echo odom_robot_ns base_footprint --ros-args \
-  -r /tf:=/robot_ns/tf \
-  -r /tf_static:=/robot_ns/tf_static
+ros2 run tf2_ros tf2_echo odom_lee base_footprint --ros-args \
+  -r /tf:=/lee/tf \
+  -r /tf_static:=/lee/tf_static
 ```
 
 ```bash
 ros2 run tf2_ros tf2_echo base_link base_scan --ros-args \
-  -r /tf:=/robot_ns/tf \
-  -r /tf_static:=/robot_ns/tf_static
+  -r /tf:=/lee/tf \
+  -r /tf_static:=/lee/tf_static
 ```
 
 ---
@@ -152,7 +152,7 @@ ros2 run tf2_ros tf2_echo base_link base_scan --ros-args \
 수동 조작을 확인할 때는 회피 노드를 끈 상태에서 실행한다.
 
 ```bash
-ros2 launch lee_robot_description gaze.launch.py use_avoidance:=false
+ros2 launch lee_robot_description gazebo.launch.py use_avoidance:=false
 ```
 
 다른 터미널:
@@ -164,13 +164,13 @@ source $ROS2_WS/install/setup.bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard \
   --ros-args \
   -r __node:=lee_teleop \
-  -r cmd_vel:=/robot_ns/cmd_vel
+  -r cmd_vel:=/lee/cmd_vel
 ```
 
-`/robot_ns/cmd_vel` 발행자 확인:
+`/lee/cmd_vel` 발행자 확인:
 
 ```bash
-ros2 topic info /robot_ns/cmd_vel -v
+ros2 topic info /lee/cmd_vel -v
 ```
 
 ---
@@ -180,7 +180,7 @@ ros2 topic info /robot_ns/cmd_vel -v
 launch에서 같이 실행:
 
 ```bash
-ros2 launch lee_robot_description gaze.launch.py use_avoidance:=true
+ros2 launch lee_robot_description gazebo.launch.py use_avoidance:=true
 ```
 
 노드만 별도 실행:
@@ -188,8 +188,8 @@ ros2 launch lee_robot_description gaze.launch.py use_avoidance:=true
 ```bash
 ros2 run lee_robot_description lidar_wall_follower.py \
   --ros-args \
-  -p scan_topic:=/robot_ns/scan \
-  -p cmd_vel_topic:=/robot_ns/cmd_vel \
+  -p scan_topic:=/lee/scan \
+  -p cmd_vel_topic:=/lee/cmd_vel \
   -p obstacle_distance:=0.55 \
   -p front_angle_deg:=25.0 \
   -p turn_direction:=right
@@ -202,7 +202,7 @@ ros2 run lee_robot_description lidar_wall_follower.py \
 Gazebo entity 삭제:
 
 ```bash
-ros2 run gazebo_ros delete_entity.py -entity turtlebot_lee
+ros2 run gazebo_ros delete_entity.py -entity turtlebot
 ```
 
 Gazebo 프로세스 정리:

@@ -12,6 +12,10 @@ def generate_launch_description():
     launch_dir = os.path.join(pkg_dir, 'launch')
 
     use_sim_time = LaunchConfiguration('use_sim_time')
+    namespace = LaunchConfiguration('namespace')
+    map_frame = LaunchConfiguration('map_frame')
+    odom_frame = LaunchConfiguration('odom_frame')
+    entity_name = LaunchConfiguration('entity_name')
     world = LaunchConfiguration('world')
     use_rviz = LaunchConfiguration('use_rviz')
     use_slam = LaunchConfiguration('use_slam')
@@ -22,6 +26,26 @@ def generate_launch_description():
             'use_sim_time',
             default_value='true',
             description='Use Gazebo simulation clock.',
+        ),
+        DeclareLaunchArgument(
+            'namespace',
+            default_value='lee',
+            description='Robot namespace without a leading slash.',
+        ),
+        DeclareLaunchArgument(
+            'map_frame',
+            default_value='map_lee',
+            description='Map frame published by SLAM Toolbox.',
+        ),
+        DeclareLaunchArgument(
+            'odom_frame',
+            default_value='odom_lee',
+            description='Odometry frame passed to SLAM and the Gazebo xacro plugins.',
+        ),
+        DeclareLaunchArgument(
+            'entity_name',
+            default_value='turtlebot',
+            description='Gazebo entity name used by spawn_entity.py.',
         ),
         DeclareLaunchArgument(
             'world',
@@ -50,6 +74,10 @@ def generate_launch_description():
             ),
             launch_arguments={
                 'use_sim_time': use_sim_time,
+                'namespace': namespace,
+                'map_frame': map_frame,
+                'odom_frame': odom_frame,
+                'entity_name': entity_name,
                 'world': world,
                 'use_rviz': use_rviz,
                 'use_slam': use_slam,

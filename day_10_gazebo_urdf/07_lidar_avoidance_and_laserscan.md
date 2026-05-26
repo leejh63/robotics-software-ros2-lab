@@ -5,11 +5,11 @@
 `scripts/lidar_wall_follower.py`는 이름만 보면 벽 따라가기처럼 보이지만, 현재 로직은 더 단순하다.
 
 ```text
-/robot_ns/scan을 구독한다.
+/lee/scan을 구독한다.
 정면 각도 범위의 거리값만 본다.
 가까운 장애물이 있으면 회전한다.
 장애물이 없으면 직진한다.
-/robot_ns/cmd_vel로 Twist를 발행한다.
+/lee/cmd_vel로 Twist를 발행한다.
 ```
 
 즉 “wall follower”라기보다 **정면 장애물 회피 예제**에 가깝다.
@@ -20,19 +20,19 @@
 
 | 구분 | topic | message type | 의미 |
 |---|---|---|---|
-| subscribe | `/robot_ns/scan` | `sensor_msgs/msg/LaserScan` | Gazebo LiDAR plugin이 발행한 거리 배열 |
-| publish | `/robot_ns/cmd_vel` | `geometry_msgs/msg/Twist` | Gazebo diff drive plugin으로 들어가는 속도 명령 |
+| subscribe | `/lee/scan` | `sensor_msgs/msg/LaserScan` | Gazebo LiDAR plugin이 발행한 거리 배열 |
+| publish | `/lee/cmd_vel` | `geometry_msgs/msg/Twist` | Gazebo diff drive plugin으로 들어가는 속도 명령 |
 
 흐름:
 
 ```text
 Gazebo LiDAR plugin
         ↓
-/robot_ns/scan
+/lee/scan
         ↓
 lidar_wall_follower.py
         ↓
-/robot_ns/cmd_vel
+/lee/cmd_vel
         ↓
 Gazebo diff_drive plugin
         ↓
@@ -45,8 +45,8 @@ robot moves
 
 | parameter | 기본값 | 의미 |
 |---|---:|---|
-| `scan_topic` | `/robot_ns/scan` | 입력 LaserScan topic |
-| `cmd_vel_topic` | `/robot_ns/cmd_vel` | 출력 Twist topic |
+| `scan_topic` | `/lee/scan` | 입력 LaserScan topic |
+| `cmd_vel_topic` | `/lee/cmd_vel` | 출력 Twist topic |
 | `obstacle_distance` | `0.55` | 이 거리보다 가까우면 장애물로 판단 |
 | `front_angle_deg` | `25.0` | 정면으로 간주할 각도 범위 |
 | `forward_speed` | `0.16` | 전진 속도 |
@@ -166,11 +166,11 @@ front_distance >= obstacle_distance
 
 ## 8. teleop과 동시에 쓰면 생기는 문제
 
-`teleop_twist_keyboard`와 `lidar_wall_follower.py`를 동시에 실행하면 둘 다 `/robot_ns/cmd_vel`을 발행할 수 있다.
+`teleop_twist_keyboard`와 `lidar_wall_follower.py`를 동시에 실행하면 둘 다 `/lee/cmd_vel`을 발행할 수 있다.
 
 ```text
-teleop_twist_keyboard -> /robot_ns/cmd_vel
-lidar_wall_follower.py -> /robot_ns/cmd_vel
+teleop_twist_keyboard -> /lee/cmd_vel
+lidar_wall_follower.py -> /lee/cmd_vel
 ```
 
 이 경우 마지막으로 도착한 Twist가 로봇 움직임을 결정하므로 조작이 이상하게 보일 수 있다.
@@ -179,10 +179,10 @@ lidar_wall_follower.py -> /robot_ns/cmd_vel
 
 ```bash
 # 회피 노드 끄고 수동 조작
-ros2 launch lee_robot_description gaze.launch.py use_avoidance:=false
+ros2 launch lee_robot_description gazebo.launch.py use_avoidance:=false
 
 # 회피 노드만 켜고 자동 움직임 확인
-ros2 launch lee_robot_description gaze.launch.py use_avoidance:=true
+ros2 launch lee_robot_description gazebo.launch.py use_avoidance:=true
 ```
 
 ---

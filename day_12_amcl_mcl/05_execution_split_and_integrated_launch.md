@@ -7,7 +7,7 @@ Day 12에는 실행 방식이 두 가지 있다.
 2. 통합 실행
 ```
 
-처음 학습할 때는 분리 실행이 더 낫다. 문제가 생겼을 때 어느 노드가 원인인지 찾기 쉽기 때문이다. 구조를 이해한 뒤에는 `amcl_full.launch.py`로 반복 실행하면 된다.
+처음 학습할 때는 분리 실행이 더 낫다. 문제가 생겼을 때 어느 노드가 원인인지 찾기 쉽기 때문이다. 구조를 이해한 뒤에는 `localization.launch.py`로 반복 실행하면 된다.
 
 ---
 
@@ -24,16 +24,16 @@ Day 12에는 실행 방식이 두 가지 있다.
 터미널 6  teleop_twist_keyboard 또는 lidar_wall_follower.py
 ```
 
-이때 `amcl.launch.py`는 모든 것을 켜는 파일이 아니다.
+이때 `gazebo.launch.py`는 모든 것을 켜는 파일이 아니다.
 
 ```text
-amcl.launch.py가 실행하는 것:
+gazebo.launch.py가 실행하는 것:
   Gazebo
   robot_state_publisher
   spawn_entity.py
   RViz2
 
-amcl.launch.py가 직접 실행하지 않는 것:
+gazebo.launch.py가 직접 실행하지 않는 것:
   map_server
   amcl
   lifecycle_manager
@@ -46,9 +46,9 @@ amcl.launch.py가 직접 실행하지 않는 것:
 
 ```text
 /map_server가 active인지 따로 확인 가능
-/amcl이 /robot_ns/map, /robot_ns/scan을 구독하는지 확인 가능
+/amcl이 /lee/map, /lee/scan을 구독하는지 확인 가능
 initialpose 전후 차이를 보기 쉬움
-map_robot_ns -> odom_robot_ns TF가 언제 생기는지 보기 쉬움
+map_lee -> odom_lee TF가 언제 생기는지 보기 쉬움
 RViz 문제인지 AMCL 문제인지 분리해서 판단 가능
 ```
 
@@ -58,12 +58,12 @@ RViz 문제인지 AMCL 문제인지 분리해서 판단 가능
 
 ## 3. 통합 실행 구조
 
-`amcl_full.launch.py`는 반복 실습을 편하게 하기 위한 파일이다.
+`localization.launch.py`는 반복 실습을 편하게 하기 위한 파일이다.
 
 실행:
 
 ```bash
-ros2 launch lee_robot_description amcl_full.launch.py
+ros2 launch lee_robot_description localization.launch.py
 ```
 
 통합 런치가 실행하는 것:
@@ -83,14 +83,14 @@ launch 내부 핵심:
 ```text
 map_server
   yaml_filename: map_yaml
-  frame_id: map_robot_ns
-  /map -> /robot_ns/map remap
+  frame_id: map_lee
+  /map -> /lee/map remap
 
 amcl
   params-file: config/amcl_param.yaml
-  /map -> /robot_ns/map remap
-  /tf -> /robot_ns/tf remap
-  /tf_static -> /robot_ns/tf_static remap
+  /map -> /lee/map remap
+  /tf -> /lee/tf remap
+  /tf_static -> /lee/tf_static remap
 
 lifecycle_manager_localization
   node_names: ['map_server', 'amcl']
@@ -101,19 +101,19 @@ lifecycle_manager_localization
 
 ## 4. map_yaml 인자
 
-`amcl_full.launch.py`는 기본적으로 workspace root의 `slam_map.yaml`을 찾는다.
+`localization.launch.py`는 기본적으로 package share의 `maps/slam_map.yaml`을 찾는다.
 
 ```text
 기본 map:
-$ROS2_WS/slam_map.yaml
+share/lee_robot_description/maps/slam_map.yaml
 ```
 
 다른 map을 쓰려면 명시한다.
 
 ```bash
-ros2 launch lee_robot_description amcl_full.launch.py \
+ros2 launch lee_robot_description localization.launch.py \
   world:=lee_world.world \
-  map_yaml:=$ROS2_WS/room_map.yaml
+  map_yaml:=$(ros2 pkg prefix lee_robot_description)/share/lee_robot_description/maps/room_map.yaml
 ```
 
 주의:

@@ -61,7 +61,7 @@ Nav2
 
 ## Namespace Boundary
 
-`/lee`는 simulation과 Nav2 workflow에서 사용하는 robot namespace입니다. 현재 구성은 완전히 parameterized된 multi-robot namespace template이 아닙니다.
+`/lee`는 simulation과 Nav2 workflow에서 사용하는 기본 robot namespace입니다. Gazebo, SLAM, localization launch는 `namespace`, `map_frame`, `odom_frame` 인자를 받지만, 현재 구성은 아직 완전히 parameterized된 multi-robot namespace template이 아닙니다.
 
 아래 값들은 launch, URDF, RViz, parameter 파일에 서로 연결되어 있습니다.
 
@@ -75,4 +75,4 @@ base_footprint
 /lee/cmd_vel
 ```
 
-`namespace:=...`만 바꾸면 전체 구성이 자동으로 바뀌지 않습니다. namespace를 바꿀 때는 URDF plugin namespace, Nav2 parameter, RViz display, topic remap, TF frame 가정을 함께 확인해야 합니다.
+`namespace:=...`만 바꾸면 Nav2 parameter와 RViz 설정까지 자동으로 바뀌지는 않습니다. namespace를 바꿀 때는 Nav2 parameter, RViz display, topic remap, TF frame 가정을 함께 확인해야 합니다.

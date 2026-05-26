@@ -11,7 +11,7 @@ Xacro/URDF로 로봇 구조 작성
 -> robot_state_publisher가 link/joint 구조를 TF로 변환
 -> Gazebo가 world를 실행
 -> spawn_entity.py가 URDF를 읽어 Gazebo 안에 로봇 생성
--> Gazebo plugin이 /robot_ns/scan, /robot_ns/odom, /robot_ns/imu, /robot_ns/image_raw 같은 ROS2 topic 생성
+-> Gazebo plugin이 /lee/scan, /lee/odom, /lee/imu, /lee/image_raw 같은 ROS2 topic 생성
 -> RViz2, teleop, 간단한 LiDAR 회피 노드로 동작 확인
 -> Day 11 SLAM 입력인 LaserScan/Odometry/TF 준비
 ```
@@ -25,10 +25,10 @@ Xacro/URDF로 로봇 구조 작성
 이 문서의 기준은 아래 패키지다.
 
 ```text
-$ROS2_WS/lee_robot_description/
+projects/ros2_navigation_lab/src/lee_robot_description/
 ```
 
-주의할 점은 이 패키지가 일반적인 `ws/src/` 아래가 아니라, 현재 압축본에서는 `ws/lee_robot_description/` 위치에 있다는 것이다. 문서에서는 실제 파일 위치를 기준으로 설명한다.
+이 패키지는 `projects/ros2_navigation_lab` workspace의 `src/` 아래에 있다. 문서에서는 실제 파일 위치를 기준으로 설명한다.
 
 ```text
 lee_robot_description/
@@ -36,14 +36,13 @@ lee_robot_description/
 ├── CMakeLists.txt
 ├── urdf/
 │   ├── turtlebot.xacro
-│   ├── turtlebot_gaze.xacro
-│   └── turtle_from_xacro.urdf
+│   └── turtlebot_gaze.xacro
 ├── launch/
 │   ├── display.launch.py
-│   ├── gaze.launch.py
+│   ├── gazebo.launch.py
 │   ├── slam.launch.py
-│   ├── amcl.launch.py
-│   ├── amcl_full.launch.py
+│   ├── gazebo_slam.launch.py
+│   ├── localization.launch.py
 │   ├── nav2.launch.py
 │   └── nav2_navigation.launch.py
 ├── config/
@@ -56,7 +55,6 @@ lee_robot_description/
 │   └── slam.world
 ├── rviz/
 │   ├── turtlebot.rviz
-│   ├── gaze,rviz.rviz
 │   ├── slam.rviz
 │   └── amcl.rviz
 └── scripts/
@@ -118,13 +116,13 @@ turtlebot_gaze.xacro
 ### 4.3 topic 이름과 frame 이름은 다르다
 
 ```text
-/robot_ns/scan     = LaserScan 메시지가 흐르는 topic
+/lee/scan          = LaserScan 메시지가 흐르는 topic
 base_scan     = LaserScan이 어느 좌표계 기준인지 나타내는 frame_id
 
-/robot_ns/odom     = Odometry 메시지가 흐르는 topic
-odom_robot_ns      = odometry 기준 좌표계 frame
+/lee/odom          = Odometry 메시지가 흐르는 topic
+odom_lee           = odometry 기준 좌표계 frame
 
-/robot_ns/tf       = TF 메시지가 흐르는 topic
+/lee/tf            = TF 메시지가 흐르는 topic
 base_link     = 로봇 몸체 좌표계 frame
 ```
 
@@ -138,16 +136,16 @@ Day 10 출력은 Day 11 SLAM의 입력이 된다.
 
 ```text
 Gazebo diff_drive plugin
-  -> /robot_ns/odom
-  -> odom_robot_ns -> base_footprint 계열 TF
+  -> /lee/odom
+  -> odom_lee -> base_footprint 계열 TF
 
 Gazebo LiDAR plugin
-  -> /robot_ns/scan
+  -> /lee/scan
   -> frame_id: base_scan
 
 robot_state_publisher
-  -> /robot_ns/tf
-  -> /robot_ns/tf_static
+  -> /lee/tf
+  -> /lee/tf_static
 
 이 세 가지가 맞물려야 SLAM Toolbox가 scan을 지도 좌표계로 누적할 수 있다.
 ```
@@ -155,9 +153,9 @@ robot_state_publisher
 따라서 Day 10의 목표는 “로봇이 화면에 보임”에서 끝나면 안 된다. 최소한 아래를 확인해야 한다.
 
 ```bash
-ros2 topic list | grep /robot_ns
-ros2 topic echo /robot_ns/scan --qos-reliability best_effort --once
-ros2 topic echo /robot_ns/odom --once
-ros2 topic echo /robot_ns/joint_states --once
-ros2 run tf2_tools view_frames --ros-args -r /tf:=/robot_ns/tf -r /tf_static:=/robot_ns/tf_static
+ros2 topic list | grep /lee
+ros2 topic echo /lee/scan --qos-reliability best_effort --once
+ros2 topic echo /lee/odom --once
+ros2 topic echo /lee/joint_states --once
+ros2 run tf2_tools view_frames --ros-args -r /tf:=/lee/tf -r /tf_static:=/lee/tf_static
 ```

@@ -203,7 +203,7 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard \
 
 ---
 
-## 8. `Entity [turtlebot_lee] already exists`
+## 8. `Entity [turtlebot] already exists`
 
 원인:
 

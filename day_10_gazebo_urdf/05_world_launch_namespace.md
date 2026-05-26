@@ -8,7 +8,7 @@
 
 | 파일 | 역할 |
 |---|---|
-| `worlds/robot_ns_world.world` | Day 10 Gazebo 기본 실행 world |
+| `worlds/lee_world.world` | Day 10 Gazebo 기본 실행 world |
 | `worlds/simple_maze.world` | 미로/장애물 형태의 world |
 | `worlds/slam.world` | SLAM 실습에 적합한 벽/장애물 world |
 
@@ -31,7 +31,7 @@ static model
 
 ## 2. Gazebo 실행에 필요한 ROS plugin
 
-`gaze.launch.py`는 Gazebo를 실행할 때 아래 plugin을 로드한다.
+`gazebo.launch.py`는 Gazebo를 실행할 때 아래 plugin을 로드한다.
 
 ```text
 -s libgazebo_ros_init.so
@@ -51,28 +51,28 @@ static model
 
 `spawn_entity.py`는 Gazebo 안에 로봇 모델을 생성하는 도구다.
 
-현재 `gaze.launch.py`에서는 다음과 같은 의미로 실행된다.
+현재 `gazebo.launch.py`에서는 다음과 같은 의미로 실행된다.
 
 ```text
--topic /robot_ns/robot_description
--entity turtlebot_lee
+-topic /lee/robot_description
+-entity turtlebot
 -z 0.1
 ```
 
 해석:
 
 ```text
-/robot_ns/robot_description topic에서 URDF XML을 읽는다.
-Gazebo 안에 turtlebot_lee라는 entity 이름으로 로봇을 생성한다.
+/lee/robot_description topic에서 URDF XML을 읽는다.
+Gazebo 안에 turtlebot라는 entity 이름으로 로봇을 생성한다.
 처음 z 위치는 0.1m로 둔다.
 ```
 
 구분해야 할 이름:
 
 ```text
-Gazebo entity name: turtlebot_lee
+Gazebo entity name: turtlebot
 URDF robot name:    turtlebot
-ROS namespace:      /robot_ns
+ROS namespace:      /lee
 base frame:         base_footprint 또는 base_link
 ```
 
@@ -84,7 +84,7 @@ base frame:         base_footprint 또는 base_link
 
 Launch 파일은 단순히 여러 명령어를 순서대로 실행하는 쉘 스크립트가 아니다. ROS graph 구성을 선언하는 파일이다.
 
-`gaze.launch.py`가 묶는 요소:
+`gazebo.launch.py`가 묶는 요소:
 
 ```text
 1. xacro 변환
@@ -102,45 +102,48 @@ Launch 파일은 단순히 여러 명령어를 순서대로 실행하는 쉘 스
 |---|---:|---|
 | `use_sim_time` | `true` | Gazebo `/clock` 사용 |
 | `use_rviz` | `true` | RViz2 실행 여부 |
-| `use_avoidance` | `true` | LiDAR 회피 노드 실행 여부 |
+| `use_avoidance` | `false` | LiDAR 회피 노드 실행 여부 |
+| `namespace` | `lee` | robot topic namespace |
+| `odom_frame` | `odom_lee` | Gazebo odometry frame |
+| `entity_name` | `turtlebot` | Gazebo entity 이름 |
 | `spawn_z` | `0.1` | Gazebo spawn 높이 |
 
 확인:
 
 ```bash
-ros2 launch lee_robot_description gaze.launch.py --show-args
+ros2 launch lee_robot_description gazebo.launch.py --show-args
 ```
 
 ---
 
 ## 5. Namespace와 remap
 
-현재 실습은 `/robot_ns` namespace를 적극적으로 사용한다.
+현재 실습은 기본값으로 `/lee` namespace를 사용한다. `gazebo.launch.py`에서는 `namespace:=...` 인자로 이 값을 바꿀 수 있다.
 
 Gazebo plugin 내부:
 
 ```xml
 <ros>
-  <namespace>/robot_ns</namespace>
+  <namespace>/lee</namespace>
 </ros>
 ```
 
-이렇게 되어 있으면 상대 topic은 `/robot_ns` 아래로 들어간다.
+이렇게 되어 있으면 상대 topic은 `/lee` 아래로 들어간다.
 
 ```text
-cmd_vel -> /robot_ns/cmd_vel
-odom    -> /robot_ns/odom
-scan    -> /robot_ns/scan
-imu     -> /robot_ns/imu
+cmd_vel -> /lee/cmd_vel
+odom    -> /lee/odom
+scan    -> /lee/scan
+imu     -> /lee/imu
 ```
 
 Launch의 remap:
 
 ```text
-/robot_description -> /robot_ns/robot_description
-/tf                -> /robot_ns/tf
-/tf_static         -> /robot_ns/tf_static
-/joint_states      -> /robot_ns/joint_states
+/robot_description -> /lee/robot_description
+/tf                -> /lee/tf
+/tf_static         -> /lee/tf_static
+/joint_states      -> /lee/joint_states
 ```
 
 ---
@@ -152,17 +155,17 @@ Launch의 remap:
 ```text
 namespace
   ROS topic/service/action 이름을 나누는 용도
-  예: /robot_ns/scan, /robot_ns/odom, /robot_ns/cmd_vel
+  예: /lee/scan, /lee/odom, /lee/cmd_vel
 
 frame_id
   좌표계 이름
-  예: base_scan, base_link, odom_robot_ns, camera_link
+  예: base_scan, base_link, odom_lee, camera_link
 ```
 
-`/robot_ns/scan`이라는 topic으로 LaserScan이 발행되더라도, 메시지 내부의 `header.frame_id`는 `base_scan`일 수 있다.
+`/lee/scan`이라는 topic으로 LaserScan이 발행되더라도, 메시지 내부의 `header.frame_id`는 `base_scan`일 수 있다.
 
 ```text
-Topic: /robot_ns/scan
+Topic: /lee/scan
 Message header.frame_id: base_scan
 ```
 

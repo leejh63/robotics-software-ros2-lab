@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="turtlebot">
 
+  <xacro:arg name="namespace" default="lee"/>
+  <xacro:arg name="odom_frame" default="odom_lee"/>
+
   <!-- ========== MATERIALS ========== -->
   <material name="black">
     <color rgba="0.0 0.0 0.0 0.3"/>

@@ -11,7 +11,7 @@ Gazebo 시뮬레이션 세계
   물리 계산, 바퀴 회전, ray sensor, camera, imu
         ↓ plugin
 ROS2 topic 세계
-  /robot_ns/cmd_vel, /robot_ns/odom, /robot_ns/scan, /robot_ns/imu, /robot_ns/image_raw
+  /lee/cmd_vel, /lee/odom, /lee/scan, /lee/imu, /lee/image_raw
 ```
 
 즉 plugin은 “Gazebo 내부 데이터”를 “ROS2 메시지”로 바꾸거나, 반대로 ROS2 명령을 Gazebo 동작으로 바꾸는 어댑터다.
@@ -24,11 +24,11 @@ ROS2 topic 세계
 
 | plugin | 역할 | 주요 topic |
 |---|---|---|
-| `libgazebo_ros_diff_drive.so` | `/robot_ns/cmd_vel`을 받아 바퀴를 구동하고 odom 발행 | `/robot_ns/cmd_vel`, `/robot_ns/odom` |
-| `libgazebo_ros_joint_state_publisher.so` | 바퀴 joint 상태 발행 | `/robot_ns/joint_states` |
-| `libgazebo_ros_ray_sensor.so` | Gazebo ray sensor를 LaserScan으로 발행 | `/robot_ns/scan` |
-| `libgazebo_ros_imu_sensor.so` | IMU 센서값 발행 | `/robot_ns/imu` |
-| `libgazebo_ros_camera.so` | 카메라 이미지와 camera info 발행 | `/robot_ns/image_raw`, `/robot_ns/camera_info` |
+| `libgazebo_ros_diff_drive.so` | `/lee/cmd_vel`을 받아 바퀴를 구동하고 odom 발행 | `/lee/cmd_vel`, `/lee/odom` |
+| `libgazebo_ros_joint_state_publisher.so` | 바퀴 joint 상태 발행 | `/lee/joint_states` |
+| `libgazebo_ros_ray_sensor.so` | Gazebo ray sensor를 LaserScan으로 발행 | `/lee/scan` |
+| `libgazebo_ros_imu_sensor.so` | IMU 센서값 발행 | `/lee/imu` |
+| `libgazebo_ros_camera.so` | 카메라 이미지와 camera info 발행 | `/lee/image_raw`, `/lee/camera_info` |
 
 ---
 
@@ -39,20 +39,20 @@ Diff Drive plugin은 로봇 이동의 핵심이다.
 현재 설정의 핵심:
 
 ```xml
-<namespace>/robot_ns</namespace>
+<namespace>/lee</namespace>
 <left_joint>wheel_left_joint</left_joint>
 <right_joint>wheel_right_joint</right_joint>
 <command_topic>cmd_vel</command_topic>
 <odometry_topic>odom</odometry_topic>
-<odometry_frame>odom_robot_ns</odometry_frame>
+<odometry_frame>odom_lee</odometry_frame>
 <robot_base_frame>base_footprint</robot_base_frame>
 ```
 
-`namespace`가 `/robot_ns`이므로 상대 topic인 `cmd_vel`, `odom`은 실제로 다음처럼 해석된다.
+`namespace`가 `/lee`이므로 상대 topic인 `cmd_vel`, `odom`은 실제로 다음처럼 해석된다.
 
 ```text
-cmd_vel -> /robot_ns/cmd_vel
-odom    -> /robot_ns/odom
+cmd_vel -> /lee/cmd_vel
+odom    -> /lee/odom
 ```
 
 흐름:
@@ -60,15 +60,15 @@ odom    -> /robot_ns/odom
 ```text
 teleop 또는 회피 노드
         ↓ Twist
-/robot_ns/cmd_vel
+/lee/cmd_vel
         ↓
 Gazebo diff_drive plugin
         ↓
 wheel_left_joint / wheel_right_joint 회전
         ↓
-/robot_ns/odom 발행
+/lee/odom 발행
         ↓
-odom_robot_ns -> base_footprint 관계 갱신
+odom_lee -> base_footprint 관계 갱신
 ```
 
 주의할 점:
@@ -89,11 +89,11 @@ Gazebo wheel joint 상태
         ↓
 libgazebo_ros_joint_state_publisher.so
         ↓
-/robot_ns/joint_states
+/lee/joint_states
         ↓
 robot_state_publisher
         ↓
-/robot_ns/tf
+/lee/tf
 ```
 
 `robot_state_publisher`는 이 값을 받아 바퀴 link의 동적 TF를 계산할 수 있다.
@@ -115,7 +115,7 @@ LiDAR는 Day 11 SLAM과 Day 12 AMCL에서 가장 중요한 입력이다.
     <min>0.12</min>
     <max>3.5</max>
     <plugin filename="libgazebo_ros_ray_sensor.so">
-      <namespace>/robot_ns</namespace>
+      <namespace>/lee</namespace>
       <remapping>~/out:=scan</remapping>
       <output_type>sensor_msgs/LaserScan</output_type>
       <frame_name>base_scan</frame_name>
@@ -133,7 +133,7 @@ Gazebo ray sensor
         ↓
 libgazebo_ros_ray_sensor.so
         ↓
-/robot_ns/scan
+/lee/scan
         ↓
 RViz2 / lidar_wall_follower.py / SLAM Toolbox / AMCL
 ```
@@ -141,7 +141,7 @@ RViz2 / lidar_wall_follower.py / SLAM Toolbox / AMCL
 중요한 점:
 
 ```text
-/robot_ns/scan은 topic 이름이다.
+/lee/scan은 topic 이름이다.
 base_scan은 LaserScan 메시지의 frame_id다.
 ```
 
@@ -156,7 +156,7 @@ Gazebo IMU sensor
         ↓
 libgazebo_ros_imu_sensor.so
         ↓
-/robot_ns/imu
+/lee/imu
 ```
 
 현재 실습의 핵심은 SLAM/Nav2에서 IMU를 깊게 쓰는 것보다, Gazebo sensor plugin이 ROS2 `sensor_msgs/msg/Imu`를 만들 수 있다는 점을 확인하는 것이다.
@@ -170,8 +170,8 @@ Camera plugin은 `camera_link`에 붙어 있다.
 현재 설정은 camera plugin 기본 topic을 remap해서 다음 topic을 만들도록 되어 있다.
 
 ```text
-/robot_ns/image_raw
-/robot_ns/camera_info
+/lee/image_raw
+/lee/camera_info
 ```
 
 흐름:
@@ -181,8 +181,8 @@ Gazebo camera sensor
         ↓
 libgazebo_ros_camera.so
         ↓
-/robot_ns/image_raw
-/robot_ns/camera_info
+/lee/image_raw
+/lee/camera_info
         ↓
 RViz2 또는 OpenCV/YOLO 노드로 연결 가능
 ```
@@ -196,30 +196,30 @@ Day 06~09의 `camera_pkg`에서 다룬 OpenCV/YOLO 흐름과 연결할 수 있�
 ```text
 [Command]
 teleop_twist_keyboard or lidar_wall_follower.py
-        └── /robot_ns/cmd_vel
+        └── /lee/cmd_vel
                 ↓
         Gazebo diff_drive plugin
-                ├── /robot_ns/odom
+                ├── /lee/odom
                 └── wheel joint motion
 
 [Joint]
 Gazebo joint state plugin
-        └── /robot_ns/joint_states
+        └── /lee/joint_states
                 ↓
         robot_state_publisher
-                ├── /robot_ns/tf
-                └── /robot_ns/tf_static
+                ├── /lee/tf
+                └── /lee/tf_static
 
 [Sensors]
 Gazebo ray sensor
-        └── /robot_ns/scan
+        └── /lee/scan
 
 Gazebo imu sensor
-        └── /robot_ns/imu
+        └── /lee/imu
 
 Gazebo camera sensor
-        ├── /robot_ns/image_raw
-        └── /robot_ns/camera_info
+        ├── /lee/image_raw
+        └── /lee/camera_info
 ```
 
 ---
@@ -231,4 +231,4 @@ URDF/Xacro는 구조를 만든다.
 Gazebo plugin은 그 구조에 실제 시뮬레이션 동작과 ROS2 topic을 붙인다.
 ```
 
-Day 10에서 plugin 흐름을 정확히 이해해야 Day 11에서 `/robot_ns/scan`과 `/robot_ns/odom`이 왜 SLAM의 입력이 되는지 이해할 수 있다.
+Day 10에서 plugin 흐름을 정확히 이해해야 Day 11에서 `/lee/scan`과 `/lee/odom`이 왜 SLAM의 입력이 되는지 이해할 수 있다.

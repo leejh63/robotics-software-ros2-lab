@@ -34,13 +34,13 @@ pkill -f teleop_twist_keyboard
 ## 2. 통합 실행
 
 ```bash
-ros2 launch lee_robot_description amcl_full.launch.py
+ros2 launch lee_robot_description localization.launch.py
 ```
 
 작은 방 world/map:
 
 ```bash
-ros2 launch lee_robot_description amcl_full.launch.py \
+ros2 launch lee_robot_description localization.launch.py \
   world:=lee_world.world \
   map_yaml:=$ROS2_WS/room_map.yaml
 ```
@@ -60,7 +60,7 @@ LaserScan과 Map 정합 확인
 ### 터미널 1: Gazebo + RViz
 
 ```bash
-ros2 launch lee_robot_description amcl.launch.py world:=slam.world
+ros2 launch lee_robot_description gazebo.launch.py world:=slam.world
 ```
 
 ### 터미널 2: map_server

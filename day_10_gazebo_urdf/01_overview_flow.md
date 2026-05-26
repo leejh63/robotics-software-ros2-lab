@@ -41,23 +41,23 @@ Day 10의 실습은 크게 다섯 묶음이다.
 
 ## 3. 전체 실행 흐름
 
-`gaze.launch.py` 기준 흐름은 다음과 같다.
+`gazebo.launch.py` 기준 흐름은 다음과 같다.
 
 ```text
-ros2 launch lee_robot_description gaze.launch.py
+ros2 launch lee_robot_description gazebo.launch.py
 
 1. get_package_share_directory('lee_robot_description')로 패키지 설치 경로를 찾음
 2. urdf/turtlebot.xacro 경로를 만듦
-3. worlds/robot_ns_world.world 경로를 만듦
+3. worlds/lee_world.world 경로를 만듦
 4. xacro 명령으로 turtlebot.xacro를 URDF XML 문자열로 변환
 5. robot_state_publisher가 robot_description 파라미터를 받고 실행됨
 6. Gazebo가 lee_world.world와 함께 실행됨
 7. Gazebo에 libgazebo_ros_init.so, libgazebo_ros_factory.so가 로드됨
-8. spawn_entity.py가 /robot_ns/robot_description을 읽어 Gazebo에 turtlebot_lee entity 생성
+8. spawn_entity.py가 /lee/robot_description을 읽어 Gazebo에 turtlebot entity 생성
 9. turtlebot_gaze.xacro에 정의된 Gazebo plugin들이 동작 시작
-10. plugin들이 /robot_ns/cmd_vel, /robot_ns/odom, /robot_ns/scan, /robot_ns/imu, /robot_ns/image_raw 등을 연결
+10. plugin들이 /lee/cmd_vel, /lee/odom, /lee/scan, /lee/imu, /lee/image_raw 등을 연결
 11. RViz2가 robot_description, TF, scan, odom 등을 시각화
-12. 옵션에 따라 lidar_wall_follower.py가 /robot_ns/scan을 읽고 /robot_ns/cmd_vel 발행
+12. 옵션에 따라 lidar_wall_follower.py가 /lee/scan을 읽고 /lee/cmd_vel 발행
 ```
 
 ---
@@ -73,7 +73,7 @@ robot_description
         ↓
 robot_state_publisher
         ↓
-/robot_ns/tf, /robot_ns/tf_static
+/lee/tf, /lee/tf_static
         ↓
 RViz2 RobotModel / TF display
 ```
@@ -81,11 +81,11 @@ RViz2 RobotModel / TF display
 ### 4.2 Gazebo spawn 흐름
 
 ```text
-robot_state_publisher가 제공하는 /robot_ns/robot_description
+robot_state_publisher가 제공하는 /lee/robot_description
         ↓
-spawn_entity.py -topic /robot_ns/robot_description
+spawn_entity.py -topic /lee/robot_description
         ↓
-Gazebo 안에 turtlebot_lee entity 생성
+Gazebo 안에 turtlebot entity 생성
         ↓
 Gazebo plugin 동작 시작
 ```
@@ -95,13 +95,13 @@ Gazebo plugin 동작 시작
 ```text
 teleop 또는 lidar_wall_follower.py
         ↓ publish
-/robot_ns/cmd_vel
+/lee/cmd_vel
         ↓ subscribe
 Gazebo diff_drive plugin
         ↓
 wheel_left_joint / wheel_right_joint 구동
         ↓ publish
-/robot_ns/odom, /robot_ns/joint_states
+/lee/odom, /lee/joint_states
 ```
 
 ### 4.4 센서 흐름
@@ -109,15 +109,15 @@ wheel_left_joint / wheel_right_joint 구동
 ```text
 Gazebo ray sensor on base_scan
         ↓
-/robot_ns/scan  sensor_msgs/msg/LaserScan
+/lee/scan  sensor_msgs/msg/LaserScan
 
 Gazebo imu sensor on imu_link
         ↓
-/robot_ns/imu   sensor_msgs/msg/Imu
+/lee/imu   sensor_msgs/msg/Imu
 
 Gazebo camera sensor on camera_link
         ↓
-/robot_ns/image_raw, /robot_ns/camera_info
+/lee/image_raw, /lee/camera_info
 ```
 
 ---
@@ -127,9 +127,9 @@ Gazebo camera sensor on camera_link
 Day 11 SLAM으로 넘어가기 전에 Day 10에서 최소한 아래가 확인되어야 한다.
 
 ```text
-1. /robot_ns/scan이 발행된다.
-2. /robot_ns/odom이 발행된다.
-3. /robot_ns/tf와 /robot_ns/tf_static이 발행된다.
+1. /lee/scan이 발행된다.
+2. /lee/odom이 발행된다.
+3. /lee/tf와 /lee/tf_static이 발행된다.
 4. LaserScan의 frame_id가 TF tree 안에 존재한다.
 5. odom frame과 base frame이 TF로 연결된다.
 6. Gazebo/RViz/SLAM 노드가 모두 simulation time을 쓰는지 확인한다.
@@ -138,10 +138,10 @@ Day 11 SLAM으로 넘어가기 전에 Day 10에서 최소한 아래가 확인되
 확인 명령 예시:
 
 ```bash
-ros2 topic list | grep /robot_ns
-ros2 topic echo /robot_ns/scan --qos-reliability best_effort --once
-ros2 topic echo /robot_ns/odom --once
-ros2 run tf2_tools view_frames --ros-args -r /tf:=/robot_ns/tf -r /tf_static:=/robot_ns/tf_static
+ros2 topic list | grep /lee
+ros2 topic echo /lee/scan --qos-reliability best_effort --once
+ros2 topic echo /lee/odom --once
+ros2 run tf2_tools view_frames --ros-args -r /tf:=/lee/tf -r /tf_static:=/lee/tf_static
 ```
 
 ---

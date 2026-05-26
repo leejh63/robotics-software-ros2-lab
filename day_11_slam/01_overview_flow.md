@@ -27,7 +27,7 @@ Day 11에서 한 작업은 다음 흐름이다.
 
 ```text
 1. Gazebo world 실행
-2. turtlebot_lee entity spawn
+2. turtlebot entity spawn
 3. robot_state_publisher로 로봇 link/joint TF 발행
 4. Gazebo plugin으로 /robot_ns/scan, /robot_ns/odom, /robot_ns/tf 생성
 5. SLAM Toolbox 실행

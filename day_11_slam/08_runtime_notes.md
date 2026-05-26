@@ -4,14 +4,14 @@
 
 ---
 
-## 1. `/map`과 `/robot_ns/map` 혼동
+## 1. `/map`과 `/lee/map` 혼동
 
-현재 SLAM 결과는 `/robot_ns/map`이다.
+현재 SLAM 결과는 `/lee/map`이다.
 
 ```text
-SLAM Toolbox output: /robot_ns/map
+SLAM Toolbox output: /lee/map
 map_saver_cli 기본값: /map
-RViz2에서 볼 topic: /robot_ns/map
+RViz2에서 볼 topic: /lee/map
 ```
 
 증상:
@@ -19,21 +19,21 @@ RViz2에서 볼 topic: /robot_ns/map
 ```text
 map_saver_cli가 지도를 못 받음
 RViz2에서 지도 안 보임
-ros2 topic echo /map은 안 나오는데 /robot_ns/map은 나옴
+ros2 topic echo /map은 안 나오는데 /lee/map은 나옴
 ```
 
 확인:
 
 ```bash
 ros2 topic list | grep map
-ros2 topic echo /robot_ns/map --once
+ros2 topic echo /lee/map --once
 ```
 
 ---
 
-## 2. `/tf`와 `/robot_ns/tf` 혼동
+## 2. `/tf`와 `/lee/tf` 혼동
 
-현재 launch는 TF도 `/robot_ns/tf`, `/robot_ns/tf_static`으로 remap한다.
+현재 launch는 TF도 `/lee/tf`, `/lee/tf_static`으로 remap한다.
 
 증상:
 
@@ -47,23 +47,23 @@ SLAM Toolbox가 scan frame을 map/odom/base와 연결하지 못함
 
 ```bash
 ros2 topic list | grep tf
-ros2 run tf2_ros tf2_echo map_robot_ns base_footprint \
+ros2 run tf2_ros tf2_echo map_lee base_footprint \
   --ros-args \
-  -r /tf:=/robot_ns/tf \
-  -r /tf_static:=/robot_ns/tf_static
+  -r /tf:=/lee/tf \
+  -r /tf_static:=/lee/tf_static
 ```
 
 ---
 
 ## 3. topic remap은 frame_id를 바꾸지 않는다
 
-이전 bag을 재생할 때 `/scan:=/robot_ns/scan`으로 remap할 수 있다.
+이전 bag을 재생할 때 `/scan:=/lee/scan`으로 remap할 수 있다.
 
 하지만 이것은 topic 이름만 바꾼다.
 
 ```text
 바뀌는 것:
-  /scan -> /robot_ns/scan
+  /scan -> /lee/scan
 
 자동으로 안 바뀌는 것:
   msg.header.frame_id
@@ -76,8 +76,8 @@ ros2 run tf2_ros tf2_echo map_robot_ns base_footprint \
 확인:
 
 ```bash
-ros2 topic echo /robot_ns/scan --once
-ros2 topic echo /robot_ns/odom --once
+ros2 topic echo /lee/scan --once
+ros2 topic echo /lee/odom --once
 ```
 
 ---
@@ -91,8 +91,8 @@ offline SLAM을 할 때 Gazebo가 켜져 있으면 입력이 섞일 수 있다.
 ```text
 Gazebo도 /clock 발행
 bag play도 --clock으로 /clock 발행
-Gazebo도 /robot_ns/scan 발행
-bag play도 /robot_ns/scan 재생
+Gazebo도 /lee/scan 발행
+bag play도 /lee/scan 재생
 TF도 여러 소스에서 발행될 수 있음
 ```
 
@@ -127,11 +127,11 @@ ros2 bag play bags/slam_raw_01 --clock
 
 ---
 
-## 6. map_robot_ns -> odom_robot_ns 발행 주체 중복 주의
+## 6. map_lee -> odom_lee 발행 주체 중복 주의
 
-SLAM 중에는 SLAM Toolbox가 `map_robot_ns -> odom_robot_ns`를 발행한다.
+SLAM 중에는 SLAM Toolbox가 `map_lee -> odom_lee`를 발행한다.
 
-AMCL 중에는 AMCL이 `map_robot_ns -> odom_robot_ns`를 발행한다.
+AMCL 중에는 AMCL이 `map_lee -> odom_lee`를 발행한다.
 
 확인 과정에서는 static_transform_publisher가 발행할 수 있다.
 
@@ -139,8 +139,8 @@ AMCL 중에는 AMCL이 `map_robot_ns -> odom_robot_ns`를 발행한다.
 
 ```text
 SLAM Toolbox + AMCL
-SLAM Toolbox + static map_robot_ns -> odom_robot_ns
-AMCL + static map_robot_ns -> odom_robot_ns
+SLAM Toolbox + static map_lee -> odom_lee
+AMCL + static map_lee -> odom_lee
 ```
 
 같은 parent-child transform을 여러 노드가 동시에 발행하면 TF가 불안정해질 수 있다.
@@ -194,7 +194,7 @@ Unable to open file ./maps/slam_map.pgm
 ```bash
 mkdir -p maps
 ros2 run nav2_map_server map_saver_cli \
-  -t /robot_ns/map \
+  -t /lee/map \
   -f ./maps/slam_map
 ```
 
@@ -202,7 +202,7 @@ ros2 run nav2_map_server map_saver_cli \
 
 ## 9. RViz2 Fixed Frame 설정 실수
 
-현재 기준 Fixed Frame은 `map_robot_ns`다.
+현재 기준 Fixed Frame은 `map_lee`다.
 
 문제 설정:
 
@@ -214,7 +214,7 @@ Map Topic = /map
 현재 권장:
 
 ```text
-Fixed Frame = map_robot_ns
-Map Topic = /robot_ns/map
-LaserScan Topic = /robot_ns/scan
+Fixed Frame = map_lee
+Map Topic = /lee/map
+LaserScan Topic = /lee/scan
 ```

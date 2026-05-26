@@ -46,15 +46,15 @@ $SOURCE_NOTES/day_12/main/amcl_day12_integrated_guide.md
 이 문서에서 가져온 핵심 기준:
 
 ```text
-workspace: $ROS2_WS
+workspace: projects/ros2_navigation_lab
 package: lee_robot_description
-map: $ROS2_WS/slam_map.yaml
+map: src/lee_robot_description/maps/slam_map.yaml
 world: slam.world
-map topic: /robot_ns/map
-scan topic: /robot_ns/scan
-cmd_vel topic: /robot_ns/cmd_vel
-map frame: map_robot_ns
-odom frame: odom_robot_ns
+map topic: /lee/map
+scan topic: /lee/scan
+cmd_vel topic: /lee/cmd_vel
+map frame: map_lee
+odom frame: odom_lee
 base frame: base_footprint
 ```
 
@@ -63,24 +63,25 @@ base frame: base_footprint
 ## 3. 실제 실행 관련 launch/config 파일
 
 ```text
-$ROS2_WS/lee_robot_description/launch/amcl.launch.py
-$ROS2_WS/lee_robot_description/launch/amcl_full.launch.py
-$ROS2_WS/lee_robot_description/config/amcl_param.yaml
-$ROS2_WS/lee_robot_description/rviz/amcl.rviz
+projects/ros2_navigation_lab/src/lee_robot_description/launch/localization.launch.py
+projects/ros2_navigation_lab/src/lee_robot_description/launch/nav2.launch.py
+projects/ros2_navigation_lab/src/lee_robot_description/config/amcl_param.yaml
+projects/ros2_navigation_lab/src/lee_robot_description/rviz/amcl.rviz
 ```
 
 | 파일 | 역할 |
 |---|---|
-| `amcl.launch.py` | Gazebo, robot_state_publisher, spawn_entity, RViz를 띄우는 분리 실행용 런치 |
-| `amcl_full.launch.py` | Gazebo, robot_state_publisher, spawn_entity, map_server, amcl, lifecycle_manager, RViz를 한 번에 띄우는 통합 런치 |
+| `localization.launch.py` | Gazebo, robot_state_publisher, spawn_entity, map_server, amcl, lifecycle_manager, RViz를 한 번에 띄우는 localization 런치 |
+| `nav2.launch.py` | `localization.launch.py`와 `nav2_navigation.launch.py`를 함께 include하는 상위 런치 |
 | `amcl_param.yaml` | AMCL frame/topic, particle, motion model, laser model, update 조건 설정 |
 | `amcl.rviz` | AMCL 확인용 RViz display 설정 |
 
 주의:
 
 ```text
-amcl.launch.py는 map_server와 amcl을 직접 실행하지 않는다.
-amcl_full.launch.py는 map_server와 amcl까지 같이 실행한다.
+현재 폴더에는 legacy AMCL launch 파일이 없다.
+AMCL 단독 확인은 localization.launch.py를 기준으로 본다.
+Nav2까지 함께 실행할 때는 nav2.launch.py를 사용한다.
 ```
 
 ---
@@ -90,7 +91,6 @@ amcl_full.launch.py는 map_server와 amcl까지 같이 실행한다.
 ```text
 $SOURCE_NOTES/day_12/main/commands/amcl_local_cheatsheet.md
 $SOURCE_NOTES/day_12/main/commands/amcl_현재_environment_topics.md
-$SOURCE_NOTES/day_12/main/commands/amcl_full_launch_progress.md
 $SOURCE_NOTES/day_12/main/commands/nav2_action_goal_direct_guide.md
 $SOURCE_NOTES/day_12/main/troubleshooting/amcl_troubleshooting.md
 ```

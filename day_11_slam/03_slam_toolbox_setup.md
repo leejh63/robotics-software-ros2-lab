@@ -9,7 +9,7 @@
 ```text
 1. Gazebo 실행
 2. robot_state_publisher 실행
-3. Gazebo에 turtlebot_lee spawn
+3. Gazebo에 turtlebot spawn
 4. SLAM Toolbox 실행
 5. RViz2 실행
 ```

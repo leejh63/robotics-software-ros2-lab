@@ -36,7 +36,7 @@ def generate_launch_description():
         DeclareLaunchArgument(
             'params_file',
             default_value=default_params_file,
-            description='Nav2 navigation-only parameter file.',
+            description='Nav2 navigation-only parameter file. It must match the selected namespace and frames.',
         ),
         DeclareLaunchArgument(
             'use_sim_time',

@@ -16,7 +16,7 @@ AMCL은 어떤 입력을 필요로 하는가?
 AMCL은 어떤 출력을 만드는가?
 particle은 무엇인가?
 /initialpose는 왜 필요한가?
-/amcl_pose와 map_robot_ns -> odom_robot_ns TF는 무엇이 다른가?
+/amcl_pose와 map_lee -> odom_lee TF는 무엇이 다른가?
 amcl_param.yaml의 값들은 MCL의 어느 단계와 연결되는가?
 예시 환경에서 어떤 명령어로 확인해야 하는가?
 ```
@@ -26,22 +26,22 @@ amcl_param.yaml의 값들은 MCL의 어느 단계와 연결되는가?
 ## 1. 현재 예시 환경 기준
 
 ```text
-워크스페이스       $ROS2_WS
+워크스페이스       projects/ros2_navigation_lab
 패키지             lee_robot_description
-분리 실행 런치      lee_robot_description/launch/amcl.launch.py
-통합 실행 런치      lee_robot_description/launch/amcl_full.launch.py
+분리 실행 런치      lee_robot_description/launch/gazebo.launch.py
+통합 실행 런치      lee_robot_description/launch/localization.launch.py
 AMCL 파라미터      lee_robot_description/config/amcl_param.yaml
 RViz 설정          lee_robot_description/rviz/amcl.rviz
 기본 world         lee_robot_description/worlds/slam.world
-기본 map           $ROS2_WS/slam_map.yaml
-작은 방 world      lee_robot_description/worlds/robot_ns_world.world
-작은 방 map        $ROS2_WS/room_map.yaml
-map topic          /robot_ns/map
-scan topic         /robot_ns/scan
-cmd_vel topic      /robot_ns/cmd_vel
-TF topic           /robot_ns/tf, /robot_ns/tf_static
-map frame          map_robot_ns
-odom frame         odom_robot_ns
+기본 map           lee_robot_description/maps/slam_map.yaml
+작은 방 world      lee_robot_description/worlds/lee_world.world
+작은 방 map        lee_robot_description/maps/room_map.yaml
+map topic          /lee/map
+scan topic         /lee/scan
+cmd_vel topic      /lee/cmd_vel
+TF topic           /lee/tf, /lee/tf_static
+map frame          map_lee
+odom frame         odom_lee
 base frame         base_footprint
 LiDAR frame        base_scan
 ```
@@ -49,17 +49,17 @@ LiDAR frame        base_scan
 일반 예제와 가장 많이 다른 부분은 namespace와 frame 이름이다.
 
 ```text
-/map      -> /robot_ns/map
-/scan     -> /robot_ns/scan
-/cmd_vel  -> /robot_ns/cmd_vel
-/tf       -> /robot_ns/tf
-/tf_static -> /robot_ns/tf_static
-map       -> map_robot_ns
-odom      -> odom_robot_ns
+/map      -> /lee/map
+/scan     -> /lee/scan
+/cmd_vel  -> /lee/cmd_vel
+/tf       -> /lee/tf
+/tf_static -> /lee/tf_static
+map       -> map_lee
+odom      -> odom_lee
 base_link -> base_footprint
 ```
 
-여기서 `map_robot_ns`, `odom_robot_ns`는 일반 예제의 `map`, `odom`과 역할은 같지만, 여러 robot namespace나 rosbag replay 상황에서 TF frame 충돌을 줄이기 위해 더 구체적으로 붙인 이름이다. 자세한 설명은 [`background/map_odom_namespace_frames.md`](background/map_odom_namespace_frames.md)를 참고한다.
+여기서 `map_lee`, `odom_lee`는 일반 예제의 `map`, `odom`과 역할은 같지만, 현재 robot namespace와 맞춰 둔 frame 이름이다. 자세한 설명은 [`background/map_odom_namespace_frames.md`](background/map_odom_namespace_frames.md)를 참고한다.
 
 ---
 
@@ -76,13 +76,13 @@ base_link -> base_footprint
   MCL, particle, motion update, sensor update, resampling 개념
 
 03_amcl_data_flow_and_tf.md
-  map_server, AMCL, /initialpose, /amcl_pose, /particle_cloud, map_robot_ns -> odom_robot_ns TF 관계
+  map_server, AMCL, /initialpose, /amcl_pose, /particle_cloud, map_lee -> odom_lee TF 관계
 
 04_amcl_parameters_and_tuning.md
   amcl_param.yaml 주요 파라미터를 MCL 단계별로 해석
 
 05_execution_split_and_integrated_launch.md
-  분리 실행과 amcl_full.launch.py 통합 실행의 차이
+  분리 실행과 localization.launch.py 통합 실행의 차이
 
 06_rviz_initialpose_and_validation.md
   RViz 설정, 2D Pose Estimate, 수렴 확인 기준
@@ -115,7 +115,7 @@ background/lifecycle_map_server_amcl.md
   map_server와 amcl이 lifecycle node인 이유
 
 background/map_odom_namespace_frames.md
-  일반 예제의 map/odom과 현재 문서의 map_robot_ns/odom_robot_ns 차이
+  일반 예제의 map/odom과 현재 문서의 map_lee/odom_lee 차이
 ```
 
 ---

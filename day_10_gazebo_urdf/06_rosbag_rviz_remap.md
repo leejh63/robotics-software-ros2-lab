@@ -86,8 +86,8 @@ RViz2, tf2_tools, SLAM/AMCL/Nav2 기본 설정과 맞추기 쉽다.
 ### 선택 B: TF도 namespace로 remap
 
 ```text
-/tf -> /robot_ns/tf
-/tf_static -> /robot_ns/tf_static
+/tf -> /lee/tf
+/tf_static -> /lee/tf_static
 ```
 
 이 경우 모든 관련 도구도 같은 remap을 받아야 한다.
@@ -95,8 +95,8 @@ RViz2, tf2_tools, SLAM/AMCL/Nav2 기본 설정과 맞추기 쉽다.
 ```bash
 rviz2 --ros-args \
   -p use_sim_time:=true \
-  --remap /tf:=/robot_ns/tf \
-  --remap /tf_static:=/robot_ns/tf_static
+  --remap /tf:=/lee/tf \
+  --remap /tf_static:=/lee/tf_static
 ```
 
 ---
@@ -109,8 +109,8 @@ RViz2는 Gazebo나 bag 파일을 직접 보는 것이 아니다. ROS2 topic을 �
 |---|---|
 | RobotModel | `robot_description`, TF |
 | TF | `/tf`, `/tf_static` 또는 remap된 TF topic |
-| LaserScan | `/scan`, `/robot_ns/scan`, `/user_ns/scan` 등 |
-| Odometry | `/odom`, `/robot_ns/odom` 등 |
+| LaserScan | `/scan`, `/lee/scan`, `/user_ns/scan` 등 |
+| Odometry | `/odom`, `/lee/odom` 등 |
 | Image | `/image_raw`, compressed image republish 결과 등 |
 
 ---
@@ -122,8 +122,8 @@ LaserScan 같은 센서 topic은 `best_effort` QoS를 쓰는 경우가 많다. �
 확인:
 
 ```bash
-ros2 topic echo /robot_ns/scan --qos-reliability best_effort --once
-ros2 topic hz /robot_ns/scan --qos-reliability best_effort
+ros2 topic echo /lee/scan --qos-reliability best_effort --once
+ros2 topic hz /lee/scan --qos-reliability best_effort
 ```
 
 RViz2에서도 LaserScan display의 Reliability Policy를 `Best Effort`로 바꿔야 보일 수 있다.
