@@ -220,7 +220,7 @@ Day 05의 OpenCV 단독 파이프라인은 ROS2에서 여러 node로 쪼개진�
 
 ---
 
-## 11. 현재 단계에서의 결론
+## 11. 정리
 
 Robot Camera Practice에서 가져갈 것은 아래다.
 

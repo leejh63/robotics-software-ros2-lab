@@ -1,4 +1,4 @@
-# ROS2 Foundation Troubleshooting
+# ROS2 Foundation 트러블슈팅
 
 ## 1. `ros2 run`에서 executable을 못 찾는 경우
 

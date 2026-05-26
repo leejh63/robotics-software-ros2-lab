@@ -1,4 +1,4 @@
-# 02. 시뮬레이션 제어 흐름
+# 03. 시뮬레이션 제어 흐름
 
 ## 전체 데이터 흐름
 
@@ -24,7 +24,7 @@ arm_joint torque
 Gazebo physics
 ```
 
-이 흐름이 닫힌 루프입니다. PID 노드는 팔의 현재 각도를 읽고, 목표각과의 오차를 계산한 뒤, effort 명령을 다시 Gazebo로 보냅니다.
+이 흐름이 닫힌 루프입니다. PID 노드는 팔의 현재 각도를 읽고, 목표각과의 오차를 계산한 뒤, effort 명령을 다시 Gazebo로 보낸다.
 
 ## URDF/Xacro 쪽 핵심
 
@@ -38,7 +38,7 @@ Gazebo physics
 </joint>
 ```
 
-그리고 `ros2_control`에서 이 조인트를 effort command interface로 등록합니다.
+그리고 `ros2_control`에서 이 조인트를 effort command interface로 등록한다.
 
 ```xml
 <joint name="arm_joint">
@@ -66,7 +66,7 @@ effort_controller:
       - velocity
 ```
 
-PID 노드는 `/effort_controller/commands`로 `Float64MultiArray`를 발행합니다.
+PID 노드는 `/effort_controller/commands`로 `Float64MultiArray`를 발행한다.
 
 ```text
 msg.data = [effort]
@@ -89,7 +89,7 @@ output = P + I + D + G
 
 ## 이 구조가 중요한 이유
 
-여기서 PID 노드는 Gazebo를 직접 제어하지 않습니다. PID 노드는 단지 ROS 토픽으로 effort 명령을 발행합니다. 실제로 Gazebo physics에 토크를 넣는 쪽은 `effort_controller`와 `gazebo_ros2_control`입니다.
+여기서 PID 노드는 Gazebo를 직접 제어하지 않습니다. PID 노드는 단지 ROS 토픽으로 effort 명령을 발행한다. 실제로 Gazebo physics에 토크를 넣는 쪽은 `effort_controller`와 `gazebo_ros2_control`입니다.
 
 ```text
 PID 노드

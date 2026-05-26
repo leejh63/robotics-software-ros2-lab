@@ -111,7 +111,7 @@ ros2 run camera_pkg yolo_pub_l
   -> publish /img_yolo1, my_if/ObjectDetectionArray
 ```
 
-주의할 점: `image_yolo1`과 `yolo_pub_l`은 코드상 node name이 둘 다 `image_yolo_publisher1`이다. 동시에 실행하면 node name 중복 경고나 graph 혼동이 생길 수 있다. launch에서 name을 바꾸거나, 실행 목적을 분리해서 쓰는 것이 좋다. 현재 문서에서는 코드 수정 없이 관찰점으로만 기록한다.
+주의할 점: `image_yolo1`과 `yolo_pub_l`은 코드상 node name이 둘 다 `image_yolo_publisher1`이다. 동시에 실행하면 node name 중복 경고나 graph 혼동이 생길 수 있다. launch에서 name을 바꾸거나, 실행 목적을 분리해서 쓰는 것이 좋다.
 
 ---
 
@@ -220,7 +220,7 @@ ros2 run tf2_tools view_frames
 
 ---
 
-## 9. 지금 단계에서 코드 수정은 하지 않는다
+## 9. 실행 구조 정리 시 주의할 점
 
 이번 문서화 단계의 목적은 “돌아가게 고치기”가 아니다.
 
@@ -233,4 +233,4 @@ ros2 run tf2_tools view_frames
 - 뒤쪽 Gazebo/SLAM/AMCL/Nav2로 이어지는 기반 정리
 ```
 
-수정 후보는 `09_runtime_observations_without_code_changes.md`에 따로 기록한다.
+수정 후보는 `09_runtime_notes.md`에 따로 기록한다.

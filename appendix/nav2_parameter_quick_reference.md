@@ -1,4 +1,4 @@
-# Nav2 Parameter Quick Reference
+# Nav2 파라미터 빠른 참조
 
 Day 13 기준으로 자주 보는 Nav2 parameter를 빠르게 정리한다.
 

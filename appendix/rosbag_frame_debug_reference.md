@@ -1,4 +1,4 @@
-# Rosbag Frame Debug Reference
+# Rosbag Frame 디버깅 참조
 
 rosbag replay 문제를 빠르게 확인하기 위한 참조 문서다.
 
@@ -20,7 +20,7 @@ ros2 topic echo /robot_ns/odom --once --field child_frame_id
 ros2 run tf2_tools view_frames
 ```
 
-## 내 환경 기준 기대값
+## 예시 환경 기준 기대값
 
 ```text
 scan topic: /robot_ns/scan

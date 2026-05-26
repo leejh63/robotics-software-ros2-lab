@@ -1,4 +1,4 @@
-# Python / OpenCV / YOLO Commands
+# Python / OpenCV / YOLO 명령어 정리
 
 이 문서는 Day 01~05 실습을 다시 확인할 때 쓸 수 있는 명령어 모음이다. 명령어만 외우지 말고, 각 명령이 무엇을 확인하는지 같이 본다.
 

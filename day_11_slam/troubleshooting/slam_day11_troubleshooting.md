@@ -1,4 +1,4 @@
-# SLAM Day 11 Troubleshooting
+# SLAM Day 11 트러블슈팅
 
 Day 11 SLAM 실습 중 자주 생기는 문제를 원인 중심으로 정리한다.
 

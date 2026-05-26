@@ -1,6 +1,6 @@
-# Gazebo / TurtleBot Day 10 Commands
+# Gazebo/TurtleBot 명령어 정리
 
-## 1. 기본 빌드와 source
+## 1. 기본 빌드와 환경 적용
 
 ```bash
 cd $ROS2_WS
@@ -116,7 +116,7 @@ ros2 topic type /robot_ns/cmd_vel
 
 ## 6. TF 확인
 
-현재 구조는 `/tf`, `/tf_static`이 `/robot_ns/tf`, `/robot_ns/tf_static`으로 remap되어 있을 수 있다.
+이 실습 구성에서는 `/tf`, `/tf_static`이 `/robot_ns/tf`, `/robot_ns/tf_static`으로 remap되어 있을 수 있다.
 
 ```bash
 ros2 topic echo /robot_ns/tf --once
@@ -149,7 +149,7 @@ ros2 run tf2_ros tf2_echo base_link base_scan --ros-args \
 
 ## 7. Teleop 조작
 
-회피 노드를 끈 상태에서 실행하는 것을 권장한다.
+수동 조작을 확인할 때는 회피 노드를 끈 상태에서 실행한다.
 
 ```bash
 ros2 launch lee_robot_description gaze.launch.py use_avoidance:=false

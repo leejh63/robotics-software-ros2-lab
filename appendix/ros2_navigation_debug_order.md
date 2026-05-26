@@ -1,4 +1,4 @@
-# ROS2 Navigation Debug Order
+# ROS2 Navigation 디버깅 순서
 
 이 문서는 문제가 생겼을 때 확인 순서를 정리한 것이다.
 
@@ -23,9 +23,9 @@ ros2 service list | sort
 질문:
 
 ```text
-내가 기대한 node가 떠 있는가?
-내가 기대한 topic이 있는가?
-내가 기대한 action server가 있는가?
+기대한 node가 떠 있는가?
+기대한 topic이 있는가?
+기대한 action server가 있는가?
 namespace가 /robot_ns로 붙어 있는가?
 ```
 

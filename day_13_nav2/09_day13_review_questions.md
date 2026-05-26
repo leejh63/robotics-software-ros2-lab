@@ -76,13 +76,13 @@ Day 13을 제대로 이해했는지 확인하기 위한 질문이다.
 
 ---
 
-## 7. 내 환경 기준
+## 7. 예시 환경 기준
 
 ```text
 1. 내 workspace 경로는 어디인가?
 2. Nav2 localization launch와 navigation launch는 각각 무엇인가?
-3. 내 환경의 map frame, odom frame, base frame은 무엇인가?
-4. 내 환경의 navigate action 이름은 무엇인가?
-5. 내 환경에서 goal을 CLI로 보내는 명령어를 직접 작성할 수 있는가?
+3. 예시 환경의 map frame, odom frame, base frame은 무엇인가?
+4. 예시 환경의 navigate action 이름은 무엇인가?
+5. 예시 환경에서 goal을 CLI로 보내는 명령어를 직접 작성할 수 있는가?
 ```
 

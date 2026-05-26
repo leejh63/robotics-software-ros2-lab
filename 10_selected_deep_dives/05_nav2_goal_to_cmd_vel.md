@@ -2,7 +2,7 @@
 
 Nav2를 처음 보면 “RViz에서 goal을 찍었는데 왜 로봇이 움직이거나 안 움직이는지”가 잘 안 보인다.
 
-이 문서는 내 환경 기준으로 `NavigateToPose action goal`이 어떻게 `planner`, `controller`, `costmap`을 거쳐 최종적으로 `/robot_ns/cmd_vel`이 되는지 정리한다.
+이 문서는 예시 환경 기준으로 `NavigateToPose action goal`이 어떻게 `planner`, `controller`, `costmap`을 거쳐 최종적으로 `/robot_ns/cmd_vel`이 되는지 정리한다.
 
 ---
 
@@ -30,7 +30,7 @@ RViz 또는 CLI goal
 
 ---
 
-## 2. 내 환경 기준 Nav2 구성
+## 2. 예시 환경 기준 Nav2 구성
 
 주요 파일:
 
@@ -59,7 +59,7 @@ nav2_navigation.launch.py
 
 Nav2의 목표 이동은 보통 `NavigateToPose` action으로 들어간다.
 
-내 환경 기준 action 이름:
+예시 환경 기준 action 이름:
 
 ```text
 /robot_ns/navigate_to_pose
@@ -389,7 +389,7 @@ CLI action goal 성공
 
 ---
 
-## 11. 내 환경에서 최소 실행 흐름
+## 11. 예시 환경에서 최소 실행 흐름
 
 터미널 1:
 

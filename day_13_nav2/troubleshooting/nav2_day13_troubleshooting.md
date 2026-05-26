@@ -1,6 +1,6 @@
-# Nav2 Day 13 Troubleshooting
+# Nav2 Day 13 트러블슈팅
 
-Nav2 문제는 한 번에 보지 말고 `Localization -> Lifecycle -> Action -> Planner -> Controller -> Gazebo` 순서로 자른다.
+Nav2 문제는 `Localization -> Lifecycle -> Action -> Planner -> Controller -> Gazebo` 순서로 구간을 나누어 확인한다.
 
 ## 빠른 진단표
 
@@ -28,7 +28,7 @@ Nav2 Goal을 눌러도 로봇이 움직이지 않음
 action feedback이 안 보임
 ```
 
-### 현재 판단
+### 판단 기준
 
 ```text
 Nav2 서버 자체가 안 되는 문제가 아니다.
@@ -122,7 +122,7 @@ nav2_bringup navigation_launch.py를 직접 실행하면서 namespace가 기대�
 ```
 
 
-### 실제로 발생했던 namespace 불일치 사례
+### namespace 불일치 사례
 
 처음에는 공식 Nav2 하위 launch 파일인 `nav2_bringup`의 `navigation_launch.py`를 직접 실행하려고 했다.
 
@@ -181,7 +181,7 @@ ros2 param get /controller_server FollowPath.critics
 
 ### 조치
 
-현재는 직접 `nav2_bringup navigation_launch.py namespace:=robot_ns` 방식보다 다음을 기준으로 한다.
+이 저장소에서는 직접 `nav2_bringup navigation_launch.py namespace:=robot_ns`를 실행하는 방식보다 다음 launch 파일을 기준으로 한다.
 
 ```bash
 ros2 launch lee_robot_description nav2_navigation.launch.py

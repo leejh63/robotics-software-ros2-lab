@@ -1,4 +1,4 @@
-# Appendix - Full Topic / Frame / Message / Action Table
+# 전체 Topic / Frame / Message / Action 확장표
 
 이 문서는 Day 01~13에서 반복적으로 등장한 topic, frame, message, action을 한 장으로 정리한 표다.
 

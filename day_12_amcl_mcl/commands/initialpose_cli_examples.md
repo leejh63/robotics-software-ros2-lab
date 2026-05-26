@@ -1,4 +1,4 @@
-# Initial Pose CLI Examples
+# Initial Pose CLI 예시
 
 RViz `2D Pose Estimate` 대신 CLI로 `/initialpose`를 발행하는 예시다.
 

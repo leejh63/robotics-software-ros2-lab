@@ -9,7 +9,7 @@ Day 11 SLAM: 로봇이 움직이면서 지도를 만든다.
 Day 12 AMCL: 이미 만든 지도 위에서 현재 로봇 위치를 추정한다.
 ```
 
-이 문서는 포트폴리오용 설명이 아니라 학습 정리본이다. 따라서 “무엇을 완성했다”보다 아래 질문에 답하는 데 집중한다.
+이 문서는 AMCL 실습을 다시 볼 때 아래 질문에 답할 수 있도록 정리한 학습 노트이다.
 
 ```text
 AMCL은 어떤 입력을 필요로 하는가?
@@ -18,12 +18,12 @@ particle은 무엇인가?
 /initialpose는 왜 필요한가?
 /amcl_pose와 map_robot_ns -> odom_robot_ns TF는 무엇이 다른가?
 amcl_param.yaml의 값들은 MCL의 어느 단계와 연결되는가?
-내 환경에서 어떤 명령어로 확인해야 하는가?
+예시 환경에서 어떤 명령어로 확인해야 하는가?
 ```
 
 ---
 
-## 1. 현재 내 환경 기준
+## 1. 현재 예시 환경 기준
 
 ```text
 워크스페이스       $ROS2_WS
@@ -66,7 +66,7 @@ base_link -> base_footprint
 ## 2. 읽는 순서
 
 ```text
-00_source_file_map.md
+00_source_overview.md
   실제 사용한 Day 12 파일, launch, config, 노트북, 명령어 문서 위치
 
 01_overview_flow.md
@@ -87,11 +87,11 @@ base_link -> base_footprint
 06_rviz_initialpose_and_validation.md
   RViz 설정, 2D Pose Estimate, 수렴 확인 기준
 
-07_my_environment_execution_notes.md
-  내 환경 기준 실행 순서와 주의점
+07_execution_notes.md
+  예시 환경 기준 실행 순서와 주의점
 
-08_runtime_observations_without_code_changes.md
-  코드 수정 없이 기록해둔 실행상 관찰/주의사항
+08_runtime_notes.md
+  실행 중 헷갈리기 쉬운 관찰 사항과 확인 기준
 
 09_day12_review_questions.md
   Day 12 복습 질문
@@ -157,17 +157,3 @@ map_robot_ns -> odom_robot_ns -> base_footprint -> base_scan
 ```
 
 이런 remap은 topic 이름만 바꾼다. 메시지 안의 `header.frame_id`나 TF frame 이름은 자동으로 바뀌지 않는다. 그래서 AMCL 파라미터의 `global_frame_id`, `odom_frame_id`, `base_frame_id`도 별도로 맞아야 한다.
-
----
-
-## 5. 코드 수정 여부
-
-이번 문서 정리에서도 코드 수정은 하지 않았다.
-
-```text
-코드 수정 없음
-패키지 구조 변경 없음
-런치 파일 변경 없음
-파라미터 파일 변경 없음
-문서 정리, 배경지식 보강, 내 환경 기준 실행 메모 추가만 진행
-```

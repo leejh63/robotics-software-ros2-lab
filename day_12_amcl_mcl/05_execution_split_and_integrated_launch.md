@@ -185,4 +185,4 @@ colcon build --packages-select lee_robot_description
 source install/setup.bash
 ```
 
-이번 문서 정리에서는 코드나 launch를 수정하지 않았으므로, 문서 생성 때문에 빌드가 필요한 것은 아니다.
+문서만 확인하는 경우에는 빌드가 필요하지 않지만, launch/config/urdf 파일을 수정한 뒤에는 다시 빌드해야 한다.

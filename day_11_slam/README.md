@@ -1,7 +1,6 @@
 # Day 11 - SLAM 학습 정리
 
-Day 11은 `Gazebo에서 만든 로봇/센서 출력`을 이용해서 **지도를 생성하는 단계**이다.  
-이 문서는 포트폴리오용 성과 정리가 아니라, SLAM 실습을 다시 볼 때 아래 질문에 답할 수 있도록 만든 학습 노트이다.
+Day 11은 `Gazebo에서 만든 로봇/센서 출력`을 이용해서 **지도를 생성하는 단계**이다. 이 문서는 SLAM 실습을 다시 볼 때 아래 질문에 답할 수 있도록 정리한 학습 노트이다.
 
 ```text
 1. SLAM Toolbox는 어떤 데이터를 받아서 지도를 만드는가?
@@ -9,7 +8,7 @@ Day 11은 `Gazebo에서 만든 로봇/센서 출력`을 이용해서 **지도를
 3. map_robot_ns, odom_robot_ns, base_footprint는 왜 분리되는가?
 4. OccupancyGrid, .pgm, .yaml, .posegraph는 각각 무엇인가?
 5. Gazebo live SLAM과 rosbag offline SLAM은 무엇이 다른가?
-6. 내 환경에서는 어떤 경로와 토픽 이름을 기준으로 실행해야 하는가?
+6. 예시 환경에서는 어떤 경로와 토픽 이름을 기준으로 실행해야 하는가?
 ```
 
 ---
@@ -64,7 +63,7 @@ LiDAR frame        base_scan
 ## 3. 추천 읽기 순서
 
 ```text
-00_source_file_map.md
+00_source_overview.md
   -> 실제 어떤 파일을 기준으로 보는지 확인
 
 01_overview_flow.md
@@ -85,11 +84,11 @@ LiDAR frame        base_scan
 06_rosbag_offline_slam.md
   -> rosbag으로 SLAM 재현하는 방법 이해
 
-07_my_environment_execution_notes.md
-  -> 내 환경 기준 실행/점검 방법 확인
+07_execution_notes.md
+  -> 예시 환경 기준 실행/점검 방법 확인
 
-08_runtime_observations_without_code_changes.md
-  -> 코드 수정 없이 알아둬야 할 실행상 주의점 확인
+08_runtime_notes.md
+  -> 실행 중 헷갈리기 쉬운 관찰 사항과 확인 기준
 
 09_day11_review_questions.md
   -> 복습 질문으로 이해 점검
@@ -125,22 +124,3 @@ map_saver_cli
 
 SLAM은 `/robot_ns/scan` 하나만 보고 지도를 만드는 것이 아니다.  
 `이 scan이 어느 좌표계에서 나왔는지`, `로봇이 시간에 따라 어떻게 움직였는지`, `오도메트리 오차를 어떻게 보정할지`까지 같이 본다.
-
----
-
-## 5. 이번 정리에서 보강한 내용
-
-```text
-- 실제 source file map 추가
-- SLAM Toolbox 설정 구조 재정리
-- Gazebo live SLAM과 rosbag offline SLAM 구분
-- robot_ns namespace 기준 실행 명령 보강
-- 기존 namespace 없는 rosbag과 현재 robot_ns namespace 설정 차이 설명
-- OccupancyGrid, map yaml/pgm, posegraph 배경지식 추가
-- map_robot_ns / odom_robot_ns / base_footprint 관계 설명 추가
-- scan matching / loop closure / pose graph 직관 추가
-- 내 환경 기준 실행 메모 추가
-- runtime observations 문서 추가
-```
-
-코드 수정은 하지 않았다. 문서 정리와 배경지식 보강만 진행했다.

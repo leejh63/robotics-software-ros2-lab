@@ -1,4 +1,4 @@
-# Full Pipeline Reference
+# Gazebo → SLAM → AMCL → Nav2 전체 흐름
 
 이 문서는 Day 01~13 전체 학습 흐름을 한 번에 보기 위한 참조 문서다.
 
@@ -66,9 +66,9 @@ Gazebo diff_drive plugin
 
 ---
 
-## 3. 내가 직접 작성/설정한 부분과 외부 패키지 역할
+## 3. 직접 작성/설정한 부분과 외부 패키지 역할
 
-| 구분 | 내가 다룬 부분 | 외부 패키지가 제공한 부분 |
+| 구분 | 직접 작성/설정한 부분 | 외부 패키지가 제공한 부분 |
 |---|---|---|
 | ROS2 기본 | node, topic, service, action 예제 코드 | rclpy, rclcpp, ros2cli |
 | Interface | msg/srv/action 정의 | rosidl code generation |

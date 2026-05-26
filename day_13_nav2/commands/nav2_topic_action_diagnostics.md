@@ -1,6 +1,6 @@
 # Nav2 Topic / Action / TF 진단 명령어
 
-문제가 생겼을 때 이 문서 순서대로 확인한다.
+Nav2 문제가 발생하면 이 문서의 순서대로 node, lifecycle, action, topic, TF를 확인한다.
 
 먼저 실제 node/topic/action 이름에 namespace가 붙어 있는지 확인한다. 문서에서는 `/robot_ns/...` 형태를 많이 쓰지만, 환경에 따라 `/amcl_pose`처럼 namespace가 없는 topic도 있을 수 있다.
 

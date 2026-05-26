@@ -251,7 +251,7 @@ q_new_pos = np.array([q_near.x, q_near.y]) + direction * step
 q_near에서 q_rand 방향으로 STEP_SIZE만큼만 이동한 q_new를 만든다.
 ```
 
-현재 `STEP_SIZE = 0.5`이므로 최대 0.5m만 뻗는다.
+`STEP_SIZE = 0.5`이므로 최대 0.5m만 뻗는다.
 
 그림으로 보면:
 
@@ -335,7 +335,7 @@ if d_to_goal <= GOAL_THRESHOLD:
     break
 ```
 
-현재 `GOAL_THRESHOLD = 0.5`다.
+`GOAL_THRESHOLD = 0.5`다.
 
 즉:
 

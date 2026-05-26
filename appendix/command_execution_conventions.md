@@ -1,4 +1,4 @@
-# Command Execution Conventions
+# 명령어 실행 규칙
 
 이 문서는 저장소 안의 명령어 예시를 실행할 때 먼저 확인해야 하는 규칙을 정리한다.
 

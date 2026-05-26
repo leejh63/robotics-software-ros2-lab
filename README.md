@@ -1,7 +1,8 @@
 # ROS2 Navigation Study Notes
 
-`study/ros2-navigation-notes` 브랜치에 정리한 ROS2 Navigation 학습 노트입니다.  
-완성형 자율주행 프로젝트나 공식 튜토리얼 대체 문서가 아니라, 실습 내용을 `topic`, `frame`, `message`, `action`, `parameter` 기준으로 다시 설명하기 위한 기록입니다.
+ROS2 Navigation 실습 내용을 `topic`, `frame`, `message`, `action`, `parameter` 기준으로 재정리한 학습 노트입니다.
+
+이 저장소의 목표는 RViz에서 보이는 결과를 ROS graph의 데이터 흐름으로 설명하는 것입니다. Gazebo, SLAM, AMCL, Nav2가 각각 어떤 데이터를 사용하고 어떤 결과를 내는지 단계별로 확인합니다.
 
 ---
 
@@ -19,13 +20,14 @@ Python / NumPy / OpenCV
 → rosbag-frame / DWB / Navigation failure debugging
 ```
 
-핵심 목표는 RViz에서 보이는 결과를 ROS graph의 데이터 흐름으로 설명하는 것입니다.
+핵심 관점은 다음과 같습니다.
 
 ```text
 1. SLAM, AMCL, Nav2가 각각 해결하는 문제를 구분한다.
 2. topic 이름과 message 내부 header.frame_id를 분리해서 본다.
 3. package name, namespace, topic name, frame name을 섞지 않는다.
 4. rosbag replay, TF, DWB, Behavior Tree 문제를 순서대로 디버깅한다.
+5. 직접 작성한 설정과 ROS2/Nav2 패키지가 제공하는 기능을 구분한다.
 ```
 
 ---
@@ -58,17 +60,16 @@ Python / NumPy / OpenCV
 | [11_navigation_debug_deep_dives/](11_navigation_debug_deep_dives/) | rosbag-frame, DWB, Behavior Tree, navigation failure 디버깅 심화 |
 | [appendix/](appendix/) | 빠른 참조, 용어집, 명령어, topic/frame/action 표, troubleshooting |
 
-
 ---
 
 ## 실행 코드 프로젝트
 
-학습 노트와 실제 실행 코드는 분리했습니다. `day_*` 폴더는 개념과 흐름 정리이고, `projects/` 아래는 실행 가능한 코드입니다.
+학습 노트와 실행 코드는 분리했습니다. `day_*` 폴더는 개념과 흐름 정리이고, `projects/` 아래는 실습 코드를 모아둔 workspace입니다.
 
 | 위치 | 역할 |
 |---|---|
-| [projects/ros2_navigation_lab/](projects/ros2_navigation_lab/) | Gazebo, SLAM, AMCL, Nav2 실행 검증 workspace |
-| [projects/ros2_pid_arm_lab/](projects/ros2_pid_arm_lab/) | Gazebo + ros2_control 기반 1-DOF arm PID 제어 workspace |
+| [projects/ros2_navigation_lab/](projects/ros2_navigation_lab/) | Gazebo, SLAM, AMCL, Nav2 실행 흐름 정리 |
+| [projects/ros2_pid_arm_lab/](projects/ros2_pid_arm_lab/) | Gazebo + ros2_control 기반 1-DOF arm PID 제어 실습 |
 | [projects/path_planning_algorithms_lab/](projects/path_planning_algorithms_lab/) | Dijkstra, A*, RRT, RRT* notebook 실습 |
 
 ---
@@ -95,7 +96,4 @@ source install/setup.bash
 ros2 bag play <bag_dir> --clock --remap /scan:=/robot_ns/scan
 ```
 
-실제로 실행할 때는 placeholder를 본인 환경에 맞게 바꿔야 합니다.
-
----
-
+실행할 때는 placeholder를 본인 환경에 맞게 바꿔야 합니다.

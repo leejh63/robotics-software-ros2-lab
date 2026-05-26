@@ -1,6 +1,6 @@
-# SLAM Command Reference
+# SLAM 명령어 정리
 
-Day 11 SLAM 실습에서 사용하는 명령어를 목적별로 정리한다.
+Day 11 SLAM 실습에서 사용하는 명령어를 목적별로 정리한다. 복사하기 전에 실제 topic, namespace, map 저장 경로를 확인한다.
 
 `lee_robot_description`은 ROS2 package name이고, `robot_ns`는 namespace 예시다. `ros2 launch`와 `ros2 pkg prefix`에는 package name이 들어가야 한다.
 

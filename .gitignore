@@ -1,3 +1,6 @@
+# Local cleanup/work notes
+__revision_worklog_do_not_commit/
+
 # ROS2 / colcon build outputs
 build/
 install/
@@ -19,13 +22,20 @@ venv/
 .cache/
 .ipynb_checkpoints/
 
-# rosbag / large runtime data
+# ROS bag / large runtime data
 *.db3
 *.mcap
 *.bag
 *.sqlite3
 rosbag2_*/
-metadata.yaml
+**/rosbag2_*/
+bags/
+rosbags/
+**/bags/
+**/rosbags/
+**/rosbag2_*/metadata.yaml
+**/bags/**/metadata.yaml
+**/rosbags/**/metadata.yaml
 
 # Generated SLAM/runtime artifacts
 *.posegraph
@@ -53,5 +63,5 @@ Thumbs.db
 *~
 *.bak
 
-# logs
+# Logs
 *.log

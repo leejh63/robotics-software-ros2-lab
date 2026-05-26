@@ -1,4 +1,4 @@
-# Environment Reference
+# 실행 환경 기준
 
 이 문서는 학습 정리본에서 반복적으로 등장하는 실행 환경 기준값을 한 곳에 모은 것이다.
 
@@ -13,7 +13,7 @@ cd $ROS2_WS
 source install/setup.bash
 ```
 
-현재 문서에서 주로 기준으로 삼는 workspace:
+이 저장소의 예시 workspace:
 
 ```text
 $ROS2_WS

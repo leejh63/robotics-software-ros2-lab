@@ -6,16 +6,17 @@
 
 ## 1. 이 저장소의 기준
 
-이 브랜치는 `study/ros2-navigation-notes`이며, 완성 프로젝트가 아니라 ROS2 Navigation 학습 노트입니다.
+이 저장소는 ROS2 Navigation 실습을 학습 흐름에 맞게 정리한 노트입니다. 핵심은 Gazebo, SLAM, AMCL, Nav2를 `topic`, `frame`, `message`, `action` 기준으로 설명할 수 있게 만드는 것입니다.
 
 ```text
 목표:
-  Gazebo, SLAM, AMCL, Nav2 실습을 topic, frame, message, action 기준으로 다시 설명할 수 있게 정리한다.
+  Gazebo, SLAM, AMCL, Nav2 실습을 topic, frame, message, action 기준으로 다시 설명한다.
 
-아닌 것:
-  완성형 자율주행 프로젝트
-  실제 로봇 배포용 패키지
-  공식 Nav2 튜토리얼 대체 문서
+범위:
+  학습 노트
+  실행 흐름 정리
+  주요 명령어와 디버깅 기준
+  ROS2/Nav2 패키지 활용 구조
 ```
 
 ---
@@ -54,12 +55,11 @@ README.md
 | 6 | [day_13_nav2/](day_13_nav2/) | Nav2 stack, planner, controller, goal, cmd_vel |
 | 7 | [day_14_control_and_path_planning/](day_14_control_and_path_planning/) | PID 제어, ros2_control, Dijkstra/A*/RRT/RRT* |
 
-
 ---
 
 ## 4. 실행 코드부터 확인하고 싶을 때
 
-개념 문서가 아니라 실제 실행 가능한 코드를 먼저 보고 싶다면 `projects/` 아래를 확인합니다.
+실행 코드와 설정 파일은 `projects/` 아래에 분리되어 있습니다.
 
 ### ROS2 Navigation Lab
 

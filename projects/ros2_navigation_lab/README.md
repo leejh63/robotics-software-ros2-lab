@@ -1,19 +1,25 @@
 # ROS2 Navigation Lab
 
-This repository documents a ROS2 Humble navigation practice workflow using Gazebo Classic, URDF/Xacro, `slam_toolbox`, `nav2_amcl`, `nav2_map_server`, and `nav2_bringup`.
+Gazebo Classic, URDF/Xacro, `slam_toolbox`, `nav2_amcl`, `nav2_map_server`, `nav2_bringup`을 연결해 ROS2 Humble Navigation 흐름을 확인하는 실습 workspace입니다.
 
-The focus is package integration, configuration, runtime verification, and documentation. This project does not implement custom SLAM, AMCL, planner, or controller algorithms.
+이 패키지는 SLAM, AMCL, planner, controller 알고리즘을 직접 구현하는 프로젝트가 아닙니다. 표준 ROS2/Nav2 패키지를 어떤 launch, parameter, topic, frame 구조로 연결했는지 확인하는 데 초점을 둡니다.
 
-## Environment
+---
 
-- Ubuntu 22.04
-- ROS2 Humble
-- Gazebo Classic with `gazebo_ros`
-- Nav2 Humble packages
-- `slam_toolbox`
-- RViz2
+## 환경
 
-## Repository Structure
+| 항목 | 기준 |
+|---|---|
+| OS | Ubuntu 22.04 |
+| ROS2 | Humble |
+| Simulator | Gazebo Classic + `gazebo_ros` |
+| Navigation | Nav2 Humble packages |
+| SLAM | `slam_toolbox` |
+| Visualization | RViz2 |
+
+---
+
+## 구조
 
 ```text
 .
@@ -35,18 +41,23 @@ The focus is package integration, configuration, runtime verification, and docum
         └── worlds/
 ```
 
-## Main Workflow
+---
 
-1. Start Gazebo with the TurtleBot-style robot model.
-2. Use `slam_toolbox` to build or inspect a map from `/lee/scan` and TF.
-3. Load a saved map with `nav2_map_server`.
-4. Use `nav2_amcl` to localize the robot on the map.
-5. Start the Nav2 navigation stack and send goals from RViz or the action CLI.
+## 주요 실행 흐름
 
-The default workflow uses `slam.world` with `maps/slam_map.yaml`.
-`lee_world.world` and `maps/room_map.yaml` are kept as an optional smaller room test pair.
+```text
+1. Gazebo에서 로봇 모델을 실행한다.
+2. slam_toolbox로 /lee/scan과 TF를 사용해 map을 생성하거나 확인한다.
+3. 저장된 map을 nav2_map_server로 불러온다.
+4. nav2_amcl로 map 위에서 현재 위치를 추정한다.
+5. Nav2 stack을 실행하고 RViz 또는 action CLI로 goal을 보낸다.
+```
 
-## Build
+기본 workflow는 `slam.world`와 `maps/slam_map.yaml`을 사용합니다. `lee_world.world`와 `maps/room_map.yaml`은 작은 방 환경 테스트용으로 유지합니다.
+
+---
+
+## 빌드
 
 ```bash
 source /opt/ros/humble/setup.bash
@@ -54,41 +65,47 @@ colcon build --symlink-install --packages-select lee_robot_description
 source install/setup.bash
 ```
 
-## Run
+---
 
-Gazebo only:
+## 실행
+
+Gazebo만 실행:
 
 ```bash
 ros2 launch lee_robot_description gazebo.launch.py world:=slam.world use_avoidance:=false
 ```
 
-SLAM:
+SLAM 실행:
 
 ```bash
 ros2 launch lee_robot_description gazebo_slam.launch.py world:=slam.world
 ```
 
-Localization:
+Localization 실행:
 
 ```bash
 ros2 launch lee_robot_description localization.launch.py world:=slam.world
 ```
 
-Full localization and Nav2:
+Localization + Nav2 통합 실행:
 
 ```bash
 ros2 launch lee_robot_description nav2.launch.py use_rviz:=false
 ```
 
-After starting `nav2.launch.py`, publish the initial pose before sending a Nav2 goal. AMCL needs the initial pose to stabilize the `map_lee -> odom_lee` transform.
+`nav2.launch.py`를 실행한 뒤에는 Nav2 goal을 보내기 전에 initial pose를 먼저 지정해야 합니다. AMCL은 initial pose를 기준으로 `map_lee -> odom_lee` transform을 안정화합니다.
 
-Navigation stack only, after localization is already running:
+Localization이 이미 실행 중일 때 Nav2 stack만 따로 실행:
 
 ```bash
 ros2 launch lee_robot_description nav2_navigation.launch.py
 ```
 
-## Verification Commands
+`nav2.launch.py`와 `nav2_navigation.launch.py`를 같은 세션에서 중복 실행하지 않도록 주의합니다.
+
+---
+
+## 주요 확인 명령
 
 ```bash
 ros2 topic echo /lee/scan --once
@@ -103,9 +120,9 @@ ros2 run tf2_ros tf2_echo odom_lee base_footprint --ros-args -r /tf:=/lee/tf -r 
 ros2 action send_goal /lee/navigate_to_pose nav2_msgs/action/NavigateToPose "{pose: {header: {frame_id: map_lee}, pose: {position: {x: 0.5, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}}"
 ```
 
-TF is published on `/lee/tf` and `/lee/tf_static`. `tf2_echo` reads `/tf` and `/tf_static` by default, so use the remaps shown above.
+TF는 `/lee/tf`, `/lee/tf_static`으로 publish됩니다. `tf2_echo`는 기본적으로 `/tf`, `/tf_static`을 보기 때문에 위처럼 remap해서 확인합니다.
 
-Nav2 namespace checks:
+Nav2 node namespace 확인:
 
 ```bash
 ros2 node list | sort | grep controller_server
@@ -113,23 +130,27 @@ ros2 node list | sort | grep planner_server
 ros2 node list | sort | grep bt_navigator
 ```
 
-Expected Nav2 node names are under `/lee`, for example `/lee/controller_server`.
+정상적인 경우 `/lee/controller_server`처럼 `/lee` namespace 아래에 node가 떠야 합니다.
 
-## Launch Files
+---
 
-| Launch file | Starts Gazebo | Starts SLAM | Starts AMCL | Starts Nav2 | Main use |
-| --- | --- | --- | --- | --- | --- |
-| `display.launch.py` | No | No | No | No | URDF/RViz model check |
-| `gazebo.launch.py` | Yes | No | No | No | Simulation only |
+## Launch 파일 역할
+
+| Launch file | Gazebo | SLAM | AMCL | Nav2 | 용도 |
+|---|---:|---:|---:|---:|---|
+| `display.launch.py` | No | No | No | No | URDF/RViz 모델 확인 |
+| `gazebo.launch.py` | Yes | No | No | No | 시뮬레이션 단독 실행 |
 | `gazebo_slam.launch.py` | Yes | Yes | No | No | Mapping workflow |
-| `localization.launch.py` | Yes | No | Yes | No | AMCL localization test |
-| `nav2_navigation.launch.py` | No | No | No | Yes | Nav2 stack only after localization |
-| `nav2.launch.py` | Yes | No | Yes | Yes | Full localization + navigation |
+| `localization.launch.py` | Yes | No | Yes | No | AMCL localization 확인 |
+| `nav2_navigation.launch.py` | No | No | No | Yes | Localization 이후 Nav2 stack만 실행 |
+| `nav2.launch.py` | Yes | No | Yes | Yes | Localization + Nav2 통합 실행 |
 
-## Key Frames and Topics
+---
 
-| Item | Value |
-| --- | --- |
+## 주요 frame과 topic
+
+| 항목 | 값 |
+|---|---|
 | Robot namespace | `/lee` |
 | Map frame | `map_lee` |
 | Odometry frame | `odom_lee` |
@@ -141,32 +162,40 @@ Expected Nav2 node names are under `/lee`, for example `/lee/controller_server`.
 | AMCL pose topic | `/amcl_pose` |
 | AMCL particle cloud topic | `/particle_cloud` |
 
-## What I Configured
+---
 
-- ROS2 package metadata, install rules, and launch entrypoints
-- Gazebo robot spawning and ROS topic wiring
-- URDF/Xacro model usage for simulation
-- `slam_toolbox` mapping parameters for the custom frame names
-- `nav2_map_server` and `nav2_amcl` localization flow
-- Nav2 costmap, planner, controller, behavior, and navigator parameters
-- RViz configurations and runtime verification commands
+## 직접 구성한 부분
 
-## Provided By ROS2/Nav2
+- ROS2 package metadata, install rule, launch entrypoint
+- Gazebo robot spawn과 ROS topic 연결
+- URDF/Xacro 기반 simulation model 구성
+- 사용자 frame 이름에 맞춘 `slam_toolbox` mapping parameter
+- `nav2_map_server`, `nav2_amcl` localization 흐름
+- Nav2 costmap, planner, controller, behavior, navigator parameter
+- RViz 설정과 runtime verification 명령
 
-- SLAM implementation: `slam_toolbox`
-- Localization implementation: `nav2_amcl`
+---
+
+## ROS2/Nav2가 제공하는 부분
+
+- SLAM 구현: `slam_toolbox`
+- Localization 구현: `nav2_amcl`
 - Map server: `nav2_map_server`
-- Navigation stack: `nav2_bringup` and Nav2 servers
+- Navigation stack: `nav2_bringup`과 Nav2 server들
 - Visualization: RViz2
-- Simulation integration: Gazebo Classic and `gazebo_ros`
+- Simulation integration: Gazebo Classic과 `gazebo_ros`
 
-## Limitations
+---
 
-This package is currently configured for a fixed `/lee` namespace. Changing `namespace:=...` is not fully supported yet because URDF plugins, Nav2 parameters, RViz config, and topic remappings are written for `/lee`.
+## 제한 사항
 
-This is a simulation practice repository. It does not include multi-robot support, physical robot deployment, custom SLAM algorithms, custom AMCL algorithms, or custom Nav2 planner/controller plugins.
+이 패키지는 고정된 `/lee` namespace 기준으로 구성되어 있습니다. `namespace:=...` 인자만 바꿔서 범용 multi-robot 패키지처럼 사용할 수 있는 상태는 아닙니다.
 
-## Documentation
+namespace를 바꾸려면 URDF plugin namespace, Nav2 parameter, RViz config, topic remap, TF frame 가정을 함께 수정해야 합니다.
+
+---
+
+## 관련 문서
 
 - [Runtime workflow](docs/RUNTIME_WORKFLOW.md)
 - [Copy-paste commands](docs/COMMANDS_ONLY.md)

@@ -124,7 +124,7 @@ self.publisher_ = self.create_publisher(Image, 'image_raw0', 10)
 # self.publisher_ = self.create_publisher(Image, self.topic, 10)
 ```
 
-따라서 YAML에서 `topic_name: "what"`을 줘도 실제 발행 topic은 바뀌지 않는다. 이건 코드 수정 대상이 아니라, 현재 문서에서는 “학습 중 상태에서 관찰할 점”으로 기록한다.
+따라서 YAML에서 `topic_name: "what"`을 줘도 실제 발행 topic은 바뀌지 않는다. 이 경우 parameter 선언과 실제 publisher 생성 코드가 일치하는지 확인해야 한다.
 
 ---
 

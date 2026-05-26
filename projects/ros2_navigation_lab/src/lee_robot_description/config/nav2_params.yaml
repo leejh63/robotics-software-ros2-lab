@@ -1,5 +1,5 @@
 # nav2_params.yaml
-# 네 현재 환경 기준으로 수정한 Nav2 Navigation 파라미터
+# 이 실습 환경 기준으로 수정한 Nav2 Navigation 파라미터
 #
 # 실제 확인된 환경:
 #   TF topic        : /lee/tf, /lee/tf_static

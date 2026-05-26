@@ -58,7 +58,7 @@
 ```text
 1. NavigateToPose action goal은 바로 /robot_ns/cmd_vel로 바뀌는가?
 2. bt_navigator, planner_server, controller_server의 역할은 각각 무엇인가?
-3. global costmap과 local costmap의 frame은 내 환경에서 각각 무엇인가?
+3. global costmap과 local costmap의 frame은 예시 환경에서 각각 무엇인가?
 4. DWB controller는 속도 후보를 어떻게 고르는가?
 5. /robot_ns/cmd_vel은 나오는데 로봇이 안 움직이면 어느 쪽을 의심해야 하는가?
 6. RViz Goal 실패와 CLI action goal 성공은 무엇을 의미할 수 있는가?

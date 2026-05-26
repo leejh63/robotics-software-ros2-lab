@@ -1,8 +1,6 @@
-# Validation Sequence - Gazebo -> SLAM -> AMCL -> Nav2
+# Gazebo → SLAM → AMCL → Nav2 검증 순서
 
-이 문서는 전체 navigation pipeline을 확인할 때의 순서를 정리한 것이다.
-
-핵심 원칙:
+이 문서는 전체 navigation pipeline을 확인할 때의 순서를 정리한다.
 
 ```text
 뒤 단계가 안 되면 앞 단계를 먼저 확인한다.
@@ -28,7 +26,7 @@ Nav2가 안 된다고 바로 Nav2만 보지 않는다.
 
 ---
 
-## 2. 1단계 - workspace 환경 확인
+## 2. workspace 환경 확인
 
 ```bash
 cd $ROS2_WS
@@ -36,13 +34,7 @@ source install/setup.bash
 ros2 pkg list | grep lee_robot_description
 ```
 
-정상 기대:
-
-```text
-lee_robot_description 패키지가 보여야 한다.
-```
-
-안 보이면:
+패키지가 보이지 않으면 다시 빌드하고 환경을 source한다.
 
 ```bash
 colcon build
@@ -51,10 +43,10 @@ source install/setup.bash
 
 ---
 
-## 3. 2단계 - Gazebo robot 확인
+## 3. Gazebo robot 확인
 
 ```bash
-ros2 launch lee_robot_description gaze.launch.py
+ros2 launch lee_robot_description gazebo.launch.py
 ```
 
 확인:
@@ -64,7 +56,7 @@ ros2 node list | sort
 ros2 topic list | grep /robot_ns
 ```
 
-정상 기대:
+기대 topic:
 
 ```text
 /robot_ns/scan
@@ -76,7 +68,7 @@ ros2 topic list | grep /robot_ns
 
 ---
 
-## 4. 3단계 - sensor topic 확인
+## 4. sensor topic 확인
 
 ```bash
 ros2 topic echo /robot_ns/scan --once
@@ -88,12 +80,12 @@ ros2 topic echo /robot_ns/odom --once
 ```text
 /robot_ns/scan header.frame_id가 base_scan 계열인지
 /robot_ns/odom child_frame_id가 base_footprint/base_link 계열인지
-거리값 ranges가 비어 있지 않은지
+ranges 값이 비어 있지 않은지
 ```
 
 ---
 
-## 5. 4단계 - TF chain 확인
+## 5. TF chain 확인
 
 ```bash
 ros2 run tf2_ros tf2_echo odom_robot_ns base_footprint
@@ -106,12 +98,11 @@ SLAM/AMCL/Nav2에서는 최종적으로 아래 관계가 필요하다.
 map_robot_ns -> odom_robot_ns -> base_footprint -> base_scan
 ```
 
-초기 Gazebo만 실행한 상태에서는 `map_robot_ns -> odom_robot_ns`가 없을 수 있다.  
-이 관계는 SLAM 또는 AMCL이 담당하는 경우가 많다.
+Gazebo만 실행한 상태에서는 `map_robot_ns -> odom_robot_ns`가 없을 수 있다. 이 관계는 보통 SLAM 또는 AMCL이 만든다.
 
 ---
 
-## 6. 5단계 - SLAM 확인
+## 6. SLAM 확인
 
 ```bash
 ros2 launch lee_robot_description slam.launch.py
@@ -124,7 +115,7 @@ ros2 topic echo /robot_ns/map --once
 ros2 run tf2_ros tf2_echo map_robot_ns odom_robot_ns
 ```
 
-정상 기대:
+기대 결과:
 
 ```text
 /robot_ns/map이 발행된다.
@@ -134,7 +125,7 @@ RViz에서 map이 누적된다.
 
 ---
 
-## 7. 6단계 - map 저장/로딩 확인
+## 7. map 저장/로딩 확인
 
 저장:
 
@@ -149,42 +140,70 @@ ls -lh slam_map.yaml slam_map.pgm
 cat slam_map.yaml
 ```
 
-저장된 map은 AMCL/Nav2에서 사용하는 world와 맞아야 한다.
+저장한 map은 AMCL/Nav2에서 사용하는 world와 맞아야 한다.
 
 ---
 
-## 8. 7단계 - AMCL 확인
+## 8. AMCL localization 확인
+
+AMCL만 먼저 확인하려면 localization launch를 사용한다.
 
 ```bash
-ros2 launch lee_robot_description nav2.launch.py
+ros2 launch lee_robot_description localization.launch.py world:=slam.world
 ```
 
 확인:
 
 ```bash
 ros2 topic echo /robot_ns/map --once
-ros2 topic echo /amcl_pose --once
-ros2 topic echo /particle_cloud --once
+ros2 topic list | sort | grep -E 'initialpose|amcl_pose|particle_cloud'
 ros2 run tf2_ros tf2_echo map_robot_ns odom_robot_ns
 ```
 
-정상 기대:
+initial pose를 준 뒤 기대할 것:
 
 ```text
 map_server가 map을 발행한다.
-initialpose 이후 particle이 수렴한다.
+AMCL particle이 pose 주변으로 수렴한다.
 AMCL이 map_robot_ns -> odom_robot_ns TF를 발행한다.
+```
+
+AMCL topic은 root namespace에 있을 수도 있고 robot namespace 아래에 있을 수도 있다. 실제 topic 이름은 아래 명령으로 확인한다.
+
+```bash
+ros2 node list | sort | grep amcl
+ros2 topic list | sort | grep -E 'initialpose|amcl_pose|particle_cloud'
 ```
 
 ---
 
-## 9. 8단계 - Nav2 lifecycle 확인
+## 9. Nav2 실행 방식 선택
+
+Nav2는 두 가지 방식 중 하나만 선택해서 실행한다. 같은 세션에서 중복 실행하지 않는다.
+
+### 방식 A: localization + Nav2 통합 실행
+
+```bash
+ros2 launch lee_robot_description nav2.launch.py use_rviz:=false
+```
+
+### 방식 B: localization을 먼저 실행한 뒤 Nav2 stack만 실행
+
+Terminal 1:
+
+```bash
+ros2 launch lee_robot_description localization.launch.py world:=slam.world
+```
+
+Terminal 2:
 
 ```bash
 ros2 launch lee_robot_description nav2_navigation.launch.py
 ```
 
-확인:
+---
+
+## 10. Nav2 lifecycle 확인
 
 ```bash
 ros2 lifecycle nodes
@@ -193,7 +212,7 @@ ros2 lifecycle get /robot_ns/controller_server
 ros2 lifecycle get /robot_ns/bt_navigator
 ```
 
-정상 기대:
+기대 결과:
 
 ```text
 planner_server, controller_server, bt_navigator 등이 active 상태여야 한다.
@@ -201,13 +220,13 @@ planner_server, controller_server, bt_navigator 등이 active 상태여야 한�
 
 ---
 
-## 10. 9단계 - goal 전송 확인
+## 11. goal 전송 확인
 
 ```bash
 ros2 action info /robot_ns/navigate_to_pose
 ```
 
-CLI goal:
+CLI goal 예시:
 
 ```bash
 ros2 action send_goal /robot_ns/navigate_to_pose nav2_msgs/action/NavigateToPose \
@@ -223,7 +242,7 @@ ros2 topic echo /robot_ns/cmd_vel
 
 ---
 
-## 11. 10단계 - robot motion 확인
+## 12. robot motion 확인
 
 Gazebo에서 로봇이 움직이지 않으면 아래를 확인한다.
 
@@ -245,7 +264,7 @@ ros2 node info /robot_ns/controller_server
 
 ---
 
-## 12. 실패 위치별 해석
+## 13. 실패 위치별 해석
 
 | 실패 위치 | 의미 |
 |---|---|

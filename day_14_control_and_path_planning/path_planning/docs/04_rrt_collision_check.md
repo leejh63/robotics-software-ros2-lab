@@ -308,7 +308,7 @@ Grid ray tracing
 
 ## 12. 개선 3: 로봇 크기 고려
 
-현재 `is_collision_point()`는 점 하나만 검사한다.
+`is_collision_point()`는 점 하나만 검사한다.
 
 ```python
 return occupancy_grid[iy, ix] >= 100

@@ -28,4 +28,4 @@ rosdep update
 rosdep install --from-paths src -y --ignore-src
 ```
 
-`rosdep install`은 현재 `src/` 아래의 `package.xml`을 보고 필요한 시스템 패키지를 설치합니다. `build/`, `install/`, `log/` 폴더를 직접 건드리는 명령은 아닙니다.
+`rosdep install`은 `src/` 아래의 `package.xml`을 보고 필요한 시스템 패키지를 설치합니다. `build/`, `install/`, `log/` 폴더를 직접 건드리는 명령은 아닙니다.

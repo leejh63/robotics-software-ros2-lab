@@ -35,7 +35,7 @@ $ROS2_WS/lee_robot_description/
 문서 기준 source map은 아래 파일에 따로 정리했다.
 
 ```text
-day_13_nav2/00_source_file_map.md
+day_13_nav2/00_source_overview.md
 ```
 
 ---
@@ -66,7 +66,7 @@ Nav2 planner/controller/bt_navigator 문제가 있는가?
 ## 3. Day 13 문서 읽는 순서
 
 ```text
-00_source_file_map.md
+00_source_overview.md
   실제 파일과 역할 확인
 
 01_overview_flow.md
@@ -87,11 +87,11 @@ Nav2 planner/controller/bt_navigator 문제가 있는가?
 06_rviz_nav2_validation_and_debug.md
   RViz와 CLI 검증 차이
 
-07_my_environment_execution_notes.md
-  내 환경 기준 실행 메모
+07_execution_notes.md
+  실습 환경 실행 메모
 
-08_runtime_observations_without_code_changes.md
-  코드 수정 없이 기록한 실행상 주의점
+08_runtime_notes.md
+  실행 중 헷갈리기 쉬운 관찰 사항과 확인 기준
 
 09_day13_review_questions.md
   복습 질문
@@ -119,8 +119,7 @@ Nav2의 goal 흐름은 아래처럼 이해하면 된다.
   -> AMCL 위치 보정
 ```
 
-즉, Nav2는 “목표 하나 넣으면 바로 바퀴가 도는 마법 상자”가 아니다.  
-여러 서버가 lifecycle 상태로 올라오고, 각 서버가 costmap과 TF를 보면서 action을 처리한다.
+즉, Nav2는 단일 노드가 목표를 받아 곧바로 바퀴를 제어하는 구조가 아니다. 여러 서버가 lifecycle 상태로 올라오고, 각 서버가 costmap과 TF를 보면서 action을 처리한다.
 
 ---
 
@@ -138,7 +137,7 @@ Nav2의 goal 흐름은 아래처럼 이해하면 된다.
 
 ---
 
-## 6. 내 환경 기준 최소 실행 흐름
+## 6. 예시 환경 기준 최소 실행 흐름
 
 ```bash
 cd $ROS2_WS
@@ -168,19 +167,6 @@ ros2 action send_goal /robot_ns/navigate_to_pose nav2_msgs/action/NavigateToPose
 자세한 실행법은 아래 문서를 본다.
 
 ```text
-day_13_nav2/07_my_environment_execution_notes.md
+day_13_nav2/07_execution_notes.md
 day_13_nav2/commands/nav2_local_cheatsheet.md
 ```
-
----
-
-## 7. 코드 수정 여부
-
-이 문서 정리에서는 코드 수정이나 launch/config 변경을 하지 않았다.
-
-```text
-코드 수정 없음
-패키지 구조 변경 없음
-문서 정리 + 배경지식 보강 + 실행 기준 정리만 진행
-```
-

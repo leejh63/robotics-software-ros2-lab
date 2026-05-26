@@ -2,7 +2,7 @@
 
 SLAM Toolbox는 단순히 `/scan`만 받아서 지도를 만드는 것이 아니다. LiDAR 거리 데이터, 로봇의 움직임 추정, 좌표계 관계가 함께 맞아야 한다.
 
-내 환경 기준으로 SLAM 입력은 아래처럼 보면 된다.
+예시 환경 기준으로 SLAM 입력은 아래처럼 보면 된다.
 
 ```text
 /robot_ns/scan
@@ -128,7 +128,7 @@ base_scan 좌표계에서 angle_min + 100 * angle_increment 방향으로 본 거
 
 `/robot_ns/odom`은 `nav_msgs/msg/Odometry` 타입이다.
 
-내 환경 기준으로 보통 이런 관계를 가진다.
+예시 환경 기준으로 보통 이런 관계를 가진다.
 
 ```text
 header.frame_id: odom_robot_ns
@@ -191,7 +191,7 @@ base_scan 기준 scan
 
 ## 6. SLAM Toolbox의 중요한 입력/출력
 
-내 환경 기준:
+예시 환경 기준:
 
 | 구분 | 이름 | 역할 |
 |---|---|---|
@@ -255,7 +255,7 @@ slam_map.pgm
 
 ---
 
-## 9. 내 환경에서 SLAM 입력 확인 순서
+## 9. 예시 환경에서 SLAM 입력 확인 순서
 
 ### 1단계: scan 확인
 

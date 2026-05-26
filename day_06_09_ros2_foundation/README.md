@@ -1,20 +1,14 @@
 # Day 06~09 ROS2 Foundation README
 
-이 폴더는 `$ROS2_WS/src`에 들어 있는 실제 ROS2 학습 코드를 기준으로, ROS2의 기본 실행 구조를 다시 정리한 문서 묶음이다.
+이 폴더는 `$ROS2_WS/src`에 들어 있는 ROS2 학습 코드를 기준으로, ROS2의 기본 실행 구조를 정리한다.
 
-이 문서 묶음의 방향은 포트폴리오용 설명이 아니라, ROS2 기본기를 실제 실습 흐름과 연결하는 것이다. 목표는 아래에 가깝다.
-
-```text
-내가 작성하거나 실행한 ROS2 패키지를 기준으로
-workspace / package / executable / node / topic / service / action / launch / parameter / TF / rosbag을
-초보자도 다시 따라갈 수 있게 정리한다.
-```
+목표는 workspace, package, executable, node, topic, service, action, launch, parameter, TF, rosbag이 실제 코드에서 어떻게 연결되는지 확인하는 것이다.
 
 ---
 
 ## 1. 이 폴더에서 다루는 실제 코드
 
-주요 기준 코드는 `$SOURCE_ARCHIVE` 안의 아래 경로다.
+주요 기준 코드는 `$ROS2_WS/src` 안의 아래 경로다.
 
 ```text
 $ROS2_WS/src/
@@ -25,7 +19,7 @@ $ROS2_WS/src/
 ├── my_robot_action/    # Movelee action server/client
 ├── camera_pkg/         # camera image, Canny, snapshot service, YOLO image/msg
 ├── py_launch_example/  # camera 관련 노드 launch 묶음
-└── tf_pkg_example/         # TF tree, TF listener, YOLO detection -> object TF
+└── tf_pkg_example/     # TF tree, TF listener, YOLO detection -> object TF
 ```
 
 Day 06~09는 뒤쪽 Gazebo/SLAM/AMCL/Nav2로 넘어가기 전의 기반이다. 그래서 이 폴더에서는 큰 알고리즘보다 아래 질문을 우선한다.
@@ -48,7 +42,7 @@ TF frame 이름이 topic 이름과 어떻게 다른가?
 ```text
 day_06_09_ros2_foundation/
 ├── README.md
-├── 00_source_package_map.md
+├── 00_source_overview.md
 ├── 01_overview_reading_order.md
 ├── 02_workspace_package_node_topic.md
 ├── 03_pubsub_service_action_interface.md
@@ -57,7 +51,7 @@ day_06_09_ros2_foundation/
 ├── 06_camera_yolo_tf_flow.md
 ├── 07_connection_to_day10_13.md
 ├── 08_ros2_execution_model_from_code.md
-├── 09_runtime_observations_without_code_changes.md
+├── 09_runtime_notes.md
 ├── 10_day06_09_review_questions.md
 ├── background/
 │   ├── ros2_name_resolution_and_namespace.md
@@ -77,7 +71,7 @@ day_06_09_ros2_foundation/
 처음 볼 때는 아래 순서가 좋다.
 
 ```text
-1. 00_source_package_map.md
+1. 00_source_overview.md
 2. 01_overview_reading_order.md
 3. 02_workspace_package_node_topic.md
 4. 03_pubsub_service_action_interface.md
@@ -85,7 +79,7 @@ day_06_09_ros2_foundation/
 6. 05_tf2_sensor_rosbag_foundation.md
 7. 06_camera_yolo_tf_flow.md
 8. 08_ros2_execution_model_from_code.md
-9. 09_runtime_observations_without_code_changes.md
+9. 09_runtime_notes.md
 10. 10_day06_09_review_questions.md
 ```
 
@@ -97,7 +91,7 @@ day_06_09_ros2_foundation/
 
 ROS2 초반 실습에서 가장 중요한 것은 “코드 한 파일”이 아니라, **그 파일이 ROS graph 안에서 어떤 이름으로 실행되고 어떤 통신을 만드는가**다.
 
-예를 들어 `camera_pkg/camera_pkg/imagePlee.py`는 그냥 웹캠 코드가 아니다.
+예를 들어 `camera_pkg/camera_pkg/imagePlee.py`는 단순 웹캠 코드가 아니라 다음 구성을 가진 ROS2 node다.
 
 ```text
 package      : camera_pkg

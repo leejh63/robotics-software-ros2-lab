@@ -37,7 +37,7 @@ base_scan
 
 ---
 
-## 2. 내 환경 기준 예시
+## 2. 예시 환경 기준 예시
 
 현재 네 환경에서 중요한 이름들은 아래처럼 나뉜다.
 
@@ -250,7 +250,7 @@ Frame laser does not exist
 
 ---
 
-## 8. 내 환경에서 확인해야 할 최소 명령
+## 8. 예시 환경에서 확인해야 할 최소 명령
 
 ### topic 이름 확인
 
@@ -315,7 +315,7 @@ RViz에는 `Fixed Frame`이 있다.
 
 만약 Fixed Frame을 `map`으로 두었는데 실제 frame이 `map_robot_ns`라면 RViz가 데이터를 제대로 표시하지 못할 수 있다.
 
-내 환경에서는 보통 아래 기준이 맞다.
+예시 환경에서는 보통 아래 기준이 맞다.
 
 ```text
 Fixed Frame: map_robot_ns

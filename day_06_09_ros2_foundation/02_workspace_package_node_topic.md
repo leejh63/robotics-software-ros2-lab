@@ -167,7 +167,7 @@ Node(
 
 이 경우 실행 중 node 이름은 `/test`가 된다. 따라서 parameter YAML도 `test:` 아래에 들어가야 적용된다.
 
-현재 `camera_pkg/config/pub_cam_params.yaml`은 아래 구조다.
+`camera_pkg/config/pub_cam_params.yaml`은 아래 구조다.
 
 ```yaml
 test:

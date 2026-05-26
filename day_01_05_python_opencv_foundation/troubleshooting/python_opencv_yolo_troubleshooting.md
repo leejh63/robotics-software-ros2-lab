@@ -1,4 +1,4 @@
-# Python / OpenCV / YOLO Troubleshooting
+# Python / OpenCV / YOLO 트러블슈팅
 
 이 문서는 Day 01~05 실습에서 자주 만날 수 있는 문제와 확인 방법을 정리한다.
 

@@ -37,8 +37,6 @@ projects/
 | Dijkstra/A*/RRT/RRT* notebook | [`../projects/path_planning_algorithms_lab/`](../projects/path_planning_algorithms_lab/) |
 | notebook 실행 명령 | [`path_planning/commands/00_run_notebooks.md`](path_planning/commands/00_run_notebooks.md) |
 
-## 공개용 정리 기준
+## 정리 기준
 
-원본 강의 PDF는 포함하지 않았습니다. 공개 저장소에는 직접 정리한 Markdown 문서와 실행 가능한 코드만 남기는 방향으로 구성했습니다.
-
-진행 기록 성격의 문서, 특정 로컬 PC 경로에 강하게 묶인 내용, 중복 설명 문서는 제외했습니다.
+원본 강의 PDF는 포함하지 않고, 직접 정리한 Markdown 문서와 실행 가능한 코드만 남겼다. 특정 로컬 PC 경로에 강하게 묶인 내용과 중복 설명은 제외했다.

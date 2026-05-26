@@ -1,6 +1,6 @@
-# AMCL Local Cheatsheet
+# AMCL 빠른 실행 명령
 
-현재 환경 기준 AMCL 실행 명령 모음이다.
+예시 실습 환경 기준 AMCL 실행 명령 모음이다.
 
 `lee_robot_description`은 package name 예시이고, `robot_ns`는 namespace 예시다. AMCL topic/node는 launch 방식에 따라 namespace가 붙거나 붙지 않을 수 있으므로 먼저 실제 이름을 확인한다.
 

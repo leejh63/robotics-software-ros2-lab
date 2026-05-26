@@ -1,4 +1,4 @@
-# Full Command Quick Reference
+# 전체 명령어 빠른 참조
 
 이 문서는 Day 01~13 전체 실습에서 자주 쓰는 명령어를 한 곳에 모은 것이다.
 
@@ -28,7 +28,7 @@ map_robot_ns           = frame name 예시
 
 | 구분 | 예시 | 의미 |
 |---|---|---|
-| 실제 실행 명령 | `ros2 node list` | 현재 환경에서 바로 확인 가능 |
+| 실제 실행 명령 | `ros2 node list` | 실행 중인 환경에서 바로 확인 가능 |
 | placeholder 포함 명령 | `ros2 bag play <bag_dir> --clock` | `<bag_dir>`를 실제 값으로 바꿔야 함 |
 | namespace 예시 | `/robot_ns/scan` | 실제 topic 이름은 `ros2 topic list`로 확인 |
 | frame 예시 | `map_robot_ns` | message 내부 `header.frame_id` 또는 TF frame 이름 |

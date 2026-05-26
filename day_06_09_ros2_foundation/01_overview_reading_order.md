@@ -142,7 +142,7 @@ Day 09 TF2/sensor/rosbag
 ## 4. 이번 폴더의 읽기 순서
 
 ```text
-00_source_package_map.md
+00_source_overview.md
   -> 실제 코드 지도
 
 02_workspace_package_node_topic.md
@@ -163,7 +163,7 @@ Day 09 TF2/sensor/rosbag
 08_ros2_execution_model_from_code.md
   -> 실제 코드 기준으로 실행 모델 다시 정리
 
-09_runtime_observations_without_code_changes.md
+09_runtime_notes.md
   -> 지금 코드를 실행할 때 조심할 부분
 ```
 

@@ -1,6 +1,6 @@
-# Nav2 Local Cheatsheet
+# Nav2 빠른 실행 명령
 
-현재 내 환경 기준 Nav2 실행/검증 명령어 모음이다.
+예시 실습 환경 기준 Nav2 실행/검증 명령어 모음이다.
 
 명령어를 복사하기 전에 `lee_robot_description`은 package name이고, `robot_ns`는 namespace 예시라는 점을 구분한다. 자세한 기준은 `appendix/command_execution_conventions.md`를 참고한다.
 

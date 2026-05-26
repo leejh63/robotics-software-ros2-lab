@@ -1,4 +1,4 @@
-# 00. 개요
+# 01. 개요
 
 이 실습 코드는 ROS2 Humble과 Gazebo Classic에서 1자유도 팔을 PID effort 제어로 움직이는 실습 코드입니다.
 
@@ -39,7 +39,7 @@ full.launch.py
   effort_controller가 이 값을 arm_joint에 적용한다.
 ```
 
-## 현재 범위
+## 실습 범위
 
 ```text
 포함:

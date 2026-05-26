@@ -1,6 +1,6 @@
-# MASTER_INDEX - ROS2 Navigation Study Notes
+# ROS2 Navigation 학습 문서 전체 색인
 
-이 문서는 `study/ros2-navigation-notes` 브랜치의 전체 색인입니다. 단순 파일 목록이 아니라, ROS2 Navigation을 어떤 순서와 관점으로 이해하면 좋은지 정리합니다.
+이 문서는 저장소 전체의 읽는 순서를 정리한다. 파일 목록을 전부 나열하기보다, 목적에 따라 어느 문서를 먼저 보면 되는지 안내한다.
 
 ---
 
@@ -34,7 +34,20 @@ Navigation debugging: rosbag-frame / DWB / Behavior Tree
 
 ---
 
-## 2. 핵심 질문 체크리스트
+## 2. 처음 볼 문서
+
+| 목적 | 문서 |
+|---|---|
+| 저장소 목적과 구조 확인 | [README.md](README.md) |
+| 빠른 실행/읽기 순서 확인 | [QUICK_START.md](QUICK_START.md) |
+| 전체 흐름 1페이지 요약 | [appendix/learning_flow_one_page.md](appendix/learning_flow_one_page.md) |
+| Gazebo → SLAM → AMCL → Nav2 연결 | [appendix/full_pipeline_reference.md](appendix/full_pipeline_reference.md) |
+| 명령어 실행 기준 | [appendix/command_execution_conventions.md](appendix/command_execution_conventions.md) |
+| 문제 발생 시 빠른 진단 | [appendix/troubleshooting_quick_diagnosis.md](appendix/troubleshooting_quick_diagnosis.md) |
+
+---
+
+## 3. 핵심 질문 체크리스트
 
 ```text
 1. 이 기능은 내가 작성한 코드인가, 외부 ROS2/Nav2 패키지가 제공한 기능인가?
@@ -51,19 +64,6 @@ Navigation debugging: rosbag-frame / DWB / Behavior Tree
 12. path는 있는데 /cmd_vel이 없을 때 DWB/controller 쪽을 의심할 수 있는가?
 13. 실패 지점을 Behavior Tree 단계로 나눠 볼 수 있는가?
 ```
-
----
-
-## 3. 목적별 시작점
-
-| 목적 | 문서 |
-|---|---|
-| 저장소 구조 빠르게 보기 | [QUICK_START.md](QUICK_START.md) |
-| 전체 흐름 한 페이지로 보기 | [appendix/learning_flow_one_page.md](appendix/learning_flow_one_page.md) |
-| Gazebo → SLAM → AMCL → Nav2 연결 보기 | [appendix/full_pipeline_reference.md](appendix/full_pipeline_reference.md) |
-| 명령어 실행 기준 확인 | [appendix/command_execution_conventions.md](appendix/command_execution_conventions.md) |
-| 문제 발생 시 빠른 진단 | [appendix/troubleshooting_quick_diagnosis.md](appendix/troubleshooting_quick_diagnosis.md) |
-| topic/frame/message/action 기준표 | [appendix/topic_frame_message_action_master_table.md](appendix/topic_frame_message_action_master_table.md) |
 
 ---
 
@@ -106,29 +106,28 @@ Navigation debugging: rosbag-frame / DWB / Behavior Tree
 | [11_navigation_debug_deep_dives/04_navigation_failure_diagnosis_map.md](11_navigation_debug_deep_dives/04_navigation_failure_diagnosis_map.md) | Navigation failure diagnosis map |
 | [11_navigation_debug_deep_dives/05_navigation_debug_review_questions.md](11_navigation_debug_deep_dives/05_navigation_debug_review_questions.md) | 디버깅 복습 질문 |
 
-
 ---
 
 ## 7. 실행 코드 프로젝트
 
 | 위치 | 역할 |
 |---|---|
-| [projects/ros2_navigation_lab/README.md](projects/ros2_navigation_lab/README.md) | Day 10~13 Gazebo → SLAM → AMCL → Nav2 실행 검증 workspace |
-| [projects/ros2_pid_arm_lab/README.md](projects/ros2_pid_arm_lab/README.md) | Day 14 PID control 실행 workspace |
-| [projects/path_planning_algorithms_lab/README.md](projects/path_planning_algorithms_lab/README.md) | Day 14 path planning notebook 실행 프로젝트 |
+| [projects/ros2_navigation_lab/README.md](projects/ros2_navigation_lab/README.md) | Gazebo → SLAM → AMCL → Nav2 실행 검증 workspace |
+| [projects/ros2_pid_arm_lab/README.md](projects/ros2_pid_arm_lab/README.md) | Gazebo + ros2_control 기반 1-DOF arm PID 제어 workspace |
+| [projects/path_planning_algorithms_lab/README.md](projects/path_planning_algorithms_lab/README.md) | Dijkstra, A*, RRT, RRT* notebook 실습 |
 
 ---
 
-## 8. Appendix 빠른 참조
+## 8. Appendix 읽는 법
 
-| 문서 | 용도 |
+Appendix는 전부 순서대로 읽는 폴더가 아니다. 필요한 상황에 맞춰 골라 본다.
+
+| 상황 | 먼저 볼 문서 |
 |---|---|
-| [appendix/README.md](appendix/README.md) | appendix 전체 시작점 |
-| [appendix/background_knowledge_map.md](appendix/background_knowledge_map.md) | 필요한 배경지식 지도 |
-| [appendix/full_command_quick_reference.md](appendix/full_command_quick_reference.md) | 명령어 빠른 참조 |
-| [appendix/table_reference_guide.md](appendix/table_reference_guide.md) | topic/frame/message/action 표 역할 구분 |
-| [appendix/topic_frame_message_action_master_table.md](appendix/topic_frame_message_action_master_table.md) | topic/frame/message/action 기준 표 |
-| [appendix/glossary_ros2_navigation_pipeline.md](appendix/glossary_ros2_navigation_pipeline.md) | 용어집 |
-| [appendix/external_package_boundary.md](appendix/external_package_boundary.md) | 직접 작성한 부분과 외부 패키지 경계 |
-| [appendix/environment_reference.md](appendix/environment_reference.md) | 일반화된 환경 기준 |
-| [appendix/troubleshooting_index.md](appendix/troubleshooting_index.md) | troubleshooting 문서 색인 |
+| 전체 흐름 확인 | [appendix/learning_flow_one_page.md](appendix/learning_flow_one_page.md), [appendix/full_pipeline_reference.md](appendix/full_pipeline_reference.md) |
+| 명령어 실행 | [appendix/command_execution_conventions.md](appendix/command_execution_conventions.md), [appendix/full_command_quick_reference.md](appendix/full_command_quick_reference.md) |
+| topic/frame/action 확인 | [appendix/table_reference_guide.md](appendix/table_reference_guide.md) |
+| 기준표 확인 | [appendix/topic_frame_message_action_master_table.md](appendix/topic_frame_message_action_master_table.md) |
+| 문제 진단 | [appendix/troubleshooting_quick_diagnosis.md](appendix/troubleshooting_quick_diagnosis.md), [appendix/troubleshooting_index.md](appendix/troubleshooting_index.md) |
+| 용어 확인 | [appendix/glossary_ros2_navigation_pipeline.md](appendix/glossary_ros2_navigation_pipeline.md) |
+| 직접 작성/설정한 범위 확인 | [appendix/external_package_boundary.md](appendix/external_package_boundary.md) |

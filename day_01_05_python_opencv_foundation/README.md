@@ -1,22 +1,14 @@
 # Day 01~05 Python / OpenCV / YOLO 학습 정리
 
-이 폴더는 ROS2로 넘어가기 전에 진행한 Python, NumPy, Matplotlib, OpenCV, Camera Calibration, YOLO, Kalman Filter, Raspberry Pi 환경 메모를 **학습 문서 형태로 다시 정리한 공간**이다.
+이 폴더는 ROS2 실습으로 넘어가기 전에 다룬 Python, NumPy, Matplotlib, OpenCV, Camera Calibration, YOLO, Kalman Filter, Raspberry Pi 관련 내용을 정리한다.
 
-목표는 결과물을 과장해서 설명하는 것이 아니라, 실제 실습 파일을 기준으로 다음 질문에 답할 수 있게 만드는 것이다.
-
-```text
-내가 어떤 코드를 실행했는가?
-그 코드는 어떤 개념을 확인하기 위한 것인가?
-그 개념이 ROS2 camera / custom message / TF / rosbag / Nav2 실습과 어떻게 이어지는가?
-실행 중 헷갈릴 수 있는 부분은 무엇인가?
-추가로 알아야 할 배경지식은 무엇인가?
-```
+핵심은 단순 문법 복습이 아니라, 뒤쪽 ROS2 camera, custom message, TF, rosbag, Nav2 실습으로 이어지는 데이터 처리 기준을 잡는 것이다.
 
 ---
 
 ## 1. 이 파트의 위치
 
-전체 학습 흐름에서 Day 01~05는 “로봇 시스템을 직접 다루기 전의 데이터 처리 기초”에 해당한다.
+Day 01~05는 로봇 시스템을 직접 다루기 전의 데이터 처리 기초에 해당한다.
 
 ```text
 Day 01~02
@@ -37,8 +29,6 @@ Day 06~13
 
 여기서 중요한 점은 Day 01~05가 따로 떨어진 기초 문법이 아니라는 것이다. 뒤쪽 ROS2 실습에서 계속 다시 등장한다.
 
-예를 들면 다음과 같다.
-
 | Day 01~05에서 배운 것 | 뒤에서 연결되는 것 |
 |---|---|
 | Python class | `rclpy.node.Node`를 상속한 ROS2 node |
@@ -52,7 +42,7 @@ Day 06~13
 
 ---
 
-## 2. 실제 기준 자료
+## 2. 기준 자료
 
 이 정리본은 아래 실습 자료를 기준으로 한다.
 
@@ -75,7 +65,7 @@ $ROS2_WS/src/my_if/msg
 
 처음부터 다시 복습한다면 아래 순서가 좋다.
 
-1. `00_source_file_map.md`
+1. `00_source_overview.md`
 2. `01_python_env_numpy_matplotlib.md`
 3. `02_oop_file_json_thread_sensor_sim.md`
 4. `03_opencv_basic_edge_color_tracking.md`
@@ -84,18 +74,16 @@ $ROS2_WS/src/my_if/msg
 7. `06_robot_camera_practice_and_raspberry_pi.md`
 8. `07_connection_to_ros2_camera_yolo.md`
 9. `08_day01_05_review_questions.md`
-10. `09_runtime_observations_without_code_changes.md`
+10. `09_runtime_notes.md`
 11. `commands/python_opencv_yolo_commands.md`
 12. `troubleshooting/python_opencv_yolo_troubleshooting.md`
 
 ---
 
-## 4. 이번 정리에서 보강한 방향
-
-이번 단계에서는 기존 내용을 단순히 깔끔하게 정리하는 데서 끝내지 않고, 아래 내용을 추가했다.
+## 4. 이 폴더에서 확인할 내용
 
 ```text
-- 실제 파일명 기준 source map
+- 실제 파일명 기준 소스 구성
 - Python 기본기가 ROS2 node로 이어지는 이유
 - NumPy shape/dtype/axis와 image/LiDAR/bbox 연결
 - thread/process/queue가 sensor pipeline과 닮은 점
@@ -104,26 +92,12 @@ $ROS2_WS/src/my_if/msg
 - YOLO 결과값 xyxy/conf/class와 custom message 연결
 - Kalman Filter의 predict/update/P/Q/R/NIS 개념
 - Raspberry Pi 환경 설정 메모의 의미
-- 현재 코드에서 실행 시 주의해야 할 부분을 별도 관찰 노트로 분리
+- 실행 시 주의해야 할 부분
 ```
 
 ---
 
-## 5. 현재 단계의 기준
-
-이 폴더는 완성 프로젝트 설명서가 아니다. 지금 기준은 다음과 같다.
-
-```text
-코드 수정은 하지 않는다.
-실제 실습 파일을 기준으로 문서를 보강한다.
-직접 구현한 부분과 라이브러리가 해주는 부분을 구분한다.
-헷갈리는 배경지식은 본문에 추가한다.
-이후 프로젝트를 할 때 다시 참고할 수 있는 학습 노트로 만든다.
-```
-
----
-
-## 6. 이 파트에서 반드시 잡고 넘어갈 것
+## 5. 이 파트에서 반드시 잡고 넘어갈 것
 
 Day 01~05를 끝내고 아래 질문에 답할 수 있으면 된다.
 

@@ -1,18 +1,18 @@
-# Nav2 Action Goal 직접 전송 기록
+# Nav2 Action Goal 직접 전송
 
-이 문서는 Day 12 말미에 확인한 Nav2 목표 직접 전송 기록이다. AMCL 자체 설명은 아니지만, AMCL이 정상화된 뒤 Nav2로 넘어갈 때 연결 상태를 확인하는 용도로 남긴다.
+이 문서는 AMCL 확인 이후 Nav2 goal을 CLI로 직접 전송해 localization과 navigation 연결 상태를 확인하는 방법을 정리한다.
 
 ---
 
-## 1. 현재 결론
+## 1. 사용 기준
 
 ```text
-Nav2 본체는 동작한다.
-RViz Nav2 Goal 버튼은 robot_ns namespace 기준 추가 설정이 필요하다.
-그래서 ros2 action send_goal 명령으로 목표를 직접 보낸다.
+Nav2 action server와 localization 연결을 CLI에서 직접 확인한다.
+RViz Nav2 Goal 버튼은 robot_ns namespace 기준 추가 설정이 필요할 수 있다.
+이 경우 `ros2 action send_goal` 명령으로 목표를 직접 보낸다.
 ```
 
-확인한 연결:
+확인할 연결:
 
 ```text
 /robot_ns/navigate_to_pose

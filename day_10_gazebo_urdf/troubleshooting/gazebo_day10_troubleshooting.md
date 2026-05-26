@@ -1,6 +1,6 @@
-# Gazebo Day 10 Troubleshooting
+# Gazebo Day 10 트러블슈팅
 
-## 1. RViz2에서 로봇이 안 보임
+## 1. RViz2에서 로봇 모델이 보이지 않음
 
 확인 순서:
 
@@ -124,7 +124,7 @@ Nav2 controller_server
 
 ## 6. TF가 없다고 나옴
 
-현재 구조에서 `/tf`가 `/robot_ns/tf`로 remap되어 있을 수 있다.
+이 실습 구성에서는 `/tf`가 `/robot_ns/tf`로 remap되어 있을 수 있다.
 
 기본 명령이 안 되면 remap을 붙인다.
 

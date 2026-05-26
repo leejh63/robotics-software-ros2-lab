@@ -1,6 +1,6 @@
-# AMCL Day 12 Troubleshooting
+# AMCL Day 12 트러블슈팅
 
-AMCL 문제는 무작정 파라미터를 바꾸면 더 꼬인다. 아래 순서대로 어느 단계에서 끊겼는지 확인한다.
+AMCL 문제는 파라미터를 바꾸기 전에 map, scan, odom, TF, initialpose 흐름 중 어디서 끊겼는지 먼저 확인한다.
 
 ## 빠른 진단표
 

@@ -1,4 +1,4 @@
-# Nav2 Parameter Reference
+# Nav2 파라미터 기준
 
 이 문서는 Day 13 실습에서 자주 확인하는 Nav2 파라미터를 빠르게 보기 위한 문서다.
 

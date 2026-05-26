@@ -1,4 +1,4 @@
-# Python / OpenCV / YOLO Quick Reference
+# Python / OpenCV / YOLO 빠른 참조
 
 ## 1. Python
 

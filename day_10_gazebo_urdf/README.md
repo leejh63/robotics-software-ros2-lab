@@ -69,7 +69,7 @@ lee_robot_description/
 
 | 문서 | 역할 |
 |---|---|
-| `00_source_file_map.md` | 실제 `lee_robot_description` 파일 역할 지도 |
+| `00_source_overview.md` | 실제 `lee_robot_description` 파일 역할 지도 |
 | `01_overview_flow.md` | Day 10 전체 실행 흐름과 Day 11 연결 |
 | `02_urdf_xacro_modeling.md` | URDF/Xacro, link/joint/visual/collision/inertial 설명 |
 | `03_robot_state_publisher_tf_flow.md` | `robot_state_publisher`, `robot_description`, `/tf`, `/tf_static` 흐름 |
@@ -77,7 +77,7 @@ lee_robot_description/
 | `05_world_launch_namespace.md` | world, launch, namespace, remap, spawn 흐름 |
 | `06_rosbag_rviz_remap.md` | rosbag2/RViz2/remap/use_sim_time 정리 |
 | `07_lidar_avoidance_and_laserscan.md` | `lidar_wall_follower.py`, LaserScan angle/ranges 해설 |
-| `08_runtime_observations_without_code_changes.md` | 코드 수정 없이 기록한 실행상 주의점 |
+| `08_runtime_notes.md` | 실행 중 헷갈리기 쉬운 관찰 사항과 확인 기준 |
 | `09_day10_review_questions.md` | 복습 질문 |
 | `background/` | Day 10 이해에 필요한 배경지식 |
 | `commands/` | 실행/확인 명령어 |
@@ -160,20 +160,4 @@ ros2 topic echo /robot_ns/scan --qos-reliability best_effort --once
 ros2 topic echo /robot_ns/odom --once
 ros2 topic echo /robot_ns/joint_states --once
 ros2 run tf2_tools view_frames --ros-args -r /tf:=/robot_ns/tf -r /tf_static:=/robot_ns/tf_static
-```
-
----
-
-## 6. 현재 문서에서 하지 않은 것
-
-이번 단계에서도 **코드는 수정하지 않았다.**
-
-한 일은 다음뿐이다.
-
-```text
-- 기존 Day 10 문서 재정렬
-- 실제 lee_robot_description 코드 기준 파일 역할 설명
-- URDF/Xacro/Gazebo/TF/rosbag 배경지식 보강
-- 실행 중 문제가 될 수 있는 부분을 observation 문서로 분리
-- Day 11 SLAM으로 이어지는 입력 데이터 흐름 명확화
 ```

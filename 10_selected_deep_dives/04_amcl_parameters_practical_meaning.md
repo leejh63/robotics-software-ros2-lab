@@ -2,7 +2,7 @@
 
 AMCL 파라미터는 처음 보면 숫자가 많아서 감이 잘 안 온다. 하지만 큰 묶음으로 나누면 이해하기 쉽다.
 
-내 환경의 `amcl_param.yaml`은 대략 아래 그룹으로 구성되어 있다.
+이 저장소의 예시 `amcl_param.yaml`은 대략 아래 그룹으로 구성되어 있다.
 
 ```text
 1. frame/topic 설정
@@ -53,7 +53,7 @@ frame/topic 관련
 
 ## 2. frame/topic 설정
 
-내 환경 기준:
+예시 환경 기준:
 
 ```yaml
 global_frame_id: map_robot_ns
@@ -190,7 +190,7 @@ fast average
 
 그 경우 random particle을 추가해서 다시 위치를 찾는 데 도움을 준다.
 
-현재 단계에서는 이렇게 이해하면 된다.
+이 실습에서는 이렇게 이해하면 된다.
 
 ```text
 위치를 잃었을 때 particle을 다시 넓게 뿌려 회복하는 데 관여하는 값

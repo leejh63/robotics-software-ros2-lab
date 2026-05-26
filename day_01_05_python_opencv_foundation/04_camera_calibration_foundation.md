@@ -208,7 +208,7 @@ Day 04 캘리브레이션 결과는 이후 `CameraInfo`나 camera calibration YA
 
 ---
 
-## 12. 현재 단계에서의 결론
+## 12. 정리
 
 Camera Calibration에서 가져갈 것은 아래다.
 

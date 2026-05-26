@@ -1,4 +1,4 @@
-# Nav2 DWB / Behavior Tree Debug Reference
+# Nav2 DWB / Behavior Tree 디버깅 참조
 
 Nav2 goal 처리 중 어디서 막혔는지 빠르게 나누기 위한 참조 문서다.
 

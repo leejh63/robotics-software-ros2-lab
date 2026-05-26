@@ -108,7 +108,7 @@ base_footprint -> base_scan
 
 ---
 
-## 4. 내 환경 기준으로 필요한 frame chain
+## 4. 예시 환경 기준으로 필요한 frame chain
 
 현재 정리본에서 기준으로 삼는 네 환경은 대략 다음 구조다.
 
@@ -371,7 +371,7 @@ ros2 topic list | sort
 
 ---
 
-## 7. 내 환경 기준 재생 예시
+## 7. 예시 환경 기준 재생 예시
 
 현재 `/robot_ns` namespace 구조에 맞추려면, namespace 없는 bag은 보통 아래처럼 재생을 시도할 수 있다.
 

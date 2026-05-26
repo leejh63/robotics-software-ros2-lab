@@ -1,6 +1,6 @@
-# AMCL Topic / TF Diagnostics
+# AMCL Topic / TF 진단 명령어
 
-AMCL이 안 될 때는 아래 순서대로 확인한다.
+AMCL 문제가 발생하면 topic, lifecycle, TF 순서로 끊긴 지점을 확인한다.
 
 ---
 

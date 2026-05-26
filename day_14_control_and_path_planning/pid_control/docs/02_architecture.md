@@ -1,4 +1,4 @@
-# 01. 구조
+# 02. 구조
 
 ## 패키지 구조
 
@@ -48,7 +48,7 @@ full.launch.py
 
 ## 변경 가능한 값
 
-아래 값은 launch argument 또는 ROS parameter로 변경할 수 있습니다.
+아래 값은 launch argument 또는 ROS parameter로 변경할 수 있다.
 
 ```text
 robot_name

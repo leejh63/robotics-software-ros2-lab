@@ -203,7 +203,7 @@ for idx, n in enumerate(nodes):
         near_indices.append(idx)
 ```
 
-현재 `REWIRE_RADIUS = 1.5`이므로, `q_new`에서 1.5m 안에 있는 노드들이 후보가 된다.
+`REWIRE_RADIUS = 1.5`이므로, `q_new`에서 1.5m 안에 있는 노드들이 후보가 된다.
 
 이 후보들은 두 용도로 사용된다.
 
@@ -434,7 +434,7 @@ if d_to_goal <= GOAL_THRESHOLD:
     break
 ```
 
-현재 `GOAL_THRESHOLD = 0.5`다.
+`GOAL_THRESHOLD = 0.5`다.
 
 즉, 목표점에서 0.5m 안에 들어오면 성공으로 처리한다.
 

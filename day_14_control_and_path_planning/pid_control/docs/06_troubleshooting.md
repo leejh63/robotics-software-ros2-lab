@@ -1,4 +1,4 @@
-# 05. 트러블슈팅
+# 06. 트러블슈팅
 
 ## 1. launch에서 `robot_description` YAML 파싱 에러가 나는 경우
 
@@ -14,7 +14,7 @@ Unable to parse the value of parameter robot_description as yaml
 robot_description을 일반 문자열로 넘기지 않아서 launch_ros가 YAML처럼 해석하려고 할 때 발생한다.
 ```
 
-이 정리본의 launch 파일에서는 `ParameterValue(..., value_type=str)`을 사용합니다. 그래도 에러가 나면 오래된 install 결과를 실행 중일 가능성이 높습니다.
+이 정리본의 launch 파일에서는 `ParameterValue(..., value_type=str)`을 사용한다. 그래도 에러가 나면 오래된 install 결과를 실행 중일 가능성이 높다.
 
 ```bash
 cd projects/ros2_pid_arm_lab
@@ -39,7 +39,7 @@ joint_state_broadcaster active
 effort_controller active
 ```
 
-안 뜨면 아래를 확인합니다.
+안 뜨면 아래를 확인한다.
 
 ```bash
 ros2 service list | grep controller_manager
@@ -71,7 +71,7 @@ ros2 topic echo /joint_states --once
 
 `name` 배열에 `arm_joint`가 있어야 합니다.
 
-없으면 아래를 확인합니다.
+없으면 아래를 확인한다.
 
 ```text
 - joint_state_broadcaster가 active인지 확인
@@ -108,11 +108,11 @@ ros2 param set /pid_arm_controller kd 0.5
 ros2 param set /pid_arm_controller max_effort 20.0
 ```
 
-그리고 다시 천천히 올립니다.
+그리고 다시 천천히 올린다.
 
 ## 6. launch argument를 바꿨는데 반영이 안 되는 경우
 
-빌드/소싱 상태를 먼저 확인합니다.
+빌드/소싱 상태를 먼저 확인한다.
 
 ```bash
 which ros2
@@ -124,7 +124,7 @@ source install/setup.bash
 
 ## 7. 다른 워크스페이스와 섞이는 경우
 
-이전에 다른 workspace를 source한 터미널에서는 overlay가 섞일 수 있습니다. 가장 깔끔한 방법은 새 터미널을 열고 아래 순서만 실행하는 것입니다.
+이전에 다른 workspace를 source한 터미널에서는 overlay가 섞일 수 있습니다. 가장 깔끔한 방법은 새 터미널을 열고 아래 순서만 실행하는 것이다.
 
 ```bash
 cd projects/ros2_pid_arm_lab
@@ -133,4 +133,4 @@ source install/setup.bash
 ros2 pkg prefix pid_arm_lab
 ```
 
-`ros2 pkg prefix pid_arm_lab` 결과가 현재 폴더의 `install/pid_arm_lab`를 가리켜야 합니다.
+`ros2 pkg prefix pid_arm_lab` 결과가 현재 폴더의 `install/pid_arm_lab`를 가리켜야 한다.
