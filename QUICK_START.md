@@ -71,6 +71,43 @@ source install/setup.bash
 ros2 launch lee_robot_description nav2.launch.py use_rviz:=false
 ```
 
+### ROS2 Navigation Lab - rosbag 기반 SLAM/Nav2
+
+rosbag 원본 데이터는 이 저장소에 포함하지 않습니다. 실행할 때는 직접 준비한 bag 디렉토리를 `$BAG_DIR`로 지정합니다.
+
+```bash
+cd projects/ros2_navigation_lab
+source /opt/ros/humble/setup.bash
+colcon build --symlink-install --packages-select lee_robot_description
+source install/setup.bash
+
+export BAG_DIR=/path/to/rosbag_directory
+ros2 bag info "$BAG_DIR"
+```
+
+SLAM으로 map을 만들 때:
+
+```bash
+ros2 launch lee_robot_description bag_slam.launch.py
+```
+
+다른 터미널에서 rosbag을 느리게 반복 재생할 때:
+
+```bash
+export BAG_DIR=/path/to/rosbag_directory
+ros2 bag play "$BAG_DIR" \
+  --clock \
+  --loop \
+  -r 0.2 \
+  --topics /scan /odom /tf /tf_static \
+  --remap /scan:=/lee/scan \
+          /odom:=/lee/odom \
+          /tf:=/lee/tf \
+          /tf_static:=/lee/tf_static
+```
+
+전체 흐름은 [`projects/ros2_navigation_lab/docs/BAG_SLAM_NAV2_WORKFLOW.md`](projects/ros2_navigation_lab/docs/BAG_SLAM_NAV2_WORKFLOW.md)를 봅니다.
+
 ### ROS2 PID Arm Lab
 
 ```bash

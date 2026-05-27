@@ -1,5 +1,8 @@
 # Rosbag SLAM/Nav2 Commands Only
 
+> rosbag 원본 데이터는 이 저장소에 포함하지 않습니다. 실행할 때는 사용자가 직접 준비한 bag 디렉토리를 `BAG_DIR=/path/to/rosbag_directory`로 지정합니다.
+
+
 `$BAG_DIR`는 실제 rosbag 디렉토리 경로로 바꿔서 사용합니다. 개인 PC 경로나 특정 rosbag 이름은 문서에 고정하지 않습니다.
 
 ```bash

@@ -1,5 +1,8 @@
 # Rosbag 기반 SLAM → Map 저장 → Map 로드 → AMCL/Nav2 Costmap 확인
 
+> rosbag 원본 데이터는 이 저장소에 포함하지 않습니다. 실행할 때는 사용자가 직접 준비한 bag 디렉토리를 `BAG_DIR=/path/to/rosbag_directory`로 지정합니다.
+
+
 이 문서는 기록된 rosbag 데이터를 사용해서 다음 흐름을 분리해서 확인하는 문서입니다.
 
 ```text
@@ -24,7 +27,7 @@ Nav2가 새로 /cmd_vel을 내도 rosbag 안의 로봇 위치와 scan은 바뀌�
 
 ## 0. rosbag frame/topic 전제
 
-업로드한 rosbag 기준 핵심 토픽은 다음과 같습니다.
+사용자가 준비한 rosbag에서 확인해야 할 핵심 토픽은 다음과 같습니다.
 
 ```text
 /scan

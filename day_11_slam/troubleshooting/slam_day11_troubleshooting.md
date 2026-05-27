@@ -247,13 +247,13 @@ Gazebo가 동시에 켜져 입력이 섞임
 해결 후보:
 
 ```bash
-ros2 bag play bags/slam_raw_01 --clock --rate 0.5
+ros2 bag play "$BAG_DIR" --clock --rate 0.5
 ```
 
 또는 namespace 없는 bag이면:
 
 ```bash
-ros2 bag play rosbag2_2026_05_13-16_27_44 --clock --rate 0.5 \
+ros2 bag play "$BAG_DIR" --clock --rate 0.5 \
   --remap /scan:=/robot_ns/scan \
   --remap /odom:=/robot_ns/odom \
   --remap /tf:=/robot_ns/tf \

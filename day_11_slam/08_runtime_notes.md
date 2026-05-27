@@ -120,7 +120,7 @@ Gazebo가 /clock 발행
 offline bag:
 
 ```bash
-ros2 bag play bags/slam_raw_01 --clock
+ros2 bag play "$BAG_DIR" --clock
 ```
 
 `--clock`이 없으면 시간이 안 흐르는 것처럼 보일 수 있다.

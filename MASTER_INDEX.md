@@ -42,6 +42,7 @@ Navigation debugging: rosbag-frame / DWB / Behavior Tree
 | 빠른 실행/읽기 순서 확인 | [QUICK_START.md](QUICK_START.md) |
 | 전체 흐름 1페이지 요약 | [appendix/learning_flow_one_page.md](appendix/learning_flow_one_page.md) |
 | Gazebo → SLAM → AMCL → Nav2 연결 | [appendix/full_pipeline_reference.md](appendix/full_pipeline_reference.md) |
+| rosbag 기반 SLAM/Nav2 실습 | [projects/ros2_navigation_lab/docs/BAG_SLAM_NAV2_WORKFLOW.md](projects/ros2_navigation_lab/docs/BAG_SLAM_NAV2_WORKFLOW.md), [projects/ros2_navigation_lab/docs/BAG_COMMANDS_ONLY.md](projects/ros2_navigation_lab/docs/BAG_COMMANDS_ONLY.md) |
 | 명령어 실행 기준 | [appendix/command_execution_conventions.md](appendix/command_execution_conventions.md) |
 | 문제 발생 시 빠른 진단 | [appendix/troubleshooting_quick_diagnosis.md](appendix/troubleshooting_quick_diagnosis.md) |
 
@@ -109,6 +110,9 @@ Navigation debugging: rosbag-frame / DWB / Behavior Tree
 ---
 
 ## 7. 실행 코드 프로젝트
+
+rosbag 원본 데이터는 저장소에 포함하지 않는다. rosbag 기반 실습은 사용자가 직접 준비한 bag 디렉토리를 `$BAG_DIR`로 지정해서 실행한다.
+
 
 | 위치 | 역할 |
 |---|---|

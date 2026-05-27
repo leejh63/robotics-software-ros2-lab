@@ -23,7 +23,7 @@ RViz config:
 $ROS2_WS/lee_robot_description/rviz/slam.rviz
 
 SLAM용 bag:
-$ROS2_WS/bags/slam_raw_01
+$BAG_DIR
 
 저장 지도:
 $ROS2_WS/slam_map.yaml
@@ -191,10 +191,11 @@ cat slam_map.yaml
 
 ## 7. 예시 환경 기준 offline SLAM
 
-현재 추천 bag:
+이 저장소에는 rosbag 원본 데이터를 포함하지 않는다. 사용할 bag은 직접 준비한 뒤 `$BAG_DIR`로 지정한다.
 
-```text
-bags/slam_raw_01
+```bash
+export BAG_DIR=/path/to/rosbag_directory
+ros2 bag info "$BAG_DIR"
 ```
 
 터미널 1. SLAM Toolbox:
@@ -236,18 +237,12 @@ cd $ROS2_WS
 source /opt/ros/humble/setup.bash
 source install/setup.bash
 
-ros2 bag play bags/slam_raw_01 --clock --rate 0.5
+ros2 bag play "$BAG_DIR" --clock --loop -r 0.2
 ```
 
 ---
 
-## 8. 이전 namespace 없는 bag을 쓸 때
-
-이전 bag:
-
-```text
-rosbag2_2026_05_13-16_27_44
-```
+## 8. namespace 없는 bag을 쓸 때
 
 토픽 구조:
 
@@ -270,7 +265,7 @@ rosbag2_2026_05_13-16_27_44
 재생 시 remap:
 
 ```bash
-ros2 bag play rosbag2_2026_05_13-16_27_44 --clock --rate 0.5 \
+ros2 bag play "$BAG_DIR" --clock --loop -r 0.2 \
   --remap /scan:=/robot_ns/scan \
   --remap /odom:=/robot_ns/odom \
   --remap /tf:=/robot_ns/tf \

@@ -24,51 +24,25 @@ SLAM parameter 변경 후 결과 비교 가능
 
 ---
 
-## 2. 현재 사용할 수 있는 bag 구분
+## 2. rosbag 데이터 포함 여부와 입력 전제
 
-### 2.1 현재 SLAM용 bag
+이 저장소에는 rosbag 원본 데이터를 포함하지 않는다. rosbag은 용량이 크고 실행 환경마다 다르므로 Git에 올리지 않고, 사용자가 직접 준비한 bag 디렉토리를 `$BAG_DIR`로 지정해서 사용한다.
 
-```text
-$ROS2_WS/bags/slam_raw_01
+```bash
+export BAG_DIR=/path/to/rosbag_directory
+ros2 bag info "$BAG_DIR"
 ```
 
-metadata 기준:
+이 문서에서 전제하는 최소 topic은 다음과 같다.
 
 ```text
-Duration: 약 90.3초
-Messages: 11700
-Topics:
-  /robot_ns/tf_static
-  /robot_ns/scan
-  /robot_ns/tf
-  /robot_ns/odom
+/scan 또는 /robot_ns/scan
+/odom 또는 /robot_ns/odom
+/tf 또는 /robot_ns/tf
+/tf_static 또는 /robot_ns/tf_static
 ```
 
-이 bag은 현재 `slam_param.yaml`의 `/robot_ns/scan`, `map_robot_ns`, `odom_robot_ns`, `base_footprint` 구조와 맞는 편이다.
-
-### 2.2 이전 Day 9 계열 bag
-
-```text
-$ROS2_WS/rosbag2_2026_05_13-16_27_44
-```
-
-metadata 기준:
-
-```text
-Duration: 약 52.0초
-Messages: 5323
-Topics:
-  /scan
-  /odom
-  /tf
-  /tf_static
-  /imu
-  /cmd_vel
-  /image_raw/compressed
-```
-
-이 bag은 `/robot_ns` namespace가 없다.  
-현재 SLAM 설정과 맞추려면 remap을 고려해야 한다.
+특히 namespace 없는 bag을 `/robot_ns` 구조에 맞출 때는 `ros2 bag play`의 topic remap을 사용한다. 단, topic remap은 message 내부의 `header.frame_id`, `child_frame_id`를 바꾸지 않는다. 따라서 `ros2 bag info`, `ros2 topic echo`, `tf2_echo`로 실제 frame 이름을 확인해야 한다.
 
 ---
 
@@ -152,19 +126,19 @@ cd $ROS2_WS
 source /opt/ros/humble/setup.bash
 source install/setup.bash
 
-ros2 bag play bags/slam_raw_01 --clock
+ros2 bag play "$BAG_DIR" --clock
 ```
 
 천천히 재생:
 
 ```bash
-ros2 bag play bags/slam_raw_01 --clock --rate 0.5
+ros2 bag play "$BAG_DIR" --clock --rate 0.5
 ```
 
 반복 재생:
 
 ```bash
-ros2 bag play bags/slam_raw_01 --clock --loop
+ros2 bag play "$BAG_DIR" --clock --loop
 ```
 
 ---
@@ -195,7 +169,7 @@ cd $ROS2_WS
 source /opt/ros/humble/setup.bash
 source install/setup.bash
 
-ros2 bag play rosbag2_2026_05_13-16_27_44 --clock \
+ros2 bag play "$BAG_DIR" --clock \
   --remap /scan:=/robot_ns/scan \
   --remap /tf:=/robot_ns/tf \
   --remap /tf_static:=/robot_ns/tf_static \
@@ -258,7 +232,7 @@ SLAM Toolbox와 RViz2가 `use_sim_time:=true`인데 bag을 `--clock` 없이 재�
 현재 권장:
 
 ```bash
-ros2 bag play bags/slam_raw_01 --clock
+ros2 bag play "$BAG_DIR" --clock
 ```
 
 ---
@@ -296,7 +270,7 @@ message header.frame_id: laser
 
 ```text
 offline SLAM은 같은 센서 데이터를 반복 재생해 SLAM을 다시 확인하는 방법이다.
-현재 bags/slam_raw_01은 robot_ns namespace와 잘 맞는다.
+실제 bag 구조는 `ros2 bag info "$BAG_DIR"`로 확인한다.
 이전 namespace 없는 bag은 topic remap이 필요할 수 있다.
 단, topic remap은 frame_id를 바꾸지 않는다.
 use_sim_time=true라면 bag play --clock을 같이 써야 한다.

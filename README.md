@@ -20,6 +20,19 @@ Python / NumPy / OpenCV
 → rosbag-frame / DWB / Navigation failure debugging
 ```
 
+## Rosbag 데이터 포함 여부
+
+이 저장소에는 rosbag 원본 데이터는 포함하지 않았습니다. rosbag은 용량이 크고 실행 환경마다 다르므로 Git에는 올리지 않고, 실행할 때 사용자가 직접 준비한 bag 디렉토리를 지정합니다.
+
+```bash
+export BAG_DIR=/path/to/rosbag_directory
+ros2 bag info "$BAG_DIR"
+```
+
+rosbag 기반 SLAM/Nav2 실행 흐름은 [`projects/ros2_navigation_lab/docs/BAG_SLAM_NAV2_WORKFLOW.md`](projects/ros2_navigation_lab/docs/BAG_SLAM_NAV2_WORKFLOW.md)와 [`projects/ros2_navigation_lab/docs/BAG_COMMANDS_ONLY.md`](projects/ros2_navigation_lab/docs/BAG_COMMANDS_ONLY.md)를 기준으로 봅니다.
+
+---
+
 핵심 관점은 다음과 같습니다.
 
 ```text
@@ -39,6 +52,7 @@ Python / NumPy / OpenCV
 | 빠른 시작 | [QUICK_START.md](QUICK_START.md) |
 | 전체 색인 | [MASTER_INDEX.md](MASTER_INDEX.md) |
 | Gazebo → SLAM → AMCL → Nav2 흐름 | [appendix/full_pipeline_reference.md](appendix/full_pipeline_reference.md) |
+| rosbag 기반 SLAM/Nav2 실행 | [projects/ros2_navigation_lab/docs/BAG_SLAM_NAV2_WORKFLOW.md](projects/ros2_navigation_lab/docs/BAG_SLAM_NAV2_WORKFLOW.md), [projects/ros2_navigation_lab/docs/BAG_COMMANDS_ONLY.md](projects/ros2_navigation_lab/docs/BAG_COMMANDS_ONLY.md) |
 | topic / frame / message / action 기준 | [appendix/table_reference_guide.md](appendix/table_reference_guide.md), [appendix/topic_frame_message_action_master_table.md](appendix/topic_frame_message_action_master_table.md) |
 | 명령어 실행 규칙 | [appendix/command_execution_conventions.md](appendix/command_execution_conventions.md) |
 | 문제 발생 시 빠른 진단 | [appendix/troubleshooting_quick_diagnosis.md](appendix/troubleshooting_quick_diagnosis.md) |
@@ -81,6 +95,7 @@ Python / NumPy / OpenCV
 | Placeholder | 의미 |
 |---|---|
 | `$ROS2_WS` | ROS2 workspace 경로 |
+| `$BAG_DIR` | 사용자가 직접 준비한 rosbag 디렉토리 경로 |
 | `$ROS2_WORK_DIR` | ROS2 실습 상위 작업 디렉터리 |
 | `robot_ns` | 로봇별 ROS namespace 예시 |
 | `ROBOT_IP` | 로봇 또는 개발 보드의 로컬 IP 예시 |
@@ -93,7 +108,8 @@ Python / NumPy / OpenCV
 ```bash
 cd $ROS2_WS
 source install/setup.bash
-ros2 bag play <bag_dir> --clock --remap /scan:=/robot_ns/scan
+export BAG_DIR=/path/to/rosbag_directory
+ros2 bag play "$BAG_DIR" --clock --remap /scan:=/robot_ns/scan
 ```
 
 실행할 때는 placeholder를 본인 환경에 맞게 바꿔야 합니다.

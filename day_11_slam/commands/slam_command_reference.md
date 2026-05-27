@@ -184,7 +184,7 @@ rviz2 -d $(ros2 pkg prefix lee_robot_description)/share/lee_robot_description/rv
 bag play:
 
 ```bash
-ros2 bag play bags/slam_raw_01 --clock --rate 0.5
+ros2 bag play "$BAG_DIR" --clock --rate 0.5
 ```
 
 ---
@@ -192,7 +192,7 @@ ros2 bag play bags/slam_raw_01 --clock --rate 0.5
 ## 9. offline SLAM - namespace 없는 bag remap
 
 ```bash
-ros2 bag play rosbag2_2026_05_13-16_27_44 --clock --rate 0.5 \
+ros2 bag play "$BAG_DIR" --clock --rate 0.5 \
   --remap /scan:=/robot_ns/scan \
   --remap /odom:=/robot_ns/odom \
   --remap /tf:=/robot_ns/tf \

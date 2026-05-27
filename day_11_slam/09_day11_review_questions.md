@@ -58,7 +58,7 @@
 
 1. 현재 workspace 경로는 어디인가?
 2. 현재 SLAM parameter 파일은 어디에 있는가?
-3. 현재 SLAM용 bag `bags/slam_raw_01`에는 어떤 topic이 들어 있는가?
+3. 사용할 rosbag `$BAG_DIR`에는 어떤 topic이 들어 있는가?
 4. 이전 namespace 없는 bag을 `/robot_ns` 구조에 맞추려면 어떤 remap이 필요한가?
 5. `use_sim_time:=true`일 때 offline bag 재생에서 왜 `--clock`이 필요한가?
 

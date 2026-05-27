@@ -183,7 +183,7 @@ ros2 bag play <bag_dir> --clock -r 0.1
 namespace 없는 bag을 `/robot_ns` 구조로 재생할 때 예시:
 
 ```bash
-ros2 bag play rosbag2_2026_05_13-16_27_44 --loop -r 0.1 --clock \
+ros2 bag play "$BAG_DIR" --loop -r 0.1 --clock \
   --remap /scan:=/robot_ns/scan \
   --remap /odom:=/robot_ns/odom \
   --remap /tf:=/robot_ns/tf \

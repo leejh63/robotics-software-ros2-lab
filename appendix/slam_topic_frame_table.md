@@ -67,30 +67,33 @@ map_robot_ns
 
 ## 4. rosbag 차이
 
-현재 SLAM용 bag:
+이 저장소에는 rosbag 원본 데이터를 포함하지 않는다. rosbag을 사용할 때는 사용자가 직접 준비한 bag 디렉토리를 `$BAG_DIR`로 지정한다.
+
+```bash
+export BAG_DIR=/path/to/rosbag_directory
+ros2 bag info "$BAG_DIR"
+```
+
+rosbag topic 구조는 크게 두 가지로 나눠서 본다.
 
 ```text
-bags/slam_raw_01
+namespace 있는 bag 예시:
   /robot_ns/scan
   /robot_ns/odom
   /robot_ns/tf
   /robot_ns/tf_static
-```
 
-이전 Day 9 계열 bag:
-
-```text
-rosbag2_2026_05_13-16_27_44
+namespace 없는 bag 예시:
   /scan
   /odom
   /tf
   /tf_static
 ```
 
-이전 bag을 현재 `/robot_ns` 구조에 맞추려면 topic remap이 필요할 수 있다.
+namespace 없는 bag을 현재 `/robot_ns` 구조에 맞추려면 topic remap이 필요할 수 있다.
 
 ```bash
-ros2 bag play rosbag2_2026_05_13-16_27_44 --clock \
+ros2 bag play "$BAG_DIR" --clock \
   --remap /scan:=/robot_ns/scan \
   --remap /odom:=/robot_ns/odom \
   --remap /tf:=/robot_ns/tf \

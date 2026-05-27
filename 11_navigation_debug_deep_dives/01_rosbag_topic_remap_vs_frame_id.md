@@ -376,7 +376,7 @@ ros2 topic list | sort
 현재 `/robot_ns` namespace 구조에 맞추려면, namespace 없는 bag은 보통 아래처럼 재생을 시도할 수 있다.
 
 ```bash
-ros2 bag play rosbag2_2026_05_13-16_27_44 \
+ros2 bag play "$BAG_DIR" \
   --clock \
   --remap /scan:=/robot_ns/scan \
   --remap /odom:=/robot_ns/odom \

@@ -3,7 +3,7 @@
 #
 # 중요한 차이:
 #   - Gazebo용 설정은 odom_lee를 사용합니다.
-#   - 업로드된 rosbag은 message 내부 frame_id가 odom입니다.
+#   - 사용자가 준비한 rosbag의 message 내부 frame_id가 odom인 경우를 기준으로 합니다.
 #   - rosbag play의 topic remap은 topic 이름만 바꾸며 frame_id 문자열은 바꾸지 않습니다.
 #   - 따라서 bag 기반 SLAM에서는 odom_frame을 odom으로 둡니다.
 
@@ -21,7 +21,7 @@ slam_toolbox:
     map_update_interval: 1.0
     resolution: 0.05
 
-    # 업로드된 rosbag의 LaserScan은 range_max가 크게 잡혀 있습니다.
+    # 일부 실제 rosbag의 LaserScan은 range_max가 크게 잡혀 있을 수 있습니다.
     # Gazebo용 3.5m보다 넓게 보되, 너무 먼 노이즈까지 쓰지 않도록 10m부터 시작합니다.
     max_laser_range: 10.0
 

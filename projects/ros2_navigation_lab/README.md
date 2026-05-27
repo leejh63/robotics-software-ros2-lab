@@ -45,6 +45,24 @@ Gazebo Classic, URDF/Xacro, `slam_toolbox`, `nav2_amcl`, `nav2_map_server`, `nav
 
 ---
 
+## Rosbag 데이터 포함 여부
+
+이 workspace는 rosbag 기반 SLAM/Nav2 workflow를 지원하지만, rosbag 원본 데이터는 저장소에 포함하지 않습니다. rosbag은 용량이 크고 실행 환경마다 다르므로 Git에는 올리지 않고, 실행 시 직접 준비한 bag 디렉토리를 `$BAG_DIR`로 지정합니다.
+
+```bash
+export BAG_DIR=/path/to/rosbag_directory
+ros2 bag info "$BAG_DIR"
+```
+
+기준 workflow는 다음 문서에 분리했습니다.
+
+```text
+docs/BAG_SLAM_NAV2_WORKFLOW.md   단계별 설명
+docs/BAG_COMMANDS_ONLY.md        명령어만 빠르게 복사
+```
+
+---
+
 ## 주요 실행 흐름
 
 ```text
@@ -125,6 +143,36 @@ ros2 launch lee_robot_description nav2_navigation.launch.py
 
 ---
 
+## Rosbag 기반 workflow 요약
+
+rosbag 기반 흐름은 기존 Gazebo launch와 분리되어 있습니다.
+
+```text
+1. bag_slam.launch.py로 rosbag replay 기반 SLAM map 생성
+2. map_saver_cli로 bag_slam_map.yaml / bag_slam_map.pgm 저장
+3. bag_localization.launch.py로 저장 map 로드 + AMCL 확인
+4. bag_nav2.launch.py로 저장 map + rosbag scan 기반 Nav2 costmap 확인
+```
+
+추천 rosbag replay 명령은 다음과 같습니다.
+
+```bash
+export BAG_DIR=/path/to/rosbag_directory
+ros2 bag play "$BAG_DIR" \
+  --clock \
+  --loop \
+  -r 0.2 \
+  --topics /scan /odom /tf /tf_static \
+  --remap /scan:=/lee/scan \
+          /odom:=/lee/odom \
+          /tf:=/lee/tf \
+          /tf_static:=/lee/tf_static
+```
+
+초기 위치는 고정 좌표를 넣기보다 RViz의 `2D Pose Estimate`로 map 위에서 직접 지정합니다. SLAM으로 만든 map에서 `x=0.0`, `y=0.0`, `yaw=0.0`이 실제 시작 위치라고 보장되지 않기 때문입니다.
+
+---
+
 ## 주요 확인 명령
 
 ```bash
@@ -185,6 +233,21 @@ ros2 node list | sort | grep bt_navigator
 | Map topic | `/lee/map` |
 | AMCL pose topic | `/amcl_pose` |
 | AMCL particle cloud topic | `/particle_cloud` |
+
+---
+
+## Rosbag workflow frame과 topic
+
+rosbag workflow는 Gazebo workflow와 frame 전제가 다릅니다. rosbag replay는 topic 이름은 remap할 수 있지만 message 내부의 `header.frame_id`, `child_frame_id`는 바꾸지 않으므로, bag 전용 parameter에서는 `odom_lee`가 아니라 `odom`을 사용합니다.
+
+| 항목 | Gazebo workflow | Rosbag workflow |
+|---|---|---|
+| Map frame | `map_lee` | `map_lee` |
+| Odometry frame | `odom_lee` | `odom` |
+| Base frame | `base_footprint` | `base_footprint` |
+| LiDAR topic | `/lee/scan` | `/lee/scan`으로 remap 권장 |
+| Odometry topic | `/lee/odom` | `/lee/odom`으로 remap 권장 |
+| TF topic | `/lee/tf`, `/lee/tf_static` | `/lee/tf`, `/lee/tf_static`으로 remap 권장 |
 
 ---
 

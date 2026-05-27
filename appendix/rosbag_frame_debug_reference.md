@@ -34,7 +34,7 @@ TF topic: /robot_ns/tf, /robot_ns/tf_static
 ## namespace 없는 bag 재생 예시
 
 ```bash
-ros2 bag play rosbag2_2026_05_13-16_27_44 \
+ros2 bag play "$BAG_DIR" \
   --clock \
   --remap /scan:=/robot_ns/scan \
   --remap /odom:=/robot_ns/odom \

@@ -89,7 +89,7 @@ rviz2 -d $(ros2 pkg prefix lee_robot_description)/share/lee_robot_description/rv
 터미널 3:
 
 ```bash
-ros2 bag play bags/slam_raw_01 --clock --rate 0.5
+ros2 bag play "$BAG_DIR" --clock --rate 0.5
 ```
 
 ---

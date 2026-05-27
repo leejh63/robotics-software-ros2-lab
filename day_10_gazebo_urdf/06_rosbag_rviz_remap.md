@@ -53,7 +53,7 @@ bag 안의 topic 이름과 현재 실습에서 사용하는 topic 이름이 다�
 환경에 따라 `--remap`을 여러 번 붙였을 때 마지막 규칙만 적용되는 것처럼 보였던 기록이 있다. 학습 문서에서는 아래처럼 한 번의 `--remap` 뒤에 여러 규칙을 나열하는 방식을 권장한다.
 
 ```bash
-ros2 bag play rosbag2_2026_05_13-16_27_44 --loop -r 0.1 --clock \
+ros2 bag play "$BAG_DIR" --loop -r 0.1 --clock \
   --remap \
   /image_raw/compressed:=/user_ns/image_raw/compressed \
   /odom:=/user_ns/odom \
