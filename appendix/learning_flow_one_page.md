@@ -36,6 +36,8 @@ Nav2
 
 ## 2. 예시 환경 기준 핵심 이름
 
+아래 값은 일반 설명용 placeholder다. 현재 `projects/ros2_navigation_lab`의 복사 실행 예시는 `/lee`, `map_lee`, `odom_lee`를 사용한다.
+
 ```text
 namespace: /robot_ns
 map topic: /robot_ns/map

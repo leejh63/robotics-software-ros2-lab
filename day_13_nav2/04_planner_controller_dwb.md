@@ -17,13 +17,13 @@ controller_server
 Global planner는 현재 위치에서 목표 위치까지의 전체 경로를 만든다.
 
 ```text
-현재 위치 + 목표 위치 + global costmap -> /robot_ns/plan
+현재 위치 + 목표 위치 + global costmap -> /lee/plan
 ```
 
 스마트폰 내비게이션으로 치면 전체 경로를 계산하는 부분이다.
 
-Global planner가 직접 바퀴를 제어하지는 않는다.  
-`/robot_ns/plan`이라는 경로를 만들고, 그 경로를 controller가 따라가게 한다.
+Global planner가 직접 바퀴를 제어하지는 않는다.
+`/lee/plan`이라는 경로를 만들고, 그 경로를 controller가 따라가게 한다.
 
 ---
 
@@ -72,7 +72,7 @@ NavFn은 단순하고 안정적이다. TurtleBot처럼 제자리 회전이 가�
 Controller는 global path를 보고 실제 속도 명령을 만든다.
 
 ```text
-/robot_ns/plan + local costmap + 현재 odom -> /robot_ns/cmd_vel
+/lee/plan + local costmap + 현재 odom -> /lee/cmd_vel
 ```
 
 여기서 중요한 점은 controller가 “경로를 만드는 것”이 아니라는 점이다.
@@ -91,7 +91,7 @@ controller
 
 현재 설정은 `dwb_core::DWBLocalPlanner`를 사용한다.
 
-DWB는 여러 속도 후보를 만들어 보고, 각 후보가 가까운 미래에 어떤 궤적을 만들지 시뮬레이션한다.  
+DWB는 여러 속도 후보를 만들어 보고, 각 후보가 가까운 미래에 어떤 궤적을 만들지 시뮬레이션한다.
 그 다음 critic 점수를 계산해서 가장 괜찮은 속도를 고른다.
 
 ```text
@@ -104,10 +104,10 @@ critic 점수 계산
         ↓
 가장 낮은 비용의 속도 선택
         ↓
-/robot_ns/cmd_vel 발행
+/lee/cmd_vel 발행
 ```
 
-차동 구동 로봇에서는 보통 `v_y = 0`이다.  
+차동 구동 로봇에서는 보통 `v_y = 0`이다.
 옆으로 미끄러지듯 이동하지 못하기 때문이다.
 
 ---
@@ -185,7 +185,7 @@ critics
 
 ---
 
-## 7. /robot_ns/plan은 있는데 /robot_ns/cmd_vel이 없을 수 있는 이유
+## 7. /lee/plan은 있는데 /lee/cmd_vel이 없을 수 있는 이유
 
 이 경우 planner는 성공했지만 controller가 실패한 것이다.
 
@@ -204,12 +204,12 @@ controller_server가 active가 아님
 확인:
 
 ```bash
-ros2 topic echo /robot_ns/plan --once
-ros2 topic echo /robot_ns/local_costmap/costmap --once
-ros2 topic echo /robot_ns/odom --once
-ros2 lifecycle get /robot_ns/controller_server
-ros2 param get /robot_ns/controller_server controller_plugins
-ros2 param get /robot_ns/controller_server FollowPath.critics
+ros2 topic echo /lee/plan --once
+ros2 topic echo /lee/local_costmap/costmap --once
+ros2 topic echo /lee/odom --once
+ros2 lifecycle get /lee/controller_server
+ros2 param get /lee/controller_server controller_plugins
+ros2 param get /lee/controller_server FollowPath.critics
 ```
 
 ---

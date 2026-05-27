@@ -70,6 +70,7 @@ rosbag 기반 SLAM/Nav2 실행 흐름은 [`projects/ros2_navigation_lab/docs/BAG
 | [day_12_amcl_mcl/](day_12_amcl_mcl/) | AMCL, MCL, particle filter, initial pose, localization |
 | [day_13_nav2/](day_13_nav2/) | Nav2 stack, lifecycle, costmap, planner, controller, action goal, `/cmd_vel` |
 | [day_14_control_and_path_planning/](day_14_control_and_path_planning/) | PID 제어, ros2_control, Dijkstra/A*/RRT/RRT* 경로 탐색 |
+| [day_15_turtlebot3_cartographer_amcl_nav2/](day_15_turtlebot3_cartographer_amcl_nav2/) | TurtleBot3 Burger 기반 Gazebo, Cartographer SLAM, AMCL, Navigation2, Explore Lite 자동 탐색 재현 문서 |
 | [10_selected_deep_dives/](10_selected_deep_dives/) | 핵심 개념 선별 심화 |
 | [11_navigation_debug_deep_dives/](11_navigation_debug_deep_dives/) | rosbag-frame, DWB, Behavior Tree, navigation failure 디버깅 심화 |
 | [appendix/](appendix/) | 빠른 참조, 용어집, 명령어, topic/frame/action 표, troubleshooting |
@@ -92,6 +93,8 @@ rosbag 기반 SLAM/Nav2 실행 흐름은 [`projects/ros2_navigation_lab/docs/BAG
 
 문서의 명령어는 로컬 환경값을 그대로 노출하지 않도록 placeholder를 사용합니다.
 
+단, `projects/ros2_navigation_lab`의 복사 실행 예시는 현재 정리한 실습 환경에 맞춰 `/lee`, `map_lee`, `odom_lee`를 우선 사용합니다. `/robot_ns`, `map_robot_ns`, `odom_robot_ns`는 일반 설명용 placeholder입니다.
+
 | Placeholder | 의미 |
 |---|---|
 | `$ROS2_WS` | ROS2 workspace 경로 |
@@ -103,7 +106,7 @@ rosbag 기반 SLAM/Nav2 실행 흐름은 [`projects/ros2_navigation_lab/docs/BAG
 | `$SOURCE_ARCHIVE` | 정리 기준이 된 개인 실습 자료 묶음 |
 | `$SOURCE_NOTES` | 정리 기준이 된 개인 실습 노트 경로 |
 
-예시:
+일반화된 placeholder 예시:
 
 ```bash
 cd $ROS2_WS
@@ -112,4 +115,4 @@ export BAG_DIR=/path/to/rosbag_directory
 ros2 bag play "$BAG_DIR" --clock --remap /scan:=/robot_ns/scan
 ```
 
-실행할 때는 placeholder를 본인 환경에 맞게 바꿔야 합니다.
+위 예시는 일반화된 표기입니다. 현재 `projects/ros2_navigation_lab`를 그대로 실행할 때는 `/robot_ns`가 아니라 `/lee` 기준 명령어를 먼저 봅니다. 실행할 때는 placeholder를 본인 환경에 맞게 바꿔야 합니다.

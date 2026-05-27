@@ -52,7 +52,7 @@ ros2 launch lee_robot_description slam.launch.py --show-args
 ros2 run teleop_twist_keyboard teleop_twist_keyboard \
   --ros-args \
   -r __node:=lee_teleop \
-  -r cmd_vel:=/robot_ns/cmd_vel
+  -r cmd_vel:=/lee/cmd_vel
 ```
 
 ---
@@ -61,11 +61,11 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard \
 
 ```bash
 ros2 topic list | sort
-ros2 topic echo /robot_ns/scan --once
-ros2 topic echo /robot_ns/odom --once
-ros2 topic echo /robot_ns/map --once
-ros2 topic hz /robot_ns/scan
-ros2 topic info /robot_ns/map -v
+ros2 topic echo /lee/scan --once
+ros2 topic echo /lee/odom --once
+ros2 topic echo /lee/map --once
+ros2 topic hz /lee/scan
+ros2 topic info /lee/map -v
 ```
 
 ---
@@ -82,24 +82,24 @@ ros2 node info /slam_toolbox
 ## 5. TF 확인
 
 ```bash
-ros2 run tf2_ros tf2_echo map_robot_ns base_footprint \
+ros2 run tf2_ros tf2_echo map_lee base_footprint \
   --ros-args \
-  -r /tf:=/robot_ns/tf \
-  -r /tf_static:=/robot_ns/tf_static
+  -r /tf:=/lee/tf \
+  -r /tf_static:=/lee/tf_static
 ```
 
 ```bash
-ros2 run tf2_ros tf2_echo odom_robot_ns base_footprint \
+ros2 run tf2_ros tf2_echo odom_lee base_footprint \
   --ros-args \
-  -r /tf:=/robot_ns/tf \
-  -r /tf_static:=/robot_ns/tf_static
+  -r /tf:=/lee/tf \
+  -r /tf_static:=/lee/tf_static
 ```
 
 ```bash
 ros2 run tf2_ros tf2_echo base_link base_scan \
   --ros-args \
-  -r /tf:=/robot_ns/tf \
-  -r /tf_static:=/robot_ns/tf_static
+  -r /tf:=/lee/tf \
+  -r /tf_static:=/lee/tf_static
 ```
 
 ---
@@ -110,7 +110,7 @@ workspace root:
 
 ```bash
 ros2 run nav2_map_server map_saver_cli \
-  -t /robot_ns/map \
+  -t /lee/map \
   -f ./slam_map
 ```
 
@@ -119,7 +119,7 @@ maps 폴더:
 ```bash
 mkdir -p maps
 ros2 run nav2_map_server map_saver_cli \
-  -t /robot_ns/map \
+  -t /lee/map \
   -f ./maps/slam_map
 ```
 
@@ -132,9 +132,9 @@ map_server:
 ```bash
 ros2 run nav2_map_server map_server \
   --ros-args \
-  -r /map:=/robot_ns/map \
+  -r /map:=/lee/map \
   -p yaml_filename:=$PWD/slam_map.yaml \
-  -p frame_id:=map_robot_ns
+  -p frame_id:=map_lee
 ```
 
 lifecycle manager:
@@ -149,13 +149,13 @@ ros2 run nav2_lifecycle_manager lifecycle_manager \
 확인:
 
 ```bash
-ros2 topic echo /robot_ns/map --once
+ros2 topic echo /lee/map --once
 ros2 lifecycle get /map_server
 ```
 
 ---
 
-## 8. offline SLAM - 현재 `/robot_ns` bag
+## 8. offline SLAM - 현재 `/lee` bag
 
 SLAM Toolbox:
 
@@ -165,10 +165,10 @@ ros2 run slam_toolbox async_slam_toolbox_node \
   -r __node:=slam_toolbox \
   --params-file $PWD/lee_robot_description/config/slam_param.yaml \
   -p use_sim_time:=true \
-  -r /map:=/robot_ns/map \
-  -r /map_updates:=/robot_ns/map_updates \
-  -r /tf:=/robot_ns/tf \
-  -r /tf_static:=/robot_ns/tf_static
+  -r /map:=/lee/map \
+  -r /map_updates:=/lee/map_updates \
+  -r /tf:=/lee/tf \
+  -r /tf_static:=/lee/tf_static
 ```
 
 RViz2:
@@ -177,8 +177,8 @@ RViz2:
 rviz2 -d $(ros2 pkg prefix lee_robot_description)/share/lee_robot_description/rviz/slam.rviz \
   --ros-args \
   -p use_sim_time:=true \
-  -r /tf:=/robot_ns/tf \
-  -r /tf_static:=/robot_ns/tf_static
+  -r /tf:=/lee/tf \
+  -r /tf_static:=/lee/tf_static
 ```
 
 bag play:
@@ -193,10 +193,10 @@ ros2 bag play "$BAG_DIR" --clock --rate 0.5
 
 ```bash
 ros2 bag play "$BAG_DIR" --clock --rate 0.5 \
-  --remap /scan:=/robot_ns/scan \
-  --remap /odom:=/robot_ns/odom \
-  --remap /tf:=/robot_ns/tf \
-  --remap /tf_static:=/robot_ns/tf_static
+  --remap /scan:=/lee/scan \
+  --remap /odom:=/lee/odom \
+  --remap /tf:=/lee/tf \
+  --remap /tf_static:=/lee/tf_static
 ```
 
 주의:

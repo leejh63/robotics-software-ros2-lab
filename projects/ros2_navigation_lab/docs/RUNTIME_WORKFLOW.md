@@ -190,7 +190,7 @@ ros2 param get /lee/controller_server progress_checker_plugin
 CLI로 goal을 보냅니다.
 
 ```bash
-ros2 action send_goal /lee/navigate_to_pose nav2_msgs/action/NavigateToPose "{pose: {header: {frame_id: map_lee}, pose: {position: {x: 0.5, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}}"
+ros2 action send_goal /lee/navigate_to_pose nav2_msgs/action/NavigateToPose "{pose: {header: {frame_id: 'map_lee'}, pose: {position: {x: 0.5, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}}"
 ```
 
 `/lee/cmd_vel` 출력을 확인합니다.

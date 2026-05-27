@@ -6,12 +6,12 @@ Nav2 문제는 `Localization -> Lifecycle -> Action -> Planner -> Controller -> 
 
 | 증상 | 먼저 확인할 것 | 확인 명령 | 가능성이 큰 원인 |
 |---|---|---|---|
-| RViz Goal 버튼이 안 먹음 | action namespace | `ros2 action list \| grep navigate` | RViz Goal tool이 `/robot_ns/navigate_to_pose`를 못 봄 |
-| action server not available | bt_navigator와 lifecycle | `ros2 lifecycle get /robot_ns/bt_navigator` | Nav2 launch 미실행, namespace 불일치, inactive 상태 |
-| `No critics defined for FollowPath` | controller parameter | `ros2 param get /robot_ns/controller_server FollowPath.critics` | DWB plugin YAML 구조 불일치 |
-| path는 나오는데 `/cmd_vel`이 없음 | controller/DWB | `ros2 topic echo /robot_ns/cmd_vel` | controller_server inactive, DWB 평가 실패 |
-| `/cmd_vel`은 나오는데 로봇이 안 움직임 | Gazebo plugin subscribe topic | `ros2 topic info /robot_ns/cmd_vel -v` | diff_drive plugin topic 불일치 |
-| goal이 계속 실패함 | map, costmap, TF, BT 단계 | `ros2 topic echo /robot_ns/plan --once` | planner/controller/BT 중간 단계 실패 |
+| RViz Goal 버튼이 안 먹음 | action namespace | `ros2 action list \| grep navigate` | RViz Goal tool이 `/lee/navigate_to_pose`를 못 봄 |
+| action server not available | bt_navigator와 lifecycle | `ros2 lifecycle get /lee/bt_navigator` | Nav2 launch 미실행, namespace 불일치, inactive 상태 |
+| `No critics defined for FollowPath` | controller parameter | `ros2 param get /lee/controller_server FollowPath.critics` | DWB plugin YAML 구조 불일치 |
+| path는 나오는데 `/cmd_vel`이 없음 | controller/DWB | `ros2 topic echo /lee/cmd_vel` | controller_server inactive, DWB 평가 실패 |
+| `/cmd_vel`은 나오는데 로봇이 안 움직임 | Gazebo plugin subscribe topic | `ros2 topic info /lee/cmd_vel -v` | diff_drive plugin topic 불일치 |
+| goal이 계속 실패함 | map, costmap, TF, BT 단계 | `ros2 topic echo /lee/plan --once` | planner/controller/BT 중간 단계 실패 |
 
 Nav2는 `goal -> BT -> planner -> controller -> cmd_vel -> Gazebo plugin` 순서로 끊긴 지점을 찾는다. 공통 진단 순서는 `appendix/troubleshooting_quick_diagnosis.md`를 기준으로 본다.
 
@@ -32,7 +32,7 @@ action feedback이 안 보임
 
 ```text
 Nav2 서버 자체가 안 되는 문제가 아니다.
-RViz Goal 도구가 /robot_ns/navigate_to_pose를 보지 못하는 namespace 연결 문제일 가능성이 높다.
+RViz Goal 도구가 /lee/navigate_to_pose를 보지 못하는 namespace 연결 문제일 가능성이 높다.
 ```
 
 ### 확인
@@ -44,7 +44,7 @@ ros2 action list | grep navigate
 정상:
 
 ```text
-/robot_ns/navigate_to_pose
+/lee/navigate_to_pose
 ```
 
 ### 조치
@@ -52,14 +52,14 @@ ros2 action list | grep navigate
 일단 action goal로 직접 보낸다.
 
 ```bash
-ros2 action send_goal /robot_ns/navigate_to_pose nav2_msgs/action/NavigateToPose \
-"{pose: {header: {frame_id: 'map_robot_ns'}, pose: {position: {x: 0.0, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}}"
+ros2 action send_goal /lee/navigate_to_pose nav2_msgs/action/NavigateToPose \
+"{pose: {header: {frame_id: 'map_lee'}, pose: {position: {x: 0.0, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}}"
 ```
 
 이후 고칠 부분:
 
 ```text
-RViz Nav2 panel/action/lifecycle target을 robot_ns namespace 기준으로 맞추기
+RViz Nav2 panel/action/lifecycle target을 lee namespace 기준으로 맞추기
 RViz 설정 파일 별도 저장
 ```
 
@@ -79,14 +79,14 @@ Waiting for an action server to become available...
 bt_navigator가 안 떠 있음
 bt_navigator가 active가 아님
 action 이름을 /navigate_to_pose로 잘못 보냄
-namespace가 /robot_ns인데 기본 action을 보고 있음
+namespace가 /lee인데 기본 action을 보고 있음
 ```
 
 ### 확인
 
 ```bash
 ros2 node list | grep bt
-ros2 lifecycle get /robot_ns/bt_navigator
+ros2 lifecycle get /lee/bt_navigator
 ros2 action list | grep navigate
 ```
 
@@ -96,7 +96,7 @@ ros2 action list | grep navigate
 ros2 launch lee_robot_description nav2_navigation.launch.py
 ```
 
-그리고 action 이름은 `/robot_ns/navigate_to_pose`를 사용한다.
+그리고 action 이름은 `/lee/navigate_to_pose`를 사용한다.
 
 ---
 
@@ -128,13 +128,13 @@ nav2_bringup navigation_launch.py를 직접 실행하면서 namespace가 기대�
 
 ```bash
 ros2 launch nav2_bringup navigation_launch.py \
-  namespace:=robot_ns \
+  namespace:=lee \
   params_file:=<nav2_params.yaml>
 ```
 
-하지만 이 방식에서는 `namespace:=robot_ns`를 넘겨도 Nav2 서버 노드가 기대한 것처럼 모두 `/robot_ns` 아래에 생성되지 않을 수 있었다.
+하지만 이 방식에서는 `namespace:=lee`를 넘겨도 Nav2 서버 노드가 기대한 것처럼 모두 `/lee` 아래에 생성되지 않을 수 있었다.
 
-그 결과 parameter file은 `robot_ns:` 아래 구조를 기준으로 작성되어 있는데, 실제 노드는 아래처럼 root namespace에 떠서 parameter 구조가 어긋날 수 있다.
+그 결과 parameter file은 `lee:` 아래 구조를 기준으로 작성되어 있는데, 실제 노드는 아래처럼 root namespace에 떠서 parameter 구조가 어긋날 수 있다.
 
 ```text
 /controller_server
@@ -148,18 +148,18 @@ ros2 launch nav2_bringup navigation_launch.py \
 
 ```text
 nav2_navigation.launch.py
-  -> PushRosNamespace(namespace=robot_ns)
+  -> PushRosNamespace(namespace=lee)
   -> Include nav2_bringup/launch/navigation_launch.py
   -> params_file = nav2_params.yaml
 ```
 
-수정 후 Nav2 주행 서버들은 아래처럼 `/robot_ns` 아래에 생성된다.
+수정 후 Nav2 주행 서버들은 아래처럼 `/lee` 아래에 생성된다.
 
 ```text
-/robot_ns/controller_server
-/robot_ns/planner_server
-/robot_ns/bt_navigator
-/robot_ns/behavior_server
+/lee/controller_server
+/lee/planner_server
+/lee/bt_navigator
+/lee/behavior_server
 ```
 
 이렇게 실제 node namespace와 `nav2_params.yaml`의 parameter namespace 구조가 일치하면, `FollowPath` plugin과 DWB critic 설정도 정상적으로 로드된다.
@@ -168,8 +168,8 @@ nav2_navigation.launch.py
 
 ```bash
 ros2 node list | grep controller
-ros2 param get /robot_ns/controller_server controller_plugins
-ros2 param get /robot_ns/controller_server FollowPath.critics
+ros2 param get /lee/controller_server controller_plugins
+ros2 param get /lee/controller_server FollowPath.critics
 ```
 
 노드가 `/controller_server`로 떠 있으면:
@@ -181,7 +181,7 @@ ros2 param get /controller_server FollowPath.critics
 
 ### 조치
 
-이 저장소에서는 직접 `nav2_bringup navigation_launch.py namespace:=robot_ns`를 실행하는 방식보다 다음 launch 파일을 기준으로 한다.
+이 저장소에서는 직접 `nav2_bringup navigation_launch.py namespace:=lee`를 실행하는 방식보다 다음 launch 파일을 기준으로 한다.
 
 ```bash
 ros2 launch lee_robot_description nav2_navigation.launch.py
@@ -189,7 +189,7 @@ ros2 launch lee_robot_description nav2_navigation.launch.py
 
 ---
 
-## 4. goal accepted인데 `/robot_ns/plan`이 안 생김
+## 4. goal accepted인데 `/lee/plan`이 안 생김
 
 ### 원인 후보
 
@@ -204,17 +204,17 @@ AMCL 위치가 틀려 현재 위치가 지도 밖으로 계산됨
 ### 확인
 
 ```bash
-ros2 lifecycle get /robot_ns/planner_server
-ros2 topic echo /robot_ns/global_costmap/costmap --once
-ros2 topic echo /robot_ns/map --once
-ros2 run tf2_ros tf2_echo map_robot_ns base_footprint
+ros2 lifecycle get /lee/planner_server
+ros2 topic echo /lee/global_costmap/costmap --once
+ros2 topic echo /lee/map --once
+ros2 run tf2_ros tf2_echo map_lee base_footprint --ros-args -r /tf:=/lee/tf -r /tf_static:=/lee/tf_static
 ```
 
 RViz에서 goal 위치가 자유 공간인지 확인한다.
 
 ---
 
-## 5. `/robot_ns/plan`은 있는데 `/robot_ns/cmd_vel`이 없음
+## 5. `/lee/plan`은 있는데 `/lee/cmd_vel`이 없음
 
 ### 원인 후보
 
@@ -229,22 +229,22 @@ TF transform 불가
 ### 확인
 
 ```bash
-ros2 lifecycle get /robot_ns/controller_server
-ros2 topic echo /robot_ns/local_costmap/costmap --once
-ros2 topic echo /robot_ns/odom --once
-ros2 run tf2_ros tf2_echo odom_robot_ns base_footprint
-ros2 param get /robot_ns/controller_server FollowPath.critics
+ros2 lifecycle get /lee/controller_server
+ros2 topic echo /lee/local_costmap/costmap --once
+ros2 topic echo /lee/odom --once
+ros2 run tf2_ros tf2_echo odom_lee base_footprint --ros-args -r /tf:=/lee/tf -r /tf_static:=/lee/tf_static
+ros2 param get /lee/controller_server FollowPath.critics
 ```
 
 ---
 
-## 6. `/robot_ns/cmd_vel`은 나오는데 로봇이 안 움직임
+## 6. `/lee/cmd_vel`은 나오는데 로봇이 안 움직임
 
 ### 원인 후보
 
 ```text
 Gazebo가 pause 상태
-Gazebo diff_drive plugin이 /robot_ns/cmd_vel을 구독하지 않음
+Gazebo diff_drive plugin이 /lee/cmd_vel을 구독하지 않음
 cmd_vel topic remap 문제
 다른 publisher가 반대 명령을 계속 발행
 ```
@@ -252,8 +252,8 @@ cmd_vel topic remap 문제
 ### 확인
 
 ```bash
-ros2 topic info /robot_ns/cmd_vel -v
-ros2 topic echo /robot_ns/cmd_vel
+ros2 topic info /lee/cmd_vel -v
+ros2 topic echo /lee/cmd_vel
 ```
 
 Gazebo GUI에서 pause 상태도 확인한다.
@@ -267,8 +267,8 @@ Gazebo GUI에서 pause 상태도 확인한다.
 ```text
 초기 위치를 잘못 찍음
 world와 map이 맞지 않음
-/robot_ns/scan frame_id와 TF가 맞지 않음
-map_robot_ns -> odom_robot_ns TF가 없음
+/lee/scan frame_id와 TF가 맞지 않음
+map_lee -> odom_lee TF가 없음
 ```
 
 ### 확인
@@ -276,13 +276,13 @@ map_robot_ns -> odom_robot_ns TF가 없음
 ```bash
 ros2 topic echo /particle_cloud --once
 ros2 topic echo /amcl_pose --once
-ros2 run tf2_ros tf2_echo map_robot_ns odom_robot_ns
-ros2 run tf2_ros tf2_echo base_footprint base_scan
+ros2 run tf2_ros tf2_echo map_lee odom_lee --ros-args -r /tf:=/lee/tf -r /tf_static:=/lee/tf_static
+ros2 run tf2_ros tf2_echo base_footprint base_scan --ros-args -r /tf:=/lee/tf -r /tf_static:=/lee/tf_static
 ```
 
 ### 조치
 
-RViz에서 `2D Pose Estimate`를 다시 찍는다.  
+RViz에서 `2D Pose Estimate`를 다시 찍는다.
 world와 map 조합도 확인한다.
 
 ---
@@ -292,8 +292,8 @@ world와 map 조합도 확인한다.
 ### 원인 후보
 
 ```text
-/robot_ns/map이 없음
-/robot_ns/scan이 없음
+/lee/map이 없음
+/lee/scan이 없음
 TF가 끊김
 costmap frame 설정이 실제 frame과 다름
 sensor QoS 문제
@@ -303,10 +303,10 @@ sensor QoS 문제
 
 ```bash
 ros2 topic list | grep costmap
-ros2 topic echo /robot_ns/global_costmap/costmap --once
-ros2 topic echo /robot_ns/local_costmap/costmap --once
-ros2 topic hz /robot_ns/scan
-ros2 run tf2_ros tf2_echo map_robot_ns base_footprint
+ros2 topic echo /lee/global_costmap/costmap --once
+ros2 topic echo /lee/local_costmap/costmap --once
+ros2 topic hz /lee/scan
+ros2 run tf2_ros tf2_echo map_lee base_footprint --ros-args -r /tf:=/lee/tf -r /tf_static:=/lee/tf_static
 ```
 
 ---
@@ -314,14 +314,14 @@ ros2 run tf2_ros tf2_echo map_robot_ns base_footprint
 ## 9. 디버깅 순서 요약
 
 ```text
-1. /robot_ns/scan, /robot_ns/odom, /robot_ns/tf 확인
-2. /robot_ns/map 확인
-3. /amcl_pose, /particle_cloud, map_robot_ns -> odom_robot_ns 확인
+1. /lee/scan, /lee/odom, /lee/tf 확인
+2. /lee/map 확인
+3. /amcl_pose, /particle_cloud, map_lee -> odom_lee 확인
 4. Nav2 lifecycle active 확인
-5. /robot_ns/navigate_to_pose action 확인
+5. /lee/navigate_to_pose action 확인
 6. goal 전송
-7. /robot_ns/plan 확인
-8. /robot_ns/cmd_vel 확인
+7. /lee/plan 확인
+8. /lee/cmd_vel 확인
 9. Gazebo 움직임 확인
 ```
 

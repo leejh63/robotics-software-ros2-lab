@@ -79,6 +79,7 @@ Navigation debugging: rosbag-frame / DWB / Behavior Tree
 | 5 | [day_12_amcl_mcl/README.md](day_12_amcl_mcl/README.md) | AMCL, MCL, particle filter, localization |
 | 6 | [day_13_nav2/README.md](day_13_nav2/README.md) | Nav2 lifecycle, planner, controller, goal, cmd_vel |
 | 7 | [day_14_control_and_path_planning/README.md](day_14_control_and_path_planning/README.md) | PID 제어, ros2_control, Dijkstra/A*/RRT/RRT* |
+| 8 | [day_15_turtlebot3_cartographer_amcl_nav2/README.md](day_15_turtlebot3_cartographer_amcl_nav2/README.md) | TurtleBot3 Burger, Cartographer SLAM, AMCL, Navigation2, Explore Lite 자동 탐색 |
 
 ---
 

@@ -5,10 +5,10 @@ Day 11은 `Gazebo에서 만든 로봇/센서 출력`을 이용해서 **지도를
 ```text
 1. SLAM Toolbox는 어떤 데이터를 받아서 지도를 만드는가?
 2. /scan, /odom, /tf는 각각 왜 필요한가?
-3. map_robot_ns, odom_robot_ns, base_footprint는 왜 분리되는가?
+3. map frame, odom frame, base frame은 왜 분리되는가?
 4. OccupancyGrid, .pgm, .yaml, .posegraph는 각각 무엇인가?
 5. Gazebo live SLAM과 rosbag offline SLAM은 무엇이 다른가?
-6. 예시 환경에서는 어떤 경로와 토픽 이름을 기준으로 실행해야 하는가?
+6. 현재 projects/ros2_navigation_lab에서는 어떤 토픽과 frame 이름을 기준으로 실행해야 하는가?
 ```
 
 ---
@@ -22,7 +22,7 @@ Day 10 Gazebo / URDF / Xacro
   -> 로봇 모델, LiDAR, odometry, TF 생성
 
 Day 11 SLAM
-  -> /robot_ns/scan + /robot_ns/odom + /robot_ns/tf를 이용해 /robot_ns/map 생성
+  -> /lee/scan + /lee/odom + /lee/tf를 이용해 /lee/map 생성
 
 Day 12 AMCL
   -> 저장된 지도 위에서 현재 위치 추정
@@ -37,7 +37,7 @@ Day 13 Nav2
 
 ## 2. 현재 실습 기준
 
-현재 문서의 기준 환경은 다음이다.
+현재 `projects/ros2_navigation_lab`의 실제 기본 실행 기준은 다음이다.
 
 ```text
 워크스페이스      $ROS2_WS
@@ -46,17 +46,17 @@ Day 13 Nav2
 SLAM 설정          lee_robot_description/config/slam_param.yaml
 RViz 설정          lee_robot_description/rviz/slam.rviz
 기본 world 후보    lee_world.world, simple_maze.world, slam.world
-현재 지도 토픽     /robot_ns/map
-현재 scan 토픽     /robot_ns/scan
-현재 odom 토픽     /robot_ns/odom
-현재 TF 토픽       /robot_ns/tf, /robot_ns/tf_static
-지도 frame         map_robot_ns
-odom frame         odom_robot_ns
+현재 지도 토픽     /lee/map
+현재 scan 토픽     /lee/scan
+현재 odom 토픽     /lee/odom
+현재 TF 토픽       /lee/tf, /lee/tf_static
+지도 frame         map_lee
+odom frame         odom_lee
 base frame         base_footprint
 LiDAR frame        base_scan
 ```
 
-중요한 점은 현재 실습이 기본 `/map`, `/scan`, `/tf`가 아니라 `/robot_ns/map`, `/robot_ns/scan`, `/robot_ns/tf`처럼 **namespace가 붙은 토픽 구조**를 쓴다는 점이다.
+문서 전반에서 `/robot_ns`, `map_robot_ns`, `odom_robot_ns`가 나오면 일반 설명용 placeholder로 본다. 실제 현재 프로젝트 명령어를 복사할 때는 `/lee`, `map_lee`, `odom_lee` 기준으로 확인한다.
 
 ---
 
@@ -102,25 +102,92 @@ Day 11의 핵심은 명령어가 아니라 이 구조다.
 
 ```text
 Gazebo LiDAR plugin
-  -> /robot_ns/scan
+  -> /lee/scan
 
 Gazebo diff_drive plugin
-  -> /robot_ns/odom
-  -> odom_robot_ns -> base_footprint TF
+  -> /lee/odom
+  -> odom_lee -> base_footprint TF
 
 robot_state_publisher
   -> base_footprint -> base_link -> base_scan TF
 
 SLAM Toolbox
-  <- /robot_ns/scan
-  <- /robot_ns/tf, /robot_ns/tf_static
-  -> /robot_ns/map
-  -> map_robot_ns -> odom_robot_ns TF
+  <- /lee/scan
+  <- /lee/tf, /lee/tf_static
+  -> /lee/map
+  -> map_lee -> odom_lee TF
 
 map_saver_cli
-  <- /robot_ns/map
+  <- /lee/map
   -> slam_map.pgm + slam_map.yaml
 ```
 
-SLAM은 `/robot_ns/scan` 하나만 보고 지도를 만드는 것이 아니다.  
-`이 scan이 어느 좌표계에서 나왔는지`, `로봇이 시간에 따라 어떻게 움직였는지`, `오도메트리 오차를 어떻게 보정할지`까지 같이 본다.
+SLAM은 `/lee/scan` 하나만 보고 지도를 만드는 것이 아니다. `이 scan이 어느 좌표계에서 나왔는지`, `로봇이 시간에 따라 어떻게 움직였는지`, `오도메트리 오차를 어떻게 보정할지`까지 같이 본다.
+
+---
+
+## 5. 자주 헷갈리는 구분
+
+| 구분 | 현재 실행 기준 | 의미 |
+|---|---|---|
+| topic namespace | `/lee` | topic/action 이름 앞에 붙는 구분자 |
+| map frame | `map_lee` | SLAM이 만드는 지도 좌표계 |
+| odom frame | `odom_lee` | Gazebo odometry 기준 좌표계 |
+| base frame | `base_footprint` | 로봇 바닥 중심 좌표계 |
+| scan frame | `base_scan` | LiDAR 센서 좌표계 |
+
+중요한 점:
+
+```text
+/lee/map은 topic 이름이다.
+map_lee는 TF frame 이름이다.
+둘은 비슷해 보여도 완전히 다른 개념이다.
+```
+
+---
+
+## 6. 최소 실행 흐름
+
+```bash
+cd $ROS2_WS
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+ros2 launch lee_robot_description slam.launch.py
+```
+
+확인:
+
+```bash
+ros2 topic echo /lee/scan --once
+ros2 topic echo /lee/map --once
+ros2 run tf2_ros tf2_echo map_lee odom_lee \
+  --ros-args -r /tf:=/lee/tf -r /tf_static:=/lee/tf_static
+```
+
+지도 저장:
+
+```bash
+ros2 run nav2_map_server map_saver_cli -f slam_map --ros-args -r map:=/lee/map
+```
+
+---
+
+## 7. 다음 단계와 연결
+
+Day 11에서 저장한 지도는 Day 12 AMCL과 Day 13 Nav2의 입력이 된다.
+
+```text
+Day 11 결과:
+  slam_map.yaml
+  slam_map.pgm
+
+Day 12 사용:
+  map_server가 /lee/map으로 지도 발행
+  AMCL이 /lee/scan과 map을 비교해 위치 추정
+  AMCL이 map_lee -> odom_lee TF 발행
+
+Day 13 사용:
+  Nav2 global costmap이 /lee/map 사용
+  local costmap이 /lee/scan 사용
+  planner/controller가 /lee/plan, /lee/cmd_vel 흐름 생성
+```

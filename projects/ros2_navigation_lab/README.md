@@ -185,7 +185,7 @@ ros2 lifecycle get /map_server
 ros2 lifecycle get /amcl
 ros2 run tf2_ros tf2_echo map_lee odom_lee --ros-args -r /tf:=/lee/tf -r /tf_static:=/lee/tf_static
 ros2 run tf2_ros tf2_echo odom_lee base_footprint --ros-args -r /tf:=/lee/tf -r /tf_static:=/lee/tf_static
-ros2 action send_goal /lee/navigate_to_pose nav2_msgs/action/NavigateToPose "{pose: {header: {frame_id: map_lee}, pose: {position: {x: 0.5, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}}"
+ros2 action send_goal /lee/navigate_to_pose nav2_msgs/action/NavigateToPose "{pose: {header: {frame_id: 'map_lee'}, pose: {position: {x: 0.5, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}}"
 ```
 
 TF는 `/lee/tf`, `/lee/tf_static`으로 publish됩니다. `tf2_echo`는 기본적으로 `/tf`, `/tf_static`을 보기 때문에 위처럼 remap해서 확인합니다.

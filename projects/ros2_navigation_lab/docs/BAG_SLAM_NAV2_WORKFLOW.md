@@ -473,7 +473,7 @@ LocalCostmap:   /lee/local_costmap/costmap
 goal을 보내면 path나 `/lee/cmd_vel`이 나올 수 있습니다.
 
 ```bash
-ros2 action send_goal /lee/navigate_to_pose nav2_msgs/action/NavigateToPose "{pose: {header: {frame_id: map_lee}, pose: {position: {x: 0.5, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}}"
+ros2 action send_goal /lee/navigate_to_pose nav2_msgs/action/NavigateToPose "{pose: {header: {frame_id: 'map_lee'}, pose: {position: {x: 0.5, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}}"
 
 ros2 topic echo /lee/cmd_vel --once
 ```

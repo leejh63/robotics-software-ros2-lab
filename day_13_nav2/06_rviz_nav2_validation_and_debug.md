@@ -14,26 +14,26 @@ Nav2의 실제 동작은 topic, action, lifecycle, TF, costmap으로 확인해�
 RViz에서 최소한 아래 항목을 확인한다.
 
 ```text
-Fixed Frame: map_robot_ns
-Map: /robot_ns/map
-RobotModel: /robot_ns/robot_description 또는 robot_description 설정 확인
-TF: map_robot_ns -> odom_robot_ns -> base_footprint -> base_scan
-LaserScan: /robot_ns/scan
+Fixed Frame: map_lee
+Map: /lee/map
+RobotModel: /lee/robot_description 또는 robot_description 설정 확인
+TF: map_lee -> odom_lee -> base_footprint -> base_scan
+LaserScan: /lee/scan
 AMCL Pose: /amcl_pose
 ParticleCloud: /particle_cloud
-Global Costmap: /robot_ns/global_costmap/costmap
-Local Costmap: /robot_ns/local_costmap/costmap
-Plan: /robot_ns/plan
+Global Costmap: /lee/global_costmap/costmap
+Local Costmap: /lee/local_costmap/costmap
+Plan: /lee/plan
 ```
 
-Fixed Frame이 `map`으로 되어 있으면 현재 환경의 `map_robot_ns`와 맞지 않는다.  
+Fixed Frame이 `map`으로 되어 있으면 현재 환경의 `map_lee`와 맞지 않는다.
 이 경우 RViz에서 데이터가 안 보이거나 frame transform 에러가 뜰 수 있다.
 
 ---
 
 ## 2. RViz Goal 버튼과 CLI action goal 차이
 
-현재 기록 기준으로는 `/robot_ns/navigate_to_pose` action goal을 CLI로 보내면 주행이 확인되었다.
+현재 기록 기준으로는 `/lee/navigate_to_pose` action goal을 CLI로 보내면 주행이 확인되었다.
 
 하지만 RViz Nav2 Goal 버튼은 namespace 연결 문제로 실패할 수 있다.
 
@@ -57,24 +57,24 @@ Nav2가 진짜 동작하는지 확인하려면 아래 순서가 더 확실하다
 
 ```bash
 ros2 action list | grep navigate
-ros2 action info /robot_ns/navigate_to_pose
-ros2 lifecycle get /robot_ns/bt_navigator
-ros2 lifecycle get /robot_ns/planner_server
-ros2 lifecycle get /robot_ns/controller_server
+ros2 action info /lee/navigate_to_pose
+ros2 lifecycle get /lee/bt_navigator
+ros2 lifecycle get /lee/planner_server
+ros2 lifecycle get /lee/controller_server
 ```
 
 그 다음 goal 전송:
 
 ```bash
-ros2 action send_goal /robot_ns/navigate_to_pose nav2_msgs/action/NavigateToPose \
-"{pose: {header: {frame_id: 'map_robot_ns'}, pose: {position: {x: 1.0, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}}"
+ros2 action send_goal /lee/navigate_to_pose nav2_msgs/action/NavigateToPose \
+"{pose: {header: {frame_id: 'map_lee'}, pose: {position: {x: 1.0, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}}"
 ```
 
 그리고 결과 확인:
 
 ```bash
-ros2 topic echo /robot_ns/plan --once
-ros2 topic echo /robot_ns/cmd_vel
+ros2 topic echo /lee/plan --once
+ros2 topic echo /lee/cmd_vel
 ```
 
 ---
@@ -105,19 +105,19 @@ point:
 현재 환경 기준 frame은 아래다.
 
 ```text
-map_robot_ns
-odom_robot_ns
+map_lee
+odom_lee
 base_footprint
 base_scan
 ```
 
-따라서 RViz Fixed Frame은 보통 `map_robot_ns`가 되어야 한다.
+따라서 RViz Fixed Frame은 보통 `map_lee`가 되어야 한다.
 
 확인:
 
 ```bash
-ros2 run tf2_ros tf2_echo map_robot_ns odom_robot_ns
-ros2 run tf2_ros tf2_echo odom_robot_ns base_footprint
+ros2 run tf2_ros tf2_echo map_lee odom_lee --ros-args -r /tf:=/lee/tf -r /tf_static:=/lee/tf_static
+ros2 run tf2_ros tf2_echo odom_lee base_footprint --ros-args -r /tf:=/lee/tf -r /tf_static:=/lee/tf_static
 ```
 
 TF가 없으면 RViz display를 아무리 추가해도 제대로 보이지 않는다.
@@ -135,11 +135,11 @@ ros2 topic list | grep costmap
 확인:
 
 ```bash
-ros2 topic echo /robot_ns/global_costmap/costmap --once
-ros2 topic echo /robot_ns/local_costmap/costmap --once
+ros2 topic echo /lee/global_costmap/costmap --once
+ros2 topic echo /lee/local_costmap/costmap --once
 ```
 
-topic은 있는데 RViz에 안 보이면 RViz display 설정 문제일 수 있다.  
+topic은 있는데 RViz에 안 보이면 RViz display 설정 문제일 수 있다.
 topic 자체가 없으면 Nav2 서버/lifecycle/parameter 문제를 봐야 한다.
 
 ---

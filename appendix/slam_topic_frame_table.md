@@ -90,14 +90,14 @@ namespace 없는 bag 예시:
   /tf_static
 ```
 
-namespace 없는 bag을 현재 `/robot_ns` 구조에 맞추려면 topic remap이 필요할 수 있다.
+namespace 없는 bag을 현재 `projects/ros2_navigation_lab`의 `/lee` 실행 구조에 맞추려면 topic remap이 필요할 수 있다. 아래 명령은 이 표의 일반 placeholder가 아니라 현재 실행 예시다.
 
 ```bash
 ros2 bag play "$BAG_DIR" --clock \
-  --remap /scan:=/robot_ns/scan \
-  --remap /odom:=/robot_ns/odom \
-  --remap /tf:=/robot_ns/tf \
-  --remap /tf_static:=/robot_ns/tf_static
+  --remap /scan:=/lee/scan \
+  --remap /odom:=/lee/odom \
+  --remap /tf:=/lee/tf \
+  --remap /tf_static:=/lee/tf_static
 ```
 
 단, topic remap은 `header.frame_id`를 바꾸지 않는다.

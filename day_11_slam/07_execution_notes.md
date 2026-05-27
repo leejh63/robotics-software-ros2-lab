@@ -104,15 +104,15 @@ source install/setup.bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard \
   --ros-args \
   -r __node:=lee_teleop \
-  -r cmd_vel:=/robot_ns/cmd_vel
+  -r cmd_vel:=/lee/cmd_vel
 ```
 
 RViz2 확인:
 
 ```text
-Fixed Frame: map_robot_ns
-Map Topic: /robot_ns/map
-LaserScan Topic: /robot_ns/scan
+Fixed Frame: map_lee
+Map Topic: /lee/map
+LaserScan Topic: /lee/scan
 ```
 
 ---
@@ -126,31 +126,31 @@ ros2 topic list | sort
 기대 토픽:
 
 ```text
-/robot_ns/scan
-/robot_ns/odom
-/robot_ns/map
-/robot_ns/tf
-/robot_ns/tf_static
-/robot_ns/cmd_vel
-/robot_ns/robot_description
+/lee/scan
+/lee/odom
+/lee/map
+/lee/tf
+/lee/tf_static
+/lee/cmd_vel
+/lee/robot_description
 /clock
 ```
 
 각 토픽 1회 확인:
 
 ```bash
-ros2 topic echo /robot_ns/scan --once
-ros2 topic echo /robot_ns/odom --once
-ros2 topic echo /robot_ns/map --once
+ros2 topic echo /lee/scan --once
+ros2 topic echo /lee/odom --once
+ros2 topic echo /lee/map --once
 ```
 
 TF 확인:
 
 ```bash
-ros2 run tf2_ros tf2_echo map_robot_ns base_footprint \
+ros2 run tf2_ros tf2_echo map_lee base_footprint \
   --ros-args \
-  -r /tf:=/robot_ns/tf \
-  -r /tf_static:=/robot_ns/tf_static
+  -r /tf:=/lee/tf \
+  -r /tf_static:=/lee/tf_static
 ```
 
 ---
@@ -165,7 +165,7 @@ source /opt/ros/humble/setup.bash
 source install/setup.bash
 
 ros2 run nav2_map_server map_saver_cli \
-  -t /robot_ns/map \
+  -t /lee/map \
   -f ./slam_map
 ```
 
@@ -176,7 +176,7 @@ cd $ROS2_WS
 mkdir -p maps
 
 ros2 run nav2_map_server map_saver_cli \
-  -t /robot_ns/map \
+  -t /lee/map \
   -f ./maps/slam_map
 ```
 
@@ -210,10 +210,10 @@ ros2 run slam_toolbox async_slam_toolbox_node \
   -r __node:=slam_toolbox \
   --params-file $PWD/lee_robot_description/config/slam_param.yaml \
   -p use_sim_time:=true \
-  -r /map:=/robot_ns/map \
-  -r /map_updates:=/robot_ns/map_updates \
-  -r /tf:=/robot_ns/tf \
-  -r /tf_static:=/robot_ns/tf_static
+  -r /map:=/lee/map \
+  -r /map_updates:=/lee/map_updates \
+  -r /tf:=/lee/tf \
+  -r /tf_static:=/lee/tf_static
 ```
 
 터미널 2. RViz2:
@@ -226,8 +226,8 @@ source install/setup.bash
 rviz2 -d $(ros2 pkg prefix lee_robot_description)/share/lee_robot_description/rviz/slam.rviz \
   --ros-args \
   -p use_sim_time:=true \
-  -r /tf:=/robot_ns/tf \
-  -r /tf_static:=/robot_ns/tf_static
+  -r /tf:=/lee/tf \
+  -r /tf_static:=/lee/tf_static
 ```
 
 터미널 3. bag play:
@@ -256,30 +256,30 @@ ros2 bag play "$BAG_DIR" --clock --loop -r 0.2
 현재 문서 기준 구조:
 
 ```text
-/robot_ns/scan
-/robot_ns/odom
-/robot_ns/tf
-/robot_ns/tf_static
+/lee/scan
+/lee/odom
+/lee/tf
+/lee/tf_static
 ```
 
 재생 시 remap:
 
 ```bash
 ros2 bag play "$BAG_DIR" --clock --loop -r 0.2 \
-  --remap /scan:=/robot_ns/scan \
-  --remap /odom:=/robot_ns/odom \
-  --remap /tf:=/robot_ns/tf \
-  --remap /tf_static:=/robot_ns/tf_static
+  --remap /scan:=/lee/scan \
+  --remap /odom:=/lee/odom \
+  --remap /tf:=/lee/tf \
+  --remap /tf_static:=/lee/tf_static
 ```
 
-단, 이건 topic 이름만 바꾸는 것이다.  
+단, 이건 topic 이름만 바꾸는 것이다.
 `header.frame_id`, `child_frame_id`는 바뀌지 않는다.
 
 확인:
 
 ```bash
-ros2 topic echo /robot_ns/scan --once
-ros2 topic echo /robot_ns/odom --once
+ros2 topic echo /lee/scan --once
+ros2 topic echo /lee/odom --once
 ```
 
 ---
@@ -289,12 +289,12 @@ ros2 topic echo /robot_ns/odom --once
 ```text
 1. source install/setup.bash 누락
 2. world 파일 수정 후 colcon build 누락
-3. /map과 /robot_ns/map 혼동
-4. /tf와 /robot_ns/tf 혼동
+3. /map과 /lee/map 혼동
+4. /tf와 /lee/tf 혼동
 5. bag play --clock 누락
 6. Gazebo와 bag play 동시 실행
-7. teleop remap 누락: cmd_vel:=/robot_ns/cmd_vel
-8. RViz2 Fixed Frame을 map으로 두는 실수. 현재는 map_robot_ns
-9. map_saver_cli에서 -t /robot_ns/map 누락
-10. namespace 없는 bag을 /robot_ns 구조에 그대로 넣으려는 실수
+7. teleop remap 누락: cmd_vel:=/lee/cmd_vel
+8. RViz2 Fixed Frame을 map으로 두는 실수. 현재는 map_lee
+9. map_saver_cli에서 -t /lee/map 누락
+10. namespace 없는 bag을 /lee 구조에 그대로 넣으려는 실수
 ```

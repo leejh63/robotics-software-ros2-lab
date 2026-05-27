@@ -16,10 +16,10 @@ $ROS2_WS/lee_robot_description/config/amcl_param.yaml
 amcl:
   ros__parameters:
     use_sim_time: true
-    global_frame_id: map_robot_ns
-    odom_frame_id: odom_robot_ns
+    global_frame_id: map_lee
+    odom_frame_id: odom_lee
     base_frame_id: base_footprint
-    scan_topic: /robot_ns/scan
+    scan_topic: /lee/scan
     tf_broadcast: true
 ```
 
@@ -42,10 +42,10 @@ amcl:
 
 ```yaml
 use_sim_time: true
-global_frame_id: map_robot_ns
-odom_frame_id: odom_robot_ns
+global_frame_id: map_lee
+odom_frame_id: odom_lee
 base_frame_id: base_footprint
-scan_topic: /robot_ns/scan
+scan_topic: /lee/scan
 tf_broadcast: true
 ```
 
@@ -53,19 +53,19 @@ tf_broadcast: true
 
 ```text
 global_frame_id가 map이면:
-  RViz Fixed Frame map_robot_ns와 맞지 않음
+  RViz Fixed Frame map_lee와 맞지 않음
 
 odom_frame_id가 odom이면:
-  실제 TF odom_robot_ns와 연결 안 됨
+  실제 TF odom_lee와 연결 안 됨
 
 base_frame_id가 base_link이면:
   현재 로봇 기준 base_footprint와 다를 수 있음
 
 scan_topic이 /scan이면:
-  현재 Gazebo LiDAR의 /robot_ns/scan을 못 봄
+  현재 Gazebo LiDAR의 /lee/scan을 못 봄
 
 tf_broadcast가 false면:
-  map_robot_ns -> odom_robot_ns TF가 나오지 않음
+  map_lee -> odom_lee TF가 나오지 않음
 ```
 
 ---
@@ -140,8 +140,8 @@ alpha 값이 큼
 
 ```text
 Gazebo odom이 정상인가?
-odom_robot_ns -> base_footprint TF가 나오는가?
-로봇이 실제로 /robot_ns/cmd_vel에 반응하는가?
+odom_lee -> base_footprint TF가 나오는가?
+로봇이 실제로 /lee/cmd_vel에 반응하는가?
 ```
 
 ---
@@ -258,12 +258,12 @@ AMCL이 이상하면 파라미터부터 바꾸지 말고 아래 순서로 확인
 
 ```text
 1. world와 map이 같은 짝인가?
-2. /robot_ns/map이 frame_id: map_robot_ns로 나오는가?
-3. /robot_ns/scan이 frame_id: base_scan으로 나오는가?
-4. odom_robot_ns -> base_footprint TF가 나오는가?
+2. /lee/map이 frame_id: map_lee로 나오는가?
+3. /lee/scan이 frame_id: base_scan으로 나오는가?
+4. odom_lee -> base_footprint TF가 나오는가?
 5. AMCL이 active 상태인가?
 6. /initialpose를 줬는가?
-7. map_robot_ns -> odom_robot_ns TF가 나오는가?
+7. map_lee -> odom_lee TF가 나오는가?
 8. 그 다음 particle/laser/motion 파라미터를 본다.
 ```
 

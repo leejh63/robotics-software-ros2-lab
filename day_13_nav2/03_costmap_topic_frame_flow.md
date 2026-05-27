@@ -1,6 +1,6 @@
 # 03. Costmap, Topic, Frame 흐름
 
-Nav2에서 가장 많이 헷갈리는 지점은 costmap이다.  
+Nav2에서 가장 많이 헷갈리는 지점은 costmap이다.
 Costmap은 단순히 RViz에 보이는 색칠된 지도라기보다, planner와 controller가 실제 판단에 쓰는 비용 지도다.
 
 ---
@@ -23,7 +23,7 @@ Costmap은 공간을 격자로 나누고 각 칸에 비용을 준다.
   unknown. 모르는 영역.
 ```
 
-Nav2는 경로를 만들 때 단순히 거리가 짧은 길만 고르지 않는다.  
+Nav2는 경로를 만들 때 단순히 거리가 짧은 길만 고르지 않는다.
 비용이 낮은 칸을 따라가려고 한다.
 
 ```text
@@ -39,11 +39,11 @@ Nav2에는 costmap이 두 개 있다.
 | 구분 | Global Costmap | Local Costmap |
 |---|---|---|
 | 목적 | 전체 경로 계획 | 로봇 주변 실시간 회피 |
-| 기준 frame | `map_robot_ns` | `odom_robot_ns` |
+| 기준 frame | `map_lee` | `odom_lee` |
 | 크기 | 전체 지도 또는 넓은 영역 | 로봇 주변 rolling window |
 | 주요 입력 | static map, obstacle, inflation | scan 기반 obstacle, inflation |
 | 소비자 | planner_server | controller_server, behavior_server |
-| 대표 출력 | `/robot_ns/global_costmap/costmap` | `/robot_ns/local_costmap/costmap` |
+| 대표 출력 | `/lee/global_costmap/costmap` | `/lee/local_costmap/costmap` |
 
 쉽게 말하면 다음과 같다.
 
@@ -66,7 +66,7 @@ Static Layer
   SLAM으로 만든 저장 지도에서 벽/공간 정보를 가져온다.
 
 Obstacle Layer 또는 Voxel Layer
-  /robot_ns/scan 같은 실시간 센서로 장애물을 찍고 지운다.
+  /lee/scan 같은 실시간 센서로 장애물을 찍고 지운다.
 
 Inflation Layer
   장애물 주변에 안전 여유 비용을 퍼뜨린다.
@@ -85,8 +85,8 @@ Inflation Layer
 
 ```text
 local_costmap
-  odom_robot_ns 기준 rolling window
-  /robot_ns/scan 기반 obstacle layer
+  odom_lee 기준 rolling window
+  /lee/scan 기반 obstacle layer
   inflation layer
 ```
 
@@ -96,17 +96,17 @@ local_costmap
 
 ## 4. 현재 환경의 주요 topic
 
-현재 `/robot_ns` namespace 기준으로 주요 topic은 다음과 같다.
+현재 `/lee` namespace 기준으로 주요 topic은 다음과 같다.
 
 | topic | 의미 | 주로 보는 곳 |
 |---|---|---|
-| `/robot_ns/map` | map_server가 발행하는 저장 지도 | RViz Map, global costmap static layer |
-| `/robot_ns/scan` | LiDAR 거리 데이터 | AMCL, local/global obstacle layer |
-| `/robot_ns/odom` | odometry | controller, velocity_smoother, TF 흐름 |
-| `/robot_ns/global_costmap/costmap` | 전체 지도 기준 비용 지도 | RViz Map display |
-| `/robot_ns/local_costmap/costmap` | 로봇 주변 비용 지도 | RViz Map display |
-| `/robot_ns/plan` | planner_server가 만든 global path | RViz Path display |
-| `/robot_ns/cmd_vel` | 최종 속도 명령 | Gazebo diff_drive plugin |
+| `/lee/map` | map_server가 발행하는 저장 지도 | RViz Map, global costmap static layer |
+| `/lee/scan` | LiDAR 거리 데이터 | AMCL, local/global obstacle layer |
+| `/lee/odom` | odometry | controller, velocity_smoother, TF 흐름 |
+| `/lee/global_costmap/costmap` | 전체 지도 기준 비용 지도 | RViz Map display |
+| `/lee/local_costmap/costmap` | 로봇 주변 비용 지도 | RViz Map display |
+| `/lee/plan` | planner_server가 만든 global path | RViz Path display |
+| `/lee/cmd_vel` | 최종 속도 명령 | Gazebo diff_drive plugin |
 | `/amcl_pose` | AMCL 위치 추정 결과 | RViz Pose, topic echo |
 | `/particle_cloud` | AMCL particle cloud | RViz PoseArray |
 
@@ -114,7 +114,7 @@ local_costmap
 
 ```text
 Localization 노드 이름은 /amcl, /map_server처럼 namespace가 없을 수 있다.
-하지만 해당 노드가 발행/구독하는 topic은 /robot_ns/map, /robot_ns/scan처럼 remap되어 있을 수 있다.
+하지만 해당 노드가 발행/구독하는 topic은 /lee/map, /lee/scan처럼 remap되어 있을 수 있다.
 ```
 
 노드 이름과 topic 이름을 같은 것으로 보면 안 된다.
@@ -126,16 +126,16 @@ Localization 노드 이름은 /amcl, /map_server처럼 namespace가 없을 수 �
 자율주행에 필요한 TF 체인은 다음이다.
 
 ```text
-map_robot_ns -> odom_robot_ns -> base_footprint -> base_scan
+map_lee -> odom_lee -> base_footprint -> base_scan
 ```
 
 각 frame의 의미:
 
 ```text
-map_robot_ns
+map_lee
   저장 지도 기준의 전역 좌표계
 
-odom_robot_ns
+odom_lee
   로봇이 출발한 뒤 odometry로 누적한 지역 좌표계
 
 base_footprint
@@ -149,8 +149,8 @@ base_scan
 
 | transform | 제공 주체 | 의미 |
 |---|---|---|
-| `map_robot_ns -> odom_robot_ns` | AMCL | 지도 기준으로 odom 오차 보정 |
-| `odom_robot_ns -> base_footprint` | Gazebo/diff_drive/odometry | 로봇의 주행 위치 변화 |
+| `map_lee -> odom_lee` | AMCL | 지도 기준으로 odom 오차 보정 |
+| `odom_lee -> base_footprint` | Gazebo/diff_drive/odometry | 로봇의 주행 위치 변화 |
 | `base_footprint -> base_scan` | robot_state_publisher | 로봇 모델상 센서 장착 위치 |
 
 ---
@@ -160,17 +160,17 @@ base_scan
 Action goal을 보낼 때 아래처럼 쓴다.
 
 ```bash
-ros2 action send_goal /robot_ns/navigate_to_pose nav2_msgs/action/NavigateToPose \
-"{pose: {header: {frame_id: 'map_robot_ns'}, pose: {position: {x: 1.0, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}}"
+ros2 action send_goal /lee/navigate_to_pose nav2_msgs/action/NavigateToPose \
+"{pose: {header: {frame_id: 'map_lee'}, pose: {position: {x: 1.0, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}}"
 ```
 
-여기서 `/robot_ns/navigate_to_pose`는 action topic 이름이고, `map_robot_ns`는 goal pose가 표현되는 좌표계다.
+여기서 `/lee/navigate_to_pose`는 action topic 이름이고, `map_lee`는 goal pose가 표현되는 좌표계다.
 
 ```text
-/robot_ns/navigate_to_pose
+/lee/navigate_to_pose
   데이터를 보내는 통신 경로
 
-map_robot_ns
+map_lee
   pose 값 x, y, yaw를 해석할 기준 좌표계
 ```
 
@@ -181,23 +181,23 @@ map_robot_ns
 ## 7. costmap 문제가 생길 때 보는 순서
 
 ```text
-1. /robot_ns/map이 나오는가?
-2. /robot_ns/scan이 나오는가?
-3. map_robot_ns -> odom_robot_ns TF가 있는가?
-4. odom_robot_ns -> base_footprint TF가 있는가?
-5. /robot_ns/global_costmap/costmap이 나오는가?
-6. /robot_ns/local_costmap/costmap이 나오는가?
+1. /lee/map이 나오는가?
+2. /lee/scan이 나오는가?
+3. map_lee -> odom_lee TF가 있는가?
+4. odom_lee -> base_footprint TF가 있는가?
+5. /lee/global_costmap/costmap이 나오는가?
+6. /lee/local_costmap/costmap이 나오는가?
 7. 목표점이 벽이나 inflation 영역 안에 찍힌 것은 아닌가?
 ```
 
 명령어:
 
 ```bash
-ros2 topic echo /robot_ns/map --once
-ros2 topic hz /robot_ns/scan
-ros2 run tf2_ros tf2_echo map_robot_ns odom_robot_ns
-ros2 run tf2_ros tf2_echo odom_robot_ns base_footprint
-ros2 topic echo /robot_ns/global_costmap/costmap --once
-ros2 topic echo /robot_ns/local_costmap/costmap --once
+ros2 topic echo /lee/map --once
+ros2 topic hz /lee/scan
+ros2 run tf2_ros tf2_echo map_lee odom_lee --ros-args -r /tf:=/lee/tf -r /tf_static:=/lee/tf_static
+ros2 run tf2_ros tf2_echo odom_lee base_footprint --ros-args -r /tf:=/lee/tf -r /tf_static:=/lee/tf_static
+ros2 topic echo /lee/global_costmap/costmap --once
+ros2 topic echo /lee/local_costmap/costmap --once
 ```
 

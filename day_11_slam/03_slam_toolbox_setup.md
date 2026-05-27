@@ -61,18 +61,18 @@ ros2 launch lee_robot_description slam.launch.py world:=slam.world use_slam:=fal
 
 ```python
 isolated_remappings = [
-    ('/robot_description', '/robot_ns/robot_description'),
-    ('/tf', '/robot_ns/tf'),
-    ('/tf_static', '/robot_ns/tf_static'),
+    ('/robot_description', '/lee/robot_description'),
+    ('/tf', '/lee/tf'),
+    ('/tf_static', '/lee/tf_static'),
 ]
 ```
 
 의미:
 
 ```text
-기본 /robot_description 대신 /robot_ns/robot_description 사용
-기본 /tf 대신 /robot_ns/tf 사용
-기본 /tf_static 대신 /robot_ns/tf_static 사용
+기본 /robot_description 대신 /lee/robot_description 사용
+기본 /tf 대신 /lee/tf 사용
+기본 /tf_static 대신 /lee/tf_static 사용
 ```
 
 이 구조는 여러 실습자가 같은 ROS_DOMAIN_ID 또는 같은 네트워크에서 작업할 때 기본 topic이 섞이는 것을 줄이는 데 도움이 된다.
@@ -94,21 +94,21 @@ package: slam_toolbox
 executable: async_slam_toolbox_node
 name: slam_toolbox
 params: config/slam_param.yaml + use_sim_time
-remap: /scan -> /robot_ns/scan
-       /map -> /robot_ns/map
-       /map_updates -> /robot_ns/map_updates
-       /tf -> /robot_ns/tf
-       /tf_static -> /robot_ns/tf_static
+remap: /scan -> /lee/scan
+       /map -> /lee/map
+       /map_updates -> /lee/map_updates
+       /tf -> /lee/tf
+       /tf_static -> /lee/tf_static
 ```
 
 중요한 점:
 
 ```text
-slam_param.yaml 안에도 scan_topic: /robot_ns/scan 이 들어 있다.
-launch remap에도 /scan -> /robot_ns/scan 이 있다.
+slam_param.yaml 안에도 scan_topic: /lee/scan 이 들어 있다.
+launch remap에도 /scan -> /lee/scan 이 있다.
 ```
 
-둘 중 하나만 맞아도 되는 경우가 있지만, 현재 문서 기준에서는 `/robot_ns/scan`을 기준으로 정리한다.  
+둘 중 하나만 맞아도 되는 경우가 있지만, 현재 문서 기준에서는 `/lee/scan`을 기준으로 정리한다.
 SLAM이 scan을 못 받는다면 `ros2 node info /slam_toolbox`에서 실제 subscriber topic을 확인해야 한다.
 
 ---
@@ -121,10 +121,10 @@ SLAM이 scan을 못 받는다면 `ros2 node info /slam_toolbox`에서 실제 sub
 slam_toolbox:
   ros__parameters:
     use_sim_time: true
-    odom_frame: odom_robot_ns
-    map_frame: map_robot_ns
+    odom_frame: odom_lee
+    map_frame: map_lee
     base_frame: base_footprint
-    scan_topic: /robot_ns/scan
+    scan_topic: /lee/scan
     mode: mapping
     transform_publish_period: 0.02
     map_update_interval: 1.0
@@ -162,7 +162,7 @@ slam_toolbox:
 SLAM 전:
 
 ```text
-odom_robot_ns
+odom_lee
   -> base_footprint
     -> base_link
       -> base_scan
@@ -171,8 +171,8 @@ odom_robot_ns
 SLAM 후:
 
 ```text
-map_robot_ns
-  -> odom_robot_ns
+map_lee
+  -> odom_lee
     -> base_footprint
       -> base_link
         -> base_scan
@@ -181,13 +181,13 @@ map_robot_ns
 확인 명령:
 
 ```bash
-ros2 run tf2_ros tf2_echo map_robot_ns base_footprint \
+ros2 run tf2_ros tf2_echo map_lee base_footprint \
   --ros-args \
-  -r /tf:=/robot_ns/tf \
-  -r /tf_static:=/robot_ns/tf_static
+  -r /tf:=/lee/tf \
+  -r /tf_static:=/lee/tf_static
 ```
 
-`map_robot_ns -> base_footprint`가 나오면 `map_robot_ns -> odom_robot_ns -> base_footprint`가 이어진 것이다.
+`map_lee -> base_footprint`가 나오면 `map_lee -> odom_lee -> base_footprint`가 이어진 것이다.
 
 ---
 
@@ -253,7 +253,7 @@ robot_state_publisher
   URDF의 link/joint를 TF로 변환
 
 gazebo_ros plugins
-  /robot_ns/scan, /robot_ns/odom, /robot_ns/cmd_vel 연결
+  /lee/scan, /lee/odom, /lee/cmd_vel 연결
 
 slam_toolbox
   scan matching, loop closure, pose graph, map 생성
@@ -265,5 +265,5 @@ RViz2
   topic과 TF 시각화
 ```
 
-이 구분이 중요하다.  
+이 구분이 중요하다.
 Day 11은 SLAM 알고리즘을 직접 구현한 것이 아니라, **SLAM Toolbox가 요구하는 입력 데이터와 frame/topic 구조를 맞춰서 지도 생성을 실습한 것**이다.

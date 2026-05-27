@@ -216,7 +216,7 @@ ros2 param get /lee/controller_server controller_plugins
 ros2 param get /lee/controller_server goal_checker_plugins
 ros2 param get /lee/controller_server progress_checker_plugin
 ros2 topic info /lee/cmd_vel -v
-ros2 action send_goal /lee/navigate_to_pose nav2_msgs/action/NavigateToPose "{pose: {header: {frame_id: map_lee}, pose: {position: {x: 0.5, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}}"
+ros2 action send_goal /lee/navigate_to_pose nav2_msgs/action/NavigateToPose "{pose: {header: {frame_id: 'map_lee'}, pose: {position: {x: 0.5, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}}"
 ros2 topic echo /lee/cmd_vel --once
 ```
 
@@ -250,7 +250,7 @@ ros2 param get /lee/controller_server controller_plugins
 ros2 param get /lee/controller_server goal_checker_plugins
 ros2 param get /lee/controller_server progress_checker_plugin
 ros2 topic info /lee/cmd_vel -v
-ros2 action send_goal /lee/navigate_to_pose nav2_msgs/action/NavigateToPose "{pose: {header: {frame_id: map_lee}, pose: {position: {x: 0.5, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}}"
+ros2 action send_goal /lee/navigate_to_pose nav2_msgs/action/NavigateToPose "{pose: {header: {frame_id: 'map_lee'}, pose: {position: {x: 0.5, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}}"
 ros2 topic echo /lee/cmd_vel --once
 ```
 

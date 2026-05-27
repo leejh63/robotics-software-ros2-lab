@@ -54,6 +54,7 @@ README.md
 | 5 | [day_12_amcl_mcl/](day_12_amcl_mcl/) | AMCL, particle filter, localization |
 | 6 | [day_13_nav2/](day_13_nav2/) | Nav2 stack, planner, controller, goal, cmd_vel |
 | 7 | [day_14_control_and_path_planning/](day_14_control_and_path_planning/) | PID 제어, ros2_control, Dijkstra/A*/RRT/RRT* |
+| 8 | [day_15_turtlebot3_cartographer_amcl_nav2/](day_15_turtlebot3_cartographer_amcl_nav2/) | TurtleBot3 Burger, Cartographer SLAM, AMCL, Nav2, Explore Lite 자동 탐색 재현 |
 
 ---
 

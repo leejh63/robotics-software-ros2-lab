@@ -1,6 +1,6 @@
 # NavigateToPose Action에서 /cmd_vel까지
 
-이 문서는 Nav2 goal이 실제 속도 명령이 되는 흐름을 하나로 정리한다.
+이 문서는 Nav2 goal이 실제 속도 명령이 되는 흐름을 하나로 정리한다. 현재 `projects/ros2_navigation_lab` 실행 예시 기준으로 `/lee`, `map_lee`, `odom_lee`를 사용한다.
 
 ---
 
@@ -9,11 +9,11 @@
 사용자가 goal을 보낸다.
 
 ```bash
-ros2 action send_goal /robot_ns/navigate_to_pose nav2_msgs/action/NavigateToPose \
-"{pose: {header: {frame_id: 'map_robot_ns'}, pose: {position: {x: 1.0, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}}"
+ros2 action send_goal /lee/navigate_to_pose nav2_msgs/action/NavigateToPose \
+"{pose: {header: {frame_id: 'map_lee'}, pose: {position: {x: 1.0, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}}"
 ```
 
-이 goal은 `map_robot_ns` 기준 좌표다.
+이 goal은 `map_lee` 기준 좌표다.
 
 ---
 
@@ -22,7 +22,7 @@ ros2 action send_goal /robot_ns/navigate_to_pose nav2_msgs/action/NavigateToPose
 `bt_navigator`는 action server 역할을 한다.
 
 ```text
-/robot_ns/navigate_to_pose goal 수신
+/lee/navigate_to_pose goal 수신
   -> Behavior Tree 실행
 ```
 
@@ -45,7 +45,7 @@ global costmap
 출력:
 
 ```text
-/robot_ns/plan
+/lee/plan
 ```
 
 ---
@@ -57,8 +57,8 @@ BT의 `FollowPath` 단계에서 controller_server가 호출된다.
 입력:
 
 ```text
-/robot_ns/plan
-/robot_ns/odom
+/lee/plan
+/lee/odom
 local costmap
 TF
 ```
@@ -69,20 +69,20 @@ TF
 속도 명령
 ```
 
-현재 구조에서는 최종적으로 `/robot_ns/cmd_vel` 흐름을 봐야 한다.
+현재 구조에서는 최종적으로 `/lee/cmd_vel` 흐름을 봐야 한다.
 
 ---
 
 ## 5. Gazebo diff_drive plugin
 
-Gazebo의 diff_drive plugin은 `/robot_ns/cmd_vel`을 구독해서 로봇 모델을 움직인다.
+Gazebo의 diff_drive plugin은 `/lee/cmd_vel`을 구독해서 로봇 모델을 움직인다.
 
 로봇이 움직이면 다시 아래 데이터가 갱신된다.
 
 ```text
-/robot_ns/odom
-/robot_ns/tf
-/robot_ns/scan
+/lee/odom
+/lee/tf
+/lee/scan
 ```
 
 이 데이터는 다시 AMCL, costmap, controller로 들어간다.
@@ -111,15 +111,15 @@ goal
 
 ```text
 action goal 자체가 안 감
-  /robot_ns/navigate_to_pose, bt_navigator 확인
+  /lee/navigate_to_pose, bt_navigator 확인
 
-/robot_ns/plan이 없음
+/lee/plan이 없음
   planner_server, global costmap, map, goal 위치 확인
 
-/robot_ns/plan은 있는데 /robot_ns/cmd_vel이 없음
+/lee/plan은 있는데 /lee/cmd_vel이 없음
   controller_server, local costmap, odom, DWB 확인
 
-/robot_ns/cmd_vel은 있는데 로봇 안 움직임
+/lee/cmd_vel은 있는데 로봇 안 움직임
   Gazebo plugin, topic remap, teleop 충돌 확인
 ```
 

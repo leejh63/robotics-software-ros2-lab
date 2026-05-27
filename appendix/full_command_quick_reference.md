@@ -2,46 +2,28 @@
 
 이 문서는 Day 01~13 전체 실습에서 자주 쓰는 명령어를 한 곳에 모은 것이다.
 
-기준 환경:
-
-```bash
-cd $ROS2_WS
-source /opt/ros/humble/setup.bash
-source install/setup.bash
-```
-
 명령어를 그대로 복사하기 전에 [command_execution_conventions.md](command_execution_conventions.md)를 먼저 확인한다.
 
-핵심 구분:
+현재 `projects/ros2_navigation_lab` 실제 기본값:
 
 ```text
-lee_robot_description  = package name 예시
-robot_ns               = namespace 예시
-map_robot_ns           = frame name 예시
+package name : lee_robot_description
+namespace    : /lee
+map frame    : map_lee
+odom frame   : odom_lee
+base frame   : base_footprint
+scan frame   : base_scan
 ```
 
-`ros2 launch`에는 namespace가 아니라 package name이 들어간다. 반대로 `/robot_ns/scan`처럼 `/`로 시작하는 값은 topic 이름이다.
-
-## 명령어 블록 구분
-
-이 문서의 명령어는 다음 기준으로 읽는다.
-
-| 구분 | 예시 | 의미 |
-|---|---|---|
-| 실제 실행 명령 | `ros2 node list` | 실행 중인 환경에서 바로 확인 가능 |
-| placeholder 포함 명령 | `ros2 bag play <bag_dir> --clock` | `<bag_dir>`를 실제 값으로 바꿔야 함 |
-| namespace 예시 | `/robot_ns/scan` | 실제 topic 이름은 `ros2 topic list`로 확인 |
-| frame 예시 | `map_robot_ns` | message 내부 `header.frame_id` 또는 TF frame 이름 |
-
-실행이 안 되면 명령어 자체를 수정하기 전에 `ros2 topic list`, `ros2 node list`, `ros2 action list`로 실제 이름을 먼저 확인한다.
+`/robot_ns`, `map_robot_ns`, `odom_robot_ns`는 일반 설명용 placeholder다. 이 문서의 복사 실행 명령은 `/lee`, `map_lee`, `odom_lee`를 우선 사용한다.
 
 ---
-
 
 ## 1. 빌드와 환경 설정
 
 ```bash
 cd $ROS2_WS
+source /opt/ros/humble/setup.bash
 colcon build
 source install/setup.bash
 ```
@@ -72,6 +54,12 @@ ros2 service list | sort
 ros2 action list | sort
 ```
 
+현재 프로젝트 주요 topic 확인:
+
+```bash
+ros2 topic list | sort | grep -E 'lee|scan|odom|tf|map|cmd_vel|amcl|particle|initialpose|costmap|plan'
+```
+
 node 정보:
 
 ```bash
@@ -81,9 +69,9 @@ ros2 node info /노드이름
 topic 정보:
 
 ```bash
-ros2 topic info /robot_ns/scan
-ros2 topic echo /robot_ns/scan --once
-ros2 topic hz /robot_ns/scan
+ros2 topic info /lee/scan
+ros2 topic echo /lee/scan --once
+ros2 topic hz /lee/scan
 ```
 
 message type 확인:
@@ -105,19 +93,24 @@ TF tree 파일 생성:
 ros2 run tf2_tools view_frames
 ```
 
-두 frame 관계 확인:
+현재 `/lee/tf`, `/lee/tf_static`를 쓰는 경우에는 `tf2_echo`에도 remap을 명시한다.
 
 ```bash
-ros2 run tf2_ros tf2_echo odom_robot_ns base_footprint
-ros2 run tf2_ros tf2_echo map_robot_ns odom_robot_ns
-ros2 run tf2_ros tf2_echo base_footprint base_scan
+ros2 run tf2_ros tf2_echo odom_lee base_footprint \
+  --ros-args -r /tf:=/lee/tf -r /tf_static:=/lee/tf_static
+
+ros2 run tf2_ros tf2_echo map_lee odom_lee \
+  --ros-args -r /tf:=/lee/tf -r /tf_static:=/lee/tf_static
+
+ros2 run tf2_ros tf2_echo base_footprint base_scan \
+  --ros-args -r /tf:=/lee/tf -r /tf_static:=/lee/tf_static
 ```
 
 TF topic 확인:
 
 ```bash
-ros2 topic echo /robot_ns/tf --once
-ros2 topic echo /robot_ns/tf_static --once
+ros2 topic echo /lee/tf --once
+ros2 topic echo /lee/tf_static --once
 ```
 
 ---
@@ -139,16 +132,16 @@ ros2 launch lee_robot_description display.launch.py
 센서 topic 확인:
 
 ```bash
-ros2 topic list | grep /robot_ns
-ros2 topic echo /robot_ns/scan --once
-ros2 topic echo /robot_ns/odom --once
-ros2 topic echo /robot_ns/imu --once
+ros2 topic list | grep /lee
+ros2 topic echo /lee/scan --once
+ros2 topic echo /lee/odom --once
+ros2 topic echo /lee/imu --once
 ```
 
 cmd_vel 테스트:
 
 ```bash
-ros2 topic pub /robot_ns/cmd_vel geometry_msgs/msg/Twist \
+ros2 topic pub /lee/cmd_vel geometry_msgs/msg/Twist \
   "{linear: {x: 0.1}, angular: {z: 0.0}}" --once
 ```
 
@@ -159,7 +152,7 @@ ros2 topic pub /robot_ns/cmd_vel geometry_msgs/msg/Twist \
 기록:
 
 ```bash
-ros2 bag record /robot_ns/scan /robot_ns/odom /robot_ns/tf /robot_ns/tf_static /clock
+ros2 bag record /lee/scan /lee/odom /lee/tf /lee/tf_static /clock
 ```
 
 재생:
@@ -180,21 +173,22 @@ ros2 bag play <bag_dir> --loop --clock
 ros2 bag play <bag_dir> --clock -r 0.1
 ```
 
-namespace 없는 bag을 `/robot_ns` 구조로 재생할 때 예시:
+namespace 없는 bag을 현재 `/lee` 구조로 재생할 때 예시:
 
 ```bash
 ros2 bag play "$BAG_DIR" --loop -r 0.1 --clock \
-  --remap /scan:=/robot_ns/scan \
-  --remap /odom:=/robot_ns/odom \
-  --remap /tf:=/robot_ns/tf \
-  --remap /tf_static:=/robot_ns/tf_static
+  --remap /scan:=/lee/scan \
+  --remap /odom:=/lee/odom \
+  --remap /tf:=/lee/tf \
+  --remap /tf_static:=/lee/tf_static
 ```
 
 주의:
 
 ```text
 remap은 topic 이름만 바꾼다.
-message 안의 frame_id는 자동으로 바뀌지 않는다.
+message 안의 header.frame_id는 자동으로 바뀌지 않는다.
+rosbag 원본 데이터는 현재 저장소에 올리지 않는다.
 ```
 
 ---
@@ -210,14 +204,21 @@ ros2 launch lee_robot_description slam.launch.py
 map topic 확인:
 
 ```bash
-ros2 topic echo /robot_ns/map --once
-ros2 topic info /robot_ns/map
+ros2 topic echo /lee/map --once
+ros2 topic info /lee/map
+```
+
+TF 확인:
+
+```bash
+ros2 run tf2_ros tf2_echo map_lee odom_lee \
+  --ros-args -r /tf:=/lee/tf -r /tf_static:=/lee/tf_static
 ```
 
 map 저장:
 
 ```bash
-ros2 run nav2_map_server map_saver_cli -f slam_map --ros-args -r map:=/robot_ns/map
+ros2 run nav2_map_server map_saver_cli -f slam_map --ros-args -r map:=/lee/map
 ```
 
 저장 결과 확인:
@@ -231,7 +232,13 @@ cat slam_map.yaml
 
 ## 7. AMCL 실행과 initialpose
 
-localization 실행:
+localization만 실행:
+
+```bash
+ros2 launch lee_robot_description localization.launch.py
+```
+
+또는 localization과 Nav2 navigation stack을 한 번에 실행:
 
 ```bash
 ros2 launch lee_robot_description nav2.launch.py
@@ -243,41 +250,101 @@ AMCL 관련 topic 확인:
 ros2 topic list | grep -E 'amcl|particle|initialpose|map'
 ```
 
-AMCL topic은 launch namespace 설정에 따라 `/amcl_pose` 또는 `/robot_ns/amcl_pose`처럼 달라질 수 있다. 먼저 실제 topic 이름을 확인한 뒤 그 이름으로 echo한다.
+현재 launch 구조에서는 `map_server`와 `amcl` node 이름이 root namespace에 있을 수 있다. 먼저 실제 topic 이름을 확인한 뒤 echo한다.
 
 ```bash
 ros2 topic echo /amcl_pose --once
 ros2 topic echo /particle_cloud --once
 # namespace가 붙어 있다면:
-ros2 topic echo /robot_ns/amcl_pose --once
-ros2 topic echo /robot_ns/particle_cloud --once
+ros2 topic echo /lee/amcl_pose --once
+ros2 topic echo /lee/particle_cloud --once
 ```
 
 initialpose CLI 예시:
 
 ```bash
-ros2 topic pub /initialpose geometry_msgs/msg/PoseWithCovarianceStamped \
-"{header: {frame_id: 'map_robot_ns'}, pose: {pose: {position: {x: 0.0, y: 0.0, z: 0.0}, orientation: {z: 0.0, w: 1.0}}, covariance: [0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0685]}}" \
---once
+ros2 topic pub --once /initialpose geometry_msgs/msg/PoseWithCovarianceStamped "
+header:
+  frame_id: 'map_lee'
+pose:
+  pose:
+    position:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+  covariance:
+  - 0.25
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.25
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0
+  - 0.0685
+"
 ```
 
 TF 확인:
 
 ```bash
-ros2 run tf2_ros tf2_echo map_robot_ns odom_robot_ns
+ros2 run tf2_ros tf2_echo map_lee odom_lee \
+  --ros-args -r /tf:=/lee/tf -r /tf_static:=/lee/tf_static
 ```
 
 ---
 
 ## 8. Nav2 실행과 goal 전송
 
-localization terminal:
+Nav2는 아래 두 방식 중 하나만 선택한다. 같은 세션에서 중복 실행하지 않는다.
+
+### 방식 A: localization + Nav2 통합 실행
 
 ```bash
 ros2 launch lee_robot_description nav2.launch.py
 ```
 
-navigation terminal:
+### 방식 B: localization과 Nav2 stack 분리 실행
+
+Terminal 1:
+
+```bash
+ros2 launch lee_robot_description localization.launch.py
+```
+
+Terminal 2:
 
 ```bash
 ros2 launch lee_robot_description nav2_navigation.launch.py
@@ -287,26 +354,21 @@ Nav2 action 확인:
 
 ```bash
 ros2 action list | grep navigate
-ros2 action info /robot_ns/navigate_to_pose
+ros2 action info /lee/navigate_to_pose
 ```
 
 CLI goal 예시:
 
 ```bash
-ros2 action send_goal /robot_ns/navigate_to_pose nav2_msgs/action/NavigateToPose \
-"{pose: {header: {frame_id: 'map_robot_ns'}, pose: {position: {x: 1.0, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}}"
+ros2 action send_goal /lee/navigate_to_pose nav2_msgs/action/NavigateToPose \
+"{pose: {header: {frame_id: 'map_lee'}, pose: {position: {x: 1.0, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}}"
 ```
 
-cmd_vel 확인:
+plan / cmd_vel 확인:
 
 ```bash
-ros2 topic echo /robot_ns/cmd_vel
-```
-
-plan 확인:
-
-```bash
-ros2 topic echo /robot_ns/plan --once
+ros2 topic echo /lee/plan --once
+ros2 topic echo /lee/cmd_vel
 ```
 
 ---
@@ -319,21 +381,27 @@ lifecycle node 목록:
 ros2 lifecycle nodes
 ```
 
-상태 확인:
+Localization 쪽은 root namespace로 보일 수 있다.
 
 ```bash
-ros2 lifecycle get /robot_ns/map_server
-ros2 lifecycle get /robot_ns/amcl
-ros2 lifecycle get /robot_ns/planner_server
-ros2 lifecycle get /robot_ns/controller_server
-ros2 lifecycle get /robot_ns/bt_navigator
+ros2 lifecycle get /map_server
+ros2 lifecycle get /amcl
+```
+
+Nav2 navigation stack은 기본적으로 `/lee` namespace 기준으로 확인한다.
+
+```bash
+ros2 lifecycle get /lee/planner_server
+ros2 lifecycle get /lee/controller_server
+ros2 lifecycle get /lee/bt_navigator
+ros2 lifecycle get /lee/behavior_server
 ```
 
 수동 전환 예시:
 
 ```bash
-ros2 lifecycle set /robot_ns/map_server configure
-ros2 lifecycle set /robot_ns/map_server activate
+ros2 lifecycle set /map_server configure
+ros2 lifecycle set /map_server activate
 ```
 
 ---
@@ -341,20 +409,22 @@ ros2 lifecycle set /robot_ns/map_server activate
 ## 10. Parameter 확인
 
 ```bash
-ros2 param list /robot_ns/controller_server
-ros2 param get /robot_ns/controller_server controller_plugins
-ros2 param get /robot_ns/controller_server goal_checker_plugins
-ros2 param get /robot_ns/controller_server progress_checker_plugin
+ros2 param list /lee/controller_server
+ros2 param get /lee/controller_server controller_plugins
+ros2 param get /lee/controller_server goal_checker_plugins
+ros2 param get /lee/controller_server progress_checker_plugin
 ```
 
 AMCL parameter 확인:
 
 ```bash
-ros2 param list /robot_ns/amcl
-ros2 param get /robot_ns/amcl base_frame_id
-ros2 param get /robot_ns/amcl global_frame_id
-ros2 param get /robot_ns/amcl odom_frame_id
+ros2 param list /amcl
+ros2 param get /amcl base_frame_id
+ros2 param get /amcl global_frame_id
+ros2 param get /amcl odom_frame_id
 ```
+
+AMCL node가 `/lee/amcl`로 보이면 그 이름으로 바꿔 확인한다.
 
 ---
 

@@ -9,7 +9,7 @@ Day 11
   SLAM으로 slam_map.yaml + slam_map.pgm 저장
 
 Day 12
-  map_server가 저장 지도를 /robot_ns/map으로 발행
+  map_server가 저장 지도를 /lee/map으로 발행
   AMCL이 그 지도 위에서 현재 위치 추정
 
 Day 13
@@ -24,19 +24,19 @@ Day 13
 
 `nav2_map_server`의 `map_server`는 `.yaml + .pgm`을 읽어서 `/map` 또는 remap된 topic으로 `nav_msgs/msg/OccupancyGrid`를 발행한다.
 
-현재 환경에서는 `/map`이 아니라 `/robot_ns/map`으로 쓰는 것이 자연스럽다.
+현재 환경에서는 `/map`이 아니라 `/lee/map`으로 쓰는 것이 자연스럽다.
 
 ```text
 slam_map.yaml + slam_map.pgm
   -> map_server
-  -> /robot_ns/map
+  -> /lee/map
 ```
 
 ---
 
 ## 3. Lifecycle이 필요한 이유
 
-Nav2 계열 노드 중 일부는 lifecycle node이다.  
+Nav2 계열 노드 중 일부는 lifecycle node이다.
 일반 노드처럼 실행만 하면 바로 완전히 동작하는 것이 아니라 상태 전이가 필요하다.
 
 대표 상태:
@@ -55,7 +55,7 @@ finalized
   종료 상태
 ```
 
-`map_server`도 active 상태가 되어야 map을 제대로 발행한다.  
+`map_server`도 active 상태가 되어야 map을 제대로 발행한다.
 그래서 `lifecycle_manager`를 같이 쓰면 편하다.
 
 ---
@@ -80,9 +80,9 @@ ros2 launch lee_robot_description slam.launch.py \
 
 ---
 
-### 터미널 2. 확인용 map_robot_ns -> odom_robot_ns TF 연결
+### 터미널 2. 확인용 map_lee -> odom_lee TF 연결
 
-지도만 보려면 `map_robot_ns`와 `odom_robot_ns`가 이어져야 RViz2에서 로봇/지도 관계를 볼 수 있다.  
+지도만 보려면 `map_lee`와 `odom_lee`가 이어져야 RViz2에서 로봇/지도 관계를 볼 수 있다.
 AMCL을 켜기 전 확인용으로 static transform을 사용할 수 있다.
 
 ```bash
@@ -90,18 +90,18 @@ cd $ROS2_WS
 source /opt/ros/humble/setup.bash
 source install/setup.bash
 
-ros2 run tf2_ros static_transform_publisher 0 0 0 0 0 0 map_robot_ns odom_robot_ns \
+ros2 run tf2_ros static_transform_publisher 0 0 0 0 0 0 map_lee odom_lee \
   --ros-args \
-  -r /tf:=/robot_ns/tf \
-  -r /tf_static:=/robot_ns/tf_static
+  -r /tf:=/lee/tf \
+  -r /tf_static:=/lee/tf_static
 ```
 
 주의:
 
 ```text
 이 static transform은 확인용이다.
-AMCL을 실행할 때는 AMCL이 map_robot_ns -> odom_robot_ns를 발행해야 한다.
-SLAM/AMCL/static_transform_publisher가 동시에 같은 map_robot_ns -> odom_robot_ns를 발행하면 안 된다.
+AMCL을 실행할 때는 AMCL이 map_lee -> odom_lee를 발행해야 한다.
+SLAM/AMCL/static_transform_publisher가 동시에 같은 map_lee -> odom_lee를 발행하면 안 된다.
 ```
 
 ---
@@ -117,9 +117,9 @@ source install/setup.bash
 
 ros2 run nav2_map_server map_server \
   --ros-args \
-  -r /map:=/robot_ns/map \
+  -r /map:=/lee/map \
   -p yaml_filename:=$PWD/slam_map.yaml \
-  -p frame_id:=map_robot_ns
+  -p frame_id:=map_lee
 ```
 
 `maps/` 폴더에 저장한 경우:
@@ -127,9 +127,9 @@ ros2 run nav2_map_server map_server \
 ```bash
 ros2 run nav2_map_server map_server \
   --ros-args \
-  -r /map:=/robot_ns/map \
+  -r /map:=/lee/map \
   -p yaml_filename:=$PWD/maps/slam_map.yaml \
-  -p frame_id:=map_robot_ns
+  -p frame_id:=map_lee
 ```
 
 ---
@@ -150,7 +150,7 @@ ros2 run nav2_lifecycle_manager lifecycle_manager \
 확인:
 
 ```bash
-ros2 topic echo /robot_ns/map --once
+ros2 topic echo /lee/map --once
 ros2 lifecycle get /map_server
 ```
 
@@ -180,28 +180,28 @@ image: slam_map.pgm
 
 ---
 
-### 5.2 frame_id가 map_robot_ns인지 확인해야 한다
+### 5.2 frame_id가 map_lee인지 확인해야 한다
 
-현재 RViz2와 SLAM/AMCL 흐름은 `map_robot_ns`를 기준으로 정리되어 있다.  
+현재 RViz2와 SLAM/AMCL 흐름은 `map_lee`를 기준으로 정리되어 있다.
 map_server가 기본 `map` frame으로 발행하면 다른 설정과 맞지 않을 수 있다.
 
 현재 권장:
 
 ```bash
--p frame_id:=map_robot_ns
+-p frame_id:=map_lee
 ```
 
 ---
 
 ### 5.3 map_server의 topic remap 확인
 
-현재 지도 topic은 `/robot_ns/map`이다.
+현재 지도 topic은 `/lee/map`이다.
 
 ```bash
--r /map:=/robot_ns/map
+-r /map:=/lee/map
 ```
 
-이 remap을 빼면 `/map`으로 발행될 수 있고, RViz2가 `/robot_ns/map`을 보고 있다면 지도 표시가 안 될 수 있다.
+이 remap을 빼면 `/map`으로 발행될 수 있고, RViz2가 `/lee/map`을 보고 있다면 지도 표시가 안 될 수 있다.
 
 ---
 
@@ -211,26 +211,26 @@ Day 11에서 지도 로딩을 이해하면 Day 12 AMCL 흐름이 쉬워진다.
 
 ```text
 map_server
-  -> /robot_ns/map 발행
+  -> /lee/map 발행
 
 AMCL
-  <- /robot_ns/map
-  <- /robot_ns/scan
-  <- odom_robot_ns -> base_footprint TF
+  <- /lee/map
+  <- /lee/scan
+  <- odom_lee -> base_footprint TF
   -> /amcl_pose
   -> /particle_cloud
-  -> map_robot_ns -> odom_robot_ns TF
+  -> map_lee -> odom_lee TF
 ```
 
-Day 11에서 SLAM이 발행하던 `map_robot_ns -> odom_robot_ns`는 Day 12에서 AMCL이 담당한다.
+Day 11에서 SLAM이 발행하던 `map_lee -> odom_lee`는 Day 12에서 AMCL이 담당한다.
 
 ---
 
 ## 7. 결론
 
 ```text
-map_saver_cli는 /robot_ns/map을 파일로 저장한다.
-map_server는 저장된 파일을 다시 /robot_ns/map topic으로 발행한다.
+map_saver_cli는 /lee/map을 파일로 저장한다.
+map_server는 저장된 파일을 다시 /lee/map topic으로 발행한다.
 map_server는 lifecycle active 상태가 되어야 제대로 동작한다.
-확인용 static map_robot_ns -> odom_robot_ns TF는 확인용일 뿐, AMCL 단계에서는 AMCL이 그 역할을 해야 한다.
+확인용 static map_lee -> odom_lee TF는 확인용일 뿐, AMCL 단계에서는 AMCL이 그 역할을 해야 한다.
 ```

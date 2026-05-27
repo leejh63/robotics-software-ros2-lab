@@ -2,11 +2,13 @@
 
 Nav2를 처음 볼 때 가장 헷갈리는 부분은 lifecycle과 namespace다.
 
+현재 `projects/ros2_navigation_lab`의 실제 기본 namespace는 `/lee`다. `/robot_ns`는 다른 문서에서 일반 설명용 placeholder로만 사용한다.
+
 ---
 
 ## 1. Lifecycle node란?
 
-일반 ROS2 node는 실행되면 바로 동작한다고 생각하기 쉽다.  
+일반 ROS2 node는 실행되면 바로 동작한다고 생각하기 쉽다.
 하지만 Nav2의 주요 서버들은 lifecycle node다.
 
 Lifecycle node는 상태를 가진다.
@@ -41,7 +43,7 @@ controller_server가 local costmap과 odom을 준비
 bt_navigator가 action을 받을 준비
 ```
 
-아무 노드나 먼저 active가 되면 의존 데이터가 없어서 실패할 수 있다.  
+아무 노드나 먼저 active가 되면 의존 데이터가 없어서 실패할 수 있다.
 Lifecycle은 이런 초기화 순서를 통제하기 위한 구조다.
 
 ---
@@ -54,18 +56,18 @@ Namespace는 topic/node/action 이름 앞에 붙는 경로 같은 것이다.
 navigate_to_pose
   기본 action 이름
 
-/robot_ns/navigate_to_pose
-  robot_ns namespace 안의 action 이름
+/lee/navigate_to_pose
+  lee namespace 안의 action 이름
 ```
 
-현재 환경은 `/robot_ns` namespace를 많이 사용한다.
+현재 환경은 `/lee` namespace를 많이 사용한다.
 
 ```text
-/robot_ns/map
-/robot_ns/scan
-/robot_ns/odom
-/robot_ns/cmd_vel
-/robot_ns/navigate_to_pose
+/lee/map
+/lee/scan
+/lee/odom
+/lee/cmd_vel
+/lee/navigate_to_pose
 ```
 
 ---
@@ -75,7 +77,7 @@ navigate_to_pose
 아래 두 개는 완전히 다른 개념이다.
 
 ```text
-/robot_ns/scan
+/lee/scan
   topic 이름
 
 base_scan
@@ -83,10 +85,10 @@ base_scan
 ```
 
 ```text
-/robot_ns/navigate_to_pose
+/lee/navigate_to_pose
   action 이름
 
-map_robot_ns
+map_lee
   goal pose를 해석할 frame_id
 ```
 
@@ -97,9 +99,9 @@ topic remap을 해도 메시지 안의 frame_id가 자동으로 바뀌지는 않
 ## 5. 현재 환경에서의 핵심
 
 ```text
-namespace: /robot_ns
-map frame: map_robot_ns
-odom frame: odom_robot_ns
+namespace: /lee
+map frame: map_lee
+odom frame: odom_lee
 base frame: base_footprint
 scan frame: base_scan
 ```
@@ -112,9 +114,9 @@ scan frame: base_scan
 
 ```bash
 ros2 node list | sort
-ros2 topic list | grep -E 'robot_ns|scan|odom|cmd_vel|map|amcl|particle|initialpose'
+ros2 topic list | grep -E 'lee|scan|odom|cmd_vel|map|amcl|particle|initialpose'
 ros2 action list | grep navigate
-ros2 lifecycle get /robot_ns/planner_server
-ros2 run tf2_ros tf2_echo map_robot_ns odom_robot_ns
+ros2 lifecycle get /lee/planner_server
+ros2 run tf2_ros tf2_echo map_lee odom_lee --ros-args -r /tf:=/lee/tf -r /tf_static:=/lee/tf_static
 ```
 

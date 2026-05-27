@@ -36,7 +36,7 @@ source install/setup.bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard \
   --ros-args \
   -r __node:=lee_teleop \
-  -r cmd_vel:=/robot_ns/cmd_vel
+  -r cmd_vel:=/lee/cmd_vel
 ```
 
 주의:
@@ -54,11 +54,11 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard \
 `slam.rviz` 기준 확인값:
 
 ```text
-Fixed Frame = map_robot_ns
-Map Topic = /robot_ns/map
-LaserScan Topic = /robot_ns/scan
-RobotModel Description Topic = /robot_ns/robot_description
-TF Topic = /robot_ns/tf, /robot_ns/tf_static remap 기준
+Fixed Frame = map_lee
+Map Topic = /lee/map
+LaserScan Topic = /lee/scan
+RobotModel Description Topic = /lee/robot_description
+TF Topic = /lee/tf, /lee/tf_static remap 기준
 ```
 
 정상 상태:
@@ -66,8 +66,8 @@ TF Topic = /robot_ns/tf, /robot_ns/tf_static remap 기준
 ```text
 로봇 모델이 보인다.
 로봇 주변 LaserScan 점이 보인다.
-로봇이 움직이면 /robot_ns/map의 흰색/검은색 영역이 늘어난다.
-TF tree가 map_robot_ns -> odom_robot_ns -> base_footprint로 이어진다.
+로봇이 움직이면 /lee/map의 흰색/검은색 영역이 늘어난다.
+TF tree가 map_lee -> odom_lee -> base_footprint로 이어진다.
 ```
 
 ---
@@ -83,16 +83,16 @@ ros2 topic list
 핵심 토픽 확인:
 
 ```bash
-ros2 topic echo /robot_ns/scan --once
-ros2 topic echo /robot_ns/odom --once
-ros2 topic echo /robot_ns/map --once
+ros2 topic echo /lee/scan --once
+ros2 topic echo /lee/odom --once
+ros2 topic echo /lee/map --once
 ```
 
 주기 확인:
 
 ```bash
-ros2 topic hz /robot_ns/scan
-ros2 topic hz /robot_ns/map
+ros2 topic hz /lee/scan
+ros2 topic hz /lee/map
 ```
 
 노드 확인:
@@ -105,10 +105,10 @@ ros2 node info /slam_toolbox
 TF 확인:
 
 ```bash
-ros2 run tf2_ros tf2_echo map_robot_ns base_footprint \
+ros2 run tf2_ros tf2_echo map_lee base_footprint \
   --ros-args \
-  -r /tf:=/robot_ns/tf \
-  -r /tf_static:=/robot_ns/tf_static
+  -r /tf:=/lee/tf \
+  -r /tf_static:=/lee/tf_static
 ```
 
 ---
@@ -140,7 +140,7 @@ ros2 run tf2_ros tf2_echo map_robot_ns base_footprint \
 
 ## 6. 지도 저장
 
-`/robot_ns/map`이 정상적으로 나오면 저장할 수 있다.
+`/lee/map`이 정상적으로 나오면 저장할 수 있다.
 
 현재 폴더에 저장:
 
@@ -150,7 +150,7 @@ source /opt/ros/humble/setup.bash
 source install/setup.bash
 
 ros2 run nav2_map_server map_saver_cli \
-  -t /robot_ns/map \
+  -t /lee/map \
   -f ./slam_map
 ```
 
@@ -161,7 +161,7 @@ cd $ROS2_WS
 mkdir -p maps
 
 ros2 run nav2_map_server map_saver_cli \
-  -t /robot_ns/map \
+  -t /lee/map \
   -f ./maps/slam_map
 ```
 
@@ -174,10 +174,10 @@ slam_map.yaml
 
 ---
 
-## 7. `-t /robot_ns/map`이 중요한 이유
+## 7. `-t /lee/map`이 중요한 이유
 
-`map_saver_cli`의 기본 map topic은 보통 `/map`이다.  
-하지만 현재 SLAM 결과는 `/robot_ns/map`으로 나온다.
+`map_saver_cli`의 기본 map topic은 보통 `/map`이다.
+하지만 현재 SLAM 결과는 `/lee/map`으로 나온다.
 
 따라서 아래처럼 실행하면 실패할 수 있다.
 
@@ -189,7 +189,7 @@ ros2 run nav2_map_server map_saver_cli -f ./slam_map
 
 ```text
 map_saver_cli가 /map을 기다림
-현재 지도는 /robot_ns/map으로 발행됨
+현재 지도는 /lee/map으로 발행됨
 결과적으로 지도를 못 받고 timeout 또는 spin 실패
 ```
 
@@ -197,7 +197,7 @@ map_saver_cli가 /map을 기다림
 
 ```bash
 ros2 run nav2_map_server map_saver_cli \
-  -t /robot_ns/map \
+  -t /lee/map \
   -f ./slam_map
 ```
 
@@ -251,7 +251,7 @@ PGM이 정상인지 간단히 확인:
 file slam_map.pgm
 ```
 
-RViz2에서 다시 로딩하려면 Day 12/13의 map_server, AMCL, Nav2 흐름과 연결된다.  
+RViz2에서 다시 로딩하려면 Day 12/13의 map_server, AMCL, Nav2 흐름과 연결된다.
 Day 11에서는 저장 파일이 만들어지는 것까지가 핵심이다.
 
 ---
@@ -259,8 +259,8 @@ Day 11에서는 저장 파일이 만들어지는 것까지가 핵심이다.
 ## 10. 이 단계의 결론
 
 ```text
-SLAM 결과는 RViz2 화면이 아니라 /robot_ns/map topic이다.
-map_saver_cli는 /robot_ns/map을 .pgm + .yaml 파일로 저장한다.
-현재 환경에서는 -t /robot_ns/map 옵션을 명시해야 한다.
+SLAM 결과는 RViz2 화면이 아니라 /lee/map topic이다.
+map_saver_cli는 /lee/map을 .pgm + .yaml 파일로 저장한다.
+현재 환경에서는 -t /lee/map 옵션을 명시해야 한다.
 좋은 지도는 좋은 주행에서 나온다.
 ```
