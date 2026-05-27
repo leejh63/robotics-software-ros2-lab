@@ -1,5 +1,6 @@
 # Local cleanup/work notes
 __revision_worklog_do_not_commit/
+DAY_01_14_PROGRESS.md
 
 # ROS2 / colcon build outputs
 build/
@@ -63,5 +64,7 @@ Thumbs.db
 *~
 *.bak
 
+*.tmp
+*.orig
 # Logs
 *.log
