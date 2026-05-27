@@ -2,6 +2,9 @@
 
 이 문서는 Day 13 실습에서 자주 확인하는 Nav2 파라미터를 빠르게 보기 위한 문서다.
 
+아래 값은 현재 `projects/ros2_navigation_lab` 실행 예시 기준이다.
+일반 namespace 설명에서 쓰는 `/robot_ns`, `map_robot_ns`, `odom_robot_ns`와 달리, 이 프로젝트의 실제 복사 실행 기준은 `/lee`, `map_lee`, `odom_lee`다.
+
 ---
 
 ## 1. Planner Server
@@ -41,7 +44,7 @@ controller_server:
   ros__parameters:
     use_sim_time: true
     controller_frequency: 20.0
-    odom_topic: /robot_ns/odom
+    odom_topic: /lee/odom
     progress_checker_plugin: progress_checker
     goal_checker_plugins:
       - general_goal_checker
@@ -52,7 +55,7 @@ controller_server:
 | 파라미터 | 의미 | 확인 포인트 |
 |---|---|---|
 | `controller_frequency` | 속도 명령 계산 주기 | 낮으면 반응 느림, 높으면 CPU 부하 증가 |
-| `odom_topic` | controller가 참고할 odom topic | 현재는 `/robot_ns/odom` |
+| `odom_topic` | controller가 참고할 odom topic | 현재 프로젝트는 `/lee/odom` |
 | `controller_plugins` | 로컬 controller plugin 이름 목록 | `FollowPath` 하위 설정이 반드시 있어야 함 |
 | `goal_checker_plugins` | 목표 도달 판정 plugin | tolerance 문제와 연결 |
 | `progress_checker_plugin` | 로봇이 실제로 진행 중인지 검사 | stuck 판정과 연결 |
@@ -124,7 +127,7 @@ general_goal_checker:
 global_costmap:
   global_costmap:
     ros__parameters:
-      global_frame: map_robot_ns
+      global_frame: map_lee
       robot_base_frame: base_footprint
       plugins:
         - static_layer
@@ -134,14 +137,14 @@ global_costmap:
 
 | 파라미터 | 의미 |
 |---|---|
-| `global_frame` | 전체 지도 기준 frame. 현재는 `map_robot_ns` |
+| `global_frame` | 전체 지도 기준 frame. 현재 프로젝트는 `map_lee` |
 | `robot_base_frame` | 로봇 기준 frame. 현재는 `base_footprint` |
 | `static_layer` | 저장 지도 기반 벽 정보 |
 | `obstacle_layer` | 실시간 센서 장애물 |
 | `inflation_layer` | 장애물 주변 안전 버퍼 |
-| `map_topic` | 현재 설정은 `/robot_ns/map` |
+| `map_topic` | 현재 프로젝트는 `/lee/map` |
 | `observation_sources` | 현재 설정은 `scan` |
-| `scan.topic` | 현재 설정은 `/robot_ns/scan` |
+| `scan.topic` | 현재 프로젝트는 `/lee/scan` |
 
 ---
 
@@ -153,7 +156,7 @@ global_costmap:
 local_costmap:
   local_costmap:
     ros__parameters:
-      global_frame: odom_robot_ns
+      global_frame: odom_lee
       robot_base_frame: base_footprint
       rolling_window: true
       width: 3
@@ -166,7 +169,7 @@ local_costmap:
 
 | 파라미터 | 의미 |
 |---|---|
-| `global_frame` | 로컬 기준 frame. 보통 `odom_robot_ns` |
+| `global_frame` | 로컬 기준 frame. 현재 프로젝트는 `odom_lee` |
 | `rolling_window` | 로봇 중심으로 움직이는 창 사용 |
 | `width`, `height` | local costmap 크기 |
 | `resolution` | costmap 격자 해상도 |
@@ -181,9 +184,9 @@ local_costmap:
 bt_navigator:
   ros__parameters:
     use_sim_time: true
-    global_frame: map_robot_ns
+    global_frame: map_lee
     robot_base_frame: base_footprint
-    odom_topic: /robot_ns/odom
+    odom_topic: /lee/odom
     navigators:
       - navigate_to_pose
       - navigate_through_poses
@@ -207,7 +210,7 @@ velocity_smoother:
     feedback: OPEN_LOOP
     max_velocity: [0.26, 0.0, 1.0]
     min_velocity: [-0.26, 0.0, -1.0]
-    odom_topic: /robot_ns/odom
+    odom_topic: /lee/odom
 ```
 
 | 파라미터 | 의미 |
@@ -217,4 +220,3 @@ velocity_smoother:
 | `max_velocity` | x, y, theta 최대 속도 |
 | `min_velocity` | x, y, theta 최소 속도 |
 | `odom_topic` | 속도 피드백에 사용할 odom topic |
-

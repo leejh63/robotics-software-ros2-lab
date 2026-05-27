@@ -46,8 +46,9 @@ package: lee_robot_description
 ```text
 lee_robot_description/urdf/turtlebot.xacro
 lee_robot_description/urdf/turtlebot_gaze.xacro
-lee_robot_description/launch/gaze.launch.py
+lee_robot_description/launch/gazebo.launch.py
 lee_robot_description/launch/slam.launch.py
+lee_robot_description/launch/localization.launch.py
 lee_robot_description/launch/nav2.launch.py
 lee_robot_description/launch/nav2_navigation.launch.py
 lee_robot_description/config/slam_param.yaml
@@ -130,7 +131,7 @@ lee_world.world  <-> room_map.yaml
 ```bash
 cd $ROS2_WS
 source install/setup.bash
-ros2 launch lee_robot_description gaze.launch.py
+ros2 launch lee_robot_description gazebo.launch.py
 ```
 
 ### SLAM
@@ -142,6 +143,14 @@ ros2 launch lee_robot_description slam.launch.py
 ```
 
 ### AMCL/localization
+
+```bash
+cd $ROS2_WS
+source install/setup.bash
+ros2 launch lee_robot_description localization.launch.py
+```
+
+### Nav2 통합 실행
 
 ```bash
 cd $ROS2_WS

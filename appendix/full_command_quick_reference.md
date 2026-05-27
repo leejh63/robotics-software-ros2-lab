@@ -127,7 +127,7 @@ ros2 topic echo /robot_ns/tf_static --once
 Gazebo 로봇 실행:
 
 ```bash
-ros2 launch lee_robot_description gaze.launch.py
+ros2 launch lee_robot_description gazebo.launch.py
 ```
 
 URDF/RViz 표시:

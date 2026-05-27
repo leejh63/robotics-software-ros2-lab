@@ -12,23 +12,25 @@ workspace: $ROS2_WS
 package: lee_robot_description
 simulation: Gazebo classic
 robot model: turtlebot.xacro
-localization launch: lee_robot_description/launch/nav2.launch.py
+localization launch: lee_robot_description/launch/localization.launch.py
 navigation launch: lee_robot_description/launch/nav2_navigation.launch.py
+integrated launch: lee_robot_description/launch/nav2.launch.py
 nav2 params: lee_robot_description/config/nav2_params.yaml
 amcl params: lee_robot_description/config/amcl_param.yaml
 ```
 
-Topic/frame 기준:
+현재 `projects/ros2_navigation_lab` 실행 기준:
 
 ```text
-map topic: /robot_ns/map
-scan topic: /robot_ns/scan
-odom topic: /robot_ns/odom
-cmd_vel topic: /robot_ns/cmd_vel
-tf topic: /robot_ns/tf, /robot_ns/tf_static
-navigate action: /robot_ns/navigate_to_pose
-map frame: map_robot_ns
-odom frame: odom_robot_ns
+namespace: lee
+map topic: /lee/map
+scan topic: /lee/scan
+odom topic: /lee/odom
+cmd_vel topic: /lee/cmd_vel
+tf topic: /lee/tf, /lee/tf_static
+navigate action: /lee/navigate_to_pose
+map frame: map_lee
+odom frame: odom_lee
 base frame: base_footprint
 scan frame: base_scan
 ```
@@ -59,7 +61,7 @@ Gazebo는 lee_world.world인데 map은 slam_map.yaml
 
 ## 3. 기본 실행 순서
 
-터미널 1:
+통합 실행은 아래 한 명령만 사용한다.
 
 ```bash
 cd $ROS2_WS
@@ -69,7 +71,17 @@ source install/setup.bash
 ros2 launch lee_robot_description nav2.launch.py
 ```
 
-터미널 2:
+분리 실행은 터미널 1에서 localization을 먼저 실행한다.
+
+```bash
+cd $ROS2_WS
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+
+ros2 launch lee_robot_description localization.launch.py
+```
+
+터미널 2에서 navigation stack만 실행한다.
 
 ```bash
 cd $ROS2_WS
@@ -86,8 +98,8 @@ cd $ROS2_WS
 source /opt/ros/humble/setup.bash
 source install/setup.bash
 
-ros2 action send_goal /robot_ns/navigate_to_pose nav2_msgs/action/NavigateToPose \
-"{pose: {header: {frame_id: 'map_robot_ns'}, pose: {position: {x: 1.0, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}}"
+ros2 action send_goal /lee/navigate_to_pose nav2_msgs/action/NavigateToPose \
+"{pose: {header: {frame_id: 'map_lee'}, pose: {position: {x: 1.0, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}}"
 ```
 
 ---
@@ -97,7 +109,7 @@ ros2 action send_goal /robot_ns/navigate_to_pose nav2_msgs/action/NavigateToPose
 `slam.world`와 `slam_map.yaml`:
 
 ```bash
-ros2 launch lee_robot_description nav2.launch.py \
+ros2 launch lee_robot_description localization.launch.py \
   world:=slam.world \
   map_yaml:=$ROS2_WS/slam_map.yaml
 ```
@@ -105,7 +117,7 @@ ros2 launch lee_robot_description nav2.launch.py \
 `lee_world.world`와 `room_map.yaml`:
 
 ```bash
-ros2 launch lee_robot_description nav2.launch.py \
+ros2 launch lee_robot_description localization.launch.py \
   world:=lee_world.world \
   map_yaml:=$ROS2_WS/room_map.yaml
 ```
@@ -115,9 +127,9 @@ ros2 launch lee_robot_description nav2.launch.py \
 ## 5. localization 확인
 
 ```bash
-ros2 topic echo /robot_ns/map --once
-ros2 topic hz /robot_ns/scan
-ros2 topic echo /robot_ns/odom --once
+ros2 topic echo /lee/map --once
+ros2 topic hz /lee/scan
+ros2 topic echo /lee/odom --once
 ros2 topic echo /amcl_pose --once
 ros2 topic echo /particle_cloud --once
 ```
@@ -125,9 +137,9 @@ ros2 topic echo /particle_cloud --once
 TF:
 
 ```bash
-ros2 run tf2_ros tf2_echo map_robot_ns odom_robot_ns
-ros2 run tf2_ros tf2_echo odom_robot_ns base_footprint
-ros2 run tf2_ros tf2_echo base_footprint base_scan
+ros2 run tf2_ros tf2_echo map_lee odom_lee --ros-args -r /tf:=/lee/tf -r /tf_static:=/lee/tf_static
+ros2 run tf2_ros tf2_echo odom_lee base_footprint --ros-args -r /tf:=/lee/tf -r /tf_static:=/lee/tf_static
+ros2 run tf2_ros tf2_echo base_footprint base_scan --ros-args -r /tf:=/lee/tf -r /tf_static:=/lee/tf_static
 ```
 
 RViz에서 `2D Pose Estimate`를 찍고, `/particle_cloud`가 로봇 주변으로 수렴하는지 본다.
@@ -139,44 +151,44 @@ RViz에서 `2D Pose Estimate`를 찍고, `/particle_cloud`가 로봇 주변으�
 노드:
 
 ```bash
-ros2 node list | grep -E 'robot_ns|map_server|amcl|planner|controller|bt_navigator|costmap' | sort
+ros2 node list | grep -E 'lee|map_server|amcl|planner|controller|bt_navigator|costmap' | sort
 ```
 
 lifecycle:
 
 ```bash
-ros2 lifecycle get /robot_ns/planner_server
-ros2 lifecycle get /robot_ns/controller_server
-ros2 lifecycle get /robot_ns/bt_navigator
-ros2 lifecycle get /robot_ns/behavior_server
+ros2 lifecycle get /lee/planner_server
+ros2 lifecycle get /lee/controller_server
+ros2 lifecycle get /lee/bt_navigator
+ros2 lifecycle get /lee/behavior_server
 ```
 
 action:
 
 ```bash
 ros2 action list | grep navigate
-ros2 action info /robot_ns/navigate_to_pose
+ros2 action info /lee/navigate_to_pose
 ```
 
 costmap:
 
 ```bash
-ros2 topic echo /robot_ns/global_costmap/costmap --once
-ros2 topic echo /robot_ns/local_costmap/costmap --once
+ros2 topic echo /lee/global_costmap/costmap --once
+ros2 topic echo /lee/local_costmap/costmap --once
 ```
 
 path/cmd_vel:
 
 ```bash
-ros2 topic echo /robot_ns/plan --once
-ros2 topic echo /robot_ns/cmd_vel
+ros2 topic echo /lee/plan --once
+ros2 topic echo /lee/cmd_vel
 ```
 
 ---
 
 ## 7. RViz Goal이 안 될 때 우회 방법
 
-현재 기록 기준으로 RViz Nav2 Goal 버튼은 `/robot_ns` namespace/action 연결 문제로 안 맞을 수 있다.  
+현재 기록 기준으로 RViz Nav2 Goal 버튼은 namespace/action 연결 문제로 안 맞을 수 있다.
 그럴 때는 CLI action goal을 기준으로 검증한다.
 
 좌표를 RViz에서 얻고 싶으면:
@@ -195,10 +207,10 @@ RViz의 `Publish Point`로 자유 공간을 찍고 나온 x/y를 goal에 넣는�
 
 ```text
 1. map/world 조합이 맞는가?
-2. RViz Fixed Frame이 map_robot_ns인가?
-3. /robot_ns/scan, /robot_ns/odom, /robot_ns/tf가 살아 있는가?
+2. RViz Fixed Frame이 map_lee인가?
+3. /lee/scan, /lee/odom, /lee/tf가 살아 있는가?
 4. AMCL 초기 위치를 찍었는가?
-5. /robot_ns/planner_server, /robot_ns/controller_server가 active인가?
-6. action 이름을 /navigate_to_pose가 아니라 /robot_ns/navigate_to_pose로 보냈는가?
-7. /robot_ns/cmd_vel에 teleop이나 wall follower가 같이 붙어 있지 않은가?
+5. /lee/planner_server, /lee/controller_server가 active인가?
+6. action 이름을 /navigate_to_pose가 아니라 /lee/navigate_to_pose로 보냈는가?
+7. /lee/cmd_vel에 teleop이나 wall follower가 같이 붙어 있지 않은가?
 ```

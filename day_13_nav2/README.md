@@ -24,6 +24,7 @@ Day 13 Nav2
 ```text
 $ROS2_WS/lee_robot_description/
 ├── launch/nav2.launch.py
+├── launch/localization.launch.py
 ├── launch/nav2_navigation.launch.py
 ├── config/nav2_params.yaml
 ├── config/amcl_param.yaml
@@ -42,15 +43,21 @@ day_13_nav2/00_source_overview.md
 
 ## 2. 현재 실습 구조
 
-현재 구조는 Nav2 전체를 한 번에 합친 단일 launch가 아니라 두 단계로 나뉜다.
+현재 구조는 두 가지 실행 방식으로 구분한다.
 
 ```text
-1단계: localization/simulation 쪽
+통합 실행:
   ros2 launch lee_robot_description nav2.launch.py
 
-2단계: navigation stack 쪽
+분리 실행 1단계:
+  ros2 launch lee_robot_description localization.launch.py
+
+분리 실행 2단계:
   ros2 launch lee_robot_description nav2_navigation.launch.py
 ```
+
+`nav2.launch.py`는 `localization.launch.py`와 `nav2_navigation.launch.py`를 함께 include하는 통합 wrapper다.
+따라서 `nav2.launch.py`를 실행한 뒤 같은 세션에서 `nav2_navigation.launch.py`를 다시 실행하면 Nav2 stack이 중복 실행될 수 있다.
 
 이렇게 나누는 이유는 문제를 분리하기 위해서다.
 
@@ -105,6 +112,8 @@ Nav2 planner/controller/bt_navigator 문제가 있는가?
 
 Nav2의 goal 흐름은 아래처럼 이해하면 된다.
 
+아래 topic/frame은 namespace 개념 설명용 예시다. 현재 `projects/ros2_navigation_lab` 실행 예시는 `/lee`, `map_lee`, `odom_lee`를 사용한다.
+
 ```text
 사용자 goal
   -> /robot_ns/navigate_to_pose action
@@ -132,36 +141,55 @@ Nav2의 goal 흐름은 아래처럼 이해하면 된다.
 4. topic 이름 remap과 frame_id 설정은 별개다.
 5. global costmap과 local costmap은 목적과 기준 frame이 다르다.
 6. controller는 경로를 직접 만드는 게 아니라 경로를 따라갈 속도 후보를 고른다.
-7. /robot_ns/cmd_vel에 여러 publisher가 붙으면 teleop과 Nav2가 충돌할 수 있다.
+7. /lee/cmd_vel에 여러 publisher가 붙으면 teleop과 Nav2가 충돌할 수 있다.
 ```
 
 ---
 
-## 6. 예시 환경 기준 최소 실행 흐름
+## 6. 현재 프로젝트 기준 최소 실행 흐름
+
+현재 `projects/ros2_navigation_lab` 기준 복사 실행 예시는 `/lee`, `map_lee`, `odom_lee`를 사용한다.
 
 ```bash
-cd $ROS2_WS
+cd projects/ros2_navigation_lab
 source /opt/ros/humble/setup.bash
+colcon build --symlink-install --packages-select lee_robot_description
 source install/setup.bash
 ```
 
-터미널 1:
+통합 실행:
 
 ```bash
-ros2 launch lee_robot_description nav2.launch.py
+ros2 launch lee_robot_description nav2.launch.py use_rviz:=false
 ```
 
-터미널 2:
+분리 실행을 할 때는 터미널 1에서 localization을 먼저 실행한다.
 
 ```bash
+ros2 launch lee_robot_description localization.launch.py world:=slam.world
+```
+
+터미널 2에서 Nav2 navigation stack만 실행한다.
+
+```bash
+cd projects/ros2_navigation_lab
+source /opt/ros/humble/setup.bash
+source install/setup.bash
 ros2 launch lee_robot_description nav2_navigation.launch.py
 ```
 
-터미널 3:
+초기 위치:
 
 ```bash
-ros2 action send_goal /robot_ns/navigate_to_pose nav2_msgs/action/NavigateToPose \
-"{pose: {header: {frame_id: 'map_robot_ns'}, pose: {position: {x: 1.0, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}}"
+ros2 topic pub --once /initialpose geometry_msgs/msg/PoseWithCovarianceStamped \
+"{header: {frame_id: 'map_lee'}, pose: {pose: {position: {x: 0.0, y: 0.0, z: 0.0}, orientation: {w: 1.0}}, covariance: [0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0685]}}"
+```
+
+Goal 전송:
+
+```bash
+ros2 action send_goal /lee/navigate_to_pose nav2_msgs/action/NavigateToPose \
+"{pose: {header: {frame_id: 'map_lee'}, pose: {position: {x: 1.0, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}}"
 ```
 
 자세한 실행법은 아래 문서를 본다.
