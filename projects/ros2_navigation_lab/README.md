@@ -27,6 +27,8 @@ Gazebo Classic, URDF/Xacro, `slam_toolbox`, `nav2_amcl`, `nav2_map_server`, `nav
 ├── docs/
 │   ├── ARCHITECTURE.md
 │   ├── COMMANDS_ONLY.md
+│   ├── BAG_COMMANDS_ONLY.md
+│   ├── BAG_SLAM_NAV2_WORKFLOW.md
 │   ├── REFERENCES.md
 │   ├── RUNTIME_WORKFLOW.md
 │   └── TROUBLESHOOTING.md
@@ -93,6 +95,24 @@ Localization + Nav2 통합 실행:
 ros2 launch lee_robot_description nav2.launch.py use_rviz:=false
 ```
 
+Rosbag 기반 SLAM map 생성:
+
+```bash
+ros2 launch lee_robot_description bag_slam.launch.py
+```
+
+Rosbag으로 만든 map을 불러와 AMCL 확인:
+
+```bash
+ros2 launch lee_robot_description bag_localization.launch.py
+```
+
+Rosbag으로 만든 map + rosbag scan으로 Nav2 costmap 확인:
+
+```bash
+ros2 launch lee_robot_description bag_nav2.launch.py
+```
+
 `nav2.launch.py`를 실행한 뒤에는 Nav2 goal을 보내기 전에 initial pose를 먼저 지정해야 합니다. AMCL은 initial pose를 기준으로 `map_lee -> odom_lee` transform을 안정화합니다.
 
 Localization이 이미 실행 중일 때 Nav2 stack만 따로 실행:
@@ -144,6 +164,10 @@ ros2 node list | sort | grep bt_navigator
 | `localization.launch.py` | Yes | No | Yes | No | AMCL localization 확인 |
 | `nav2_navigation.launch.py` | No | No | No | Yes | Localization 이후 Nav2 stack만 실행 |
 | `nav2.launch.py` | Yes | No | Yes | Yes | Localization + Nav2 통합 실행 |
+| `bag_slam.launch.py` | No | Yes | No | No | Rosbag replay 기반 mapping |
+| `bag_localization.launch.py` | No | No | Yes | No | 저장된 rosbag map 로드 + AMCL |
+| `bag_nav2_navigation.launch.py` | No | No | No | Yes | Rosbag workflow용 Nav2 stack만 실행 |
+| `bag_nav2.launch.py` | No | No | Yes | Yes | 저장된 rosbag map + Nav2 costmap 확인 |
 
 ---
 
@@ -205,6 +229,8 @@ Nav2 navigation parameter와 RViz 설정은 아직 기본 `/lee`, `map_lee`, `od
 
 - [Runtime workflow](docs/RUNTIME_WORKFLOW.md)
 - [Copy-paste commands](docs/COMMANDS_ONLY.md)
+- [Rosbag SLAM/Nav2 workflow](docs/BAG_SLAM_NAV2_WORKFLOW.md)
+- [Rosbag commands only](docs/BAG_COMMANDS_ONLY.md)
 - [Architecture overview](docs/ARCHITECTURE.md)
 - [Troubleshooting](docs/TROUBLESHOOTING.md)
 - [References](docs/REFERENCES.md)

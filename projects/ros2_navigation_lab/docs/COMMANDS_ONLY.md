@@ -253,3 +253,19 @@ ros2 topic info /lee/cmd_vel -v
 ros2 action send_goal /lee/navigate_to_pose nav2_msgs/action/NavigateToPose "{pose: {header: {frame_id: map_lee}, pose: {position: {x: 0.5, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}}"
 ros2 topic echo /lee/cmd_vel --once
 ```
+
+---
+
+## 8. Rosbag 기반 SLAM/Nav2 명령
+
+rosbag replay로 map을 만들고, 저장한 map을 다시 불러와 AMCL/Nav2 costmap을 확인하는 명령은 별도 문서에 정리했습니다.
+
+```text
+docs/BAG_COMMANDS_ONLY.md
+```
+
+상세 흐름 설명은 아래 문서를 봅니다.
+
+```text
+docs/BAG_SLAM_NAV2_WORKFLOW.md
+```
