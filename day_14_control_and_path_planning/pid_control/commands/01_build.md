@@ -1,6 +1,6 @@
 # 01. 빌드
 
-`code/ros2_pid_arm_lab` 폴더가 ROS2 workspace root입니다. `~/ros2_ws` 같은 별도 폴더를 따로 만들지 않습니다.
+`projects/ros2_pid_arm_lab` 폴더가 ROS2 workspace root입니다. `~/ros2_ws` 같은 별도 폴더를 따로 만들지 않습니다.
 
 ```bash
 cd projects/ros2_pid_arm_lab

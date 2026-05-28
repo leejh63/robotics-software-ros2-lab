@@ -23,6 +23,8 @@ Nav2가 새로 /cmd_vel을 내도 rosbag 안의 로봇 위치와 scan은 바뀌�
 실제 목표점까지 움직이는 closed-loop 주행 검증은 Gazebo 또는 실제 TurtleBot이 필요합니다.
 ```
 
+> 주의: `bag_localization.launch.py`와 `bag_nav2.launch.py`의 기본 map 경로는 `src/lee_robot_description/maps/bag_slam_map.yaml`입니다. 이 파일은 저장소에 기본 포함된 map이 아니라, 아래 SLAM replay 후 `map_saver_cli`로 생성해야 하는 결과물입니다. 다른 map을 사용한다면 `map_yaml:=...`로 직접 넘깁니다.
+
 ---
 
 ## 0. rosbag frame/topic 전제

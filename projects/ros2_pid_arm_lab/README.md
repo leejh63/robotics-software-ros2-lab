@@ -40,11 +40,25 @@ source install/setup.bash
 
 ## Run
 
+기본 실행:
+
 ```bash
 ros2 launch pid_arm_lab full.launch.py
 ```
 
 `full.launch.py`는 Gazebo에서 1-DOF arm을 spawn하고, `gazebo_ros2_control`을 통해 `joint_state_broadcaster`, `effort_controller`, PID controller node를 함께 실행합니다.
+
+기본 PID gain은 안전하게 `0.0`으로 시작합니다. 팔의 응답을 바로 확인하려면 launch argument로 gain과 setpoint를 지정합니다.
+
+```bash
+ros2 launch pid_arm_lab full.launch.py \
+  kp:=10.0 \
+  ki:=0.0 \
+  kd:=0.5 \
+  setpoint:=0.5
+```
+
+값을 크게 올리면 Gazebo 상에서 진동하거나 effort가 포화될 수 있으므로, `kp`, `kd`, `setpoint`를 작은 값부터 조정합니다.
 
 ---
 

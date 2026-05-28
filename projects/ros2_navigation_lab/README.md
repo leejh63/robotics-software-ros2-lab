@@ -6,6 +6,23 @@ Gazebo Classic, URDF/Xacro, `slam_toolbox`, `nav2_amcl`, `nav2_map_server`, `nav
 
 ---
 
+## 패키지 역할
+
+`src/lee_robot_description`은 이름상 description 패키지처럼 보이지만, 이 실습에서는 URDF/Xacro만 담는 순수 description 패키지가 아닙니다. Gazebo 실행, SLAM, AMCL, Nav2, rosbag workflow에 필요한 launch, config, map, RViz 설정까지 함께 관리하는 실습용 bringup 패키지 역할을 합니다.
+
+따라서 이 workspace를 볼 때는 `lee_robot_description`을 아래 범위를 묶은 실습 패키지로 이해합니다.
+
+```text
+URDF/Xacro model
++ Gazebo world/spawn launch
++ SLAM Toolbox parameter
++ AMCL / map_server parameter
++ Nav2 bringup 연결
++ rosbag replay 기반 확인 workflow
+```
+
+---
+
 ## 환경
 
 | 항목 | 기준 |

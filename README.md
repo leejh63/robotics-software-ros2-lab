@@ -83,6 +83,7 @@ rosbag 기반 SLAM/Nav2 실행 흐름은 [`projects/ros2_navigation_lab/docs/BAG
 
 | 위치 | 역할 |
 |---|---|
+| [projects/ros2_foundation_lab/](projects/ros2_foundation_lab/) | ROS2 topic, service, action, custom interface, launch, camera, TF 기초 실습 |
 | [projects/ros2_navigation_lab/](projects/ros2_navigation_lab/) | Gazebo, SLAM, AMCL, Nav2 실행 흐름 정리 |
 | [projects/ros2_pid_arm_lab/](projects/ros2_pid_arm_lab/) | Gazebo + ros2_control 기반 1-DOF arm PID 제어 실습 |
 | [projects/path_planning_algorithms_lab/](projects/path_planning_algorithms_lab/) | Dijkstra, A*, RRT, RRT* notebook 실습 |

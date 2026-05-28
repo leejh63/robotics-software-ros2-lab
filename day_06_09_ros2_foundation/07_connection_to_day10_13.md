@@ -46,7 +46,7 @@ launch file  : nav2.launch.py, slam.launch.py, navigation_launch.py
 node         : map_server, amcl, controller_server, planner_server
 namespace    : /robot_ns
 topic        : /robot_ns/scan, /robot_ns/odom, /robot_ns/map, /robot_ns/cmd_vel
-frame        : map_robot_ns, odom_robot_ns, base_link_robot_ns, base_scan
+frame        : map, odom, base_link, base_scan
 message type : LaserScan, Odometry, OccupancyGrid, Twist
 ```
 
@@ -113,19 +113,19 @@ parameter 확인은 “실행됐다”와 “제대로 설정됐다”를 구분
 Day 09 실습의 TF tree:
 
 ```text
-map_robot_ns
-└── odom_robot_ns
-    └── base_link_robot_ns
-        └── camera_frame
-            └── object_person_0
+map
+└── odom
+    └── base_link
+        └── camera_link
+            └── object_person_example_0
 ```
 
 Day 10~13에서 필요한 TF tree:
 
 ```text
-map_robot_ns
-└── odom_robot_ns
-    └── base_footprint 또는 base_link_robot_ns
+map
+└── odom
+    └── base_footprint 또는 base_link
         ├── base_scan 또는 lidar frame
         └── camera frame
 ```

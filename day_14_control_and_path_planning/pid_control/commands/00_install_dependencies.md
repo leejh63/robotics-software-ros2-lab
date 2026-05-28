@@ -1,6 +1,6 @@
 # 00. 의존성 설치
 
-`code/ros2_pid_arm_lab` 폴더가 ROS2 workspace root입니다. 별도의 외부 workspace를 만들지 않습니다.
+`projects/ros2_pid_arm_lab` 폴더가 ROS2 workspace root입니다. 별도의 외부 workspace를 만들지 않습니다.
 
 ```bash
 cd projects/ros2_pid_arm_lab

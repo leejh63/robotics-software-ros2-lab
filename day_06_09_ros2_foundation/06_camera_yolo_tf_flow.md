@@ -10,61 +10,61 @@
 
 ```text
 웹캠
-  -> camera_pkg/imagePlee.py
-  -> /image_raw0              sensor_msgs/msg/Image
-  -> camera_pkg/imageYOLOlee.py
-  -> /image_yolo1             sensor_msgs/msg/Image, 박스가 그려진 이미지
+  -> ros2_camera_examples/image_publisher.py
+  -> /image_raw              sensor_msgs/msg/Image
+  -> ros2_camera_examples/yolo_image_publisher.py
+  -> /image_yolo             sensor_msgs/msg/Image, 박스가 그려진 이미지
 
 웹캠
-  -> camera_pkg/imagePlee.py
-  -> /image_raw0              sensor_msgs/msg/Image
-  -> camera_pkg/imgYOLOlee.py
-  -> /img_yolo1               my_if/msg/ObjectDetectionArray
-  -> tf_pkg_example/tf_broad_yolo.py
-  -> object_person_0      TF frame
+  -> ros2_camera_examples/image_publisher.py
+  -> /image_raw              sensor_msgs/msg/Image
+  -> ros2_camera_examples/yolo_detection_publisher.py
+  -> /yolo_detections               ros2_foundation_interfaces/msg/ObjectDetectionArray
+  -> ros2_tf_examples/yolo_tf_broadcaster.py
+  -> object_person_example_0      TF frame
 ```
 
-`/image_yolo1`와 `/img_yolo1`를 반드시 구분해야 한다.
+`/image_yolo`와 `/yolo_detections`를 반드시 구분해야 한다.
 
 | topic | type | 의미 |
 |---|---|---|
-| `/image_yolo1` | `sensor_msgs/msg/Image` | YOLO bbox가 그려진 이미지 |
-| `/img_yolo1` | `my_if/msg/ObjectDetectionArray` | class/confidence/bbox 데이터 구조 |
+| `/image_yolo` | `sensor_msgs/msg/Image` | YOLO bbox가 그려진 이미지 |
+| `/yolo_detections` | `ros2_foundation_interfaces/msg/ObjectDetectionArray` | class/confidence/bbox 데이터 구조 |
 
 ---
 
-## 2. imagePlee.py - image source node
+## 2. image_publisher.py - image source node
 
-`imagePlee.py`는 OpenCV로 웹캠을 열고 ROS Image로 변환해 발행한다.
+`image_publisher.py`는 OpenCV로 웹캠을 열고 ROS Image로 변환해 발행한다.
 
 ```python
 self.cap = cv2.VideoCapture(0)
 ret, frame = self.cap.read()
 resized = cv2.resize(frame, tuple(self.size))
 img_msg = self.bridge.cv2_to_imgmsg(resized, encoding="bgr8")
-img_msg.header.frame_id = "camera_frame"
+img_msg.header.frame_id = self.frame_id
 self.publisher_.publish(img_msg)
 ```
 
 ROS2 관점:
 
 ```text
-node       : image_publisher1 또는 launch에서 test
-publish    : /image_raw0
+node       : image_publisher 또는 launch에서 test
+publish    : /image_raw
 msg type   : sensor_msgs/msg/Image
-frame_id   : camera_frame
-parameters : publish_rate, topic_name, image_size
+frame_id   : camera_link
+parameters : publish_rate, topic_name, image_size, frame_id
 ```
 
 ---
 
-## 3. imageOPENlee.py - Canny edge node
+## 3. image_edge_publisher.py - Canny edge node
 
-`imageOPENlee.py`는 `/image_raw0`를 받아 Canny edge를 적용하고 `/image_edge1`로 발행한다.
+`image_edge_publisher.py`는 `/image_raw`를 받아 Canny edge를 적용하고 `/image_edge`로 발행한다.
 
 ```python
-self.subscription = self.create_subscription(Image, 'image_raw0', self.image_callback, 10)
-self.edge_publisher = self.create_publisher(Image, 'image_edge1', 10)
+self.subscription = self.create_subscription(Image, 'image_raw', self.image_callback, 10)
+self.edge_publisher = self.create_publisher(Image, 'image_edge', 10)
 ```
 
 OpenCV 처리:
@@ -85,22 +85,22 @@ edge_msg.header.frame_id = msg.header.frame_id
 
 ---
 
-## 4. imageSlee.py - snapshot service node
+## 4. image_processor.py - snapshot service node
 
-`imageSlee.py`는 raw/yolo/canny 이미지를 구독하고, service 요청이 오면 이미지를 파일로 저장한다.
+`image_processor.py`는 raw/yolo/canny 이미지를 구독하고, service 요청이 오면 이미지를 파일로 저장한다.
 
 구독 topic:
 
 ```text
-/image_raw0
-/image_yolo1
-/image_edge1
+/image_raw
+/image_yolo
+/image_edge
 ```
 
 service:
 
 ```text
-/capture_snapshot1, std_srvs/srv/Trigger
+/capture_snapshot, std_srvs/srv/Trigger
 ```
 
 parameter:
@@ -112,21 +112,21 @@ snapshot_target = raw | yolo | canny
 실습 명령 예시:
 
 ```bash
-ros2 run camera_pkg image_proc1
-ros2 param set /image_processor1 snapshot_target yolo
-ros2 service call /capture_snapshot1 std_srvs/srv/Trigger "{}"
+ros2 run ros2_camera_examples image_processor
+ros2 param set /image_processor snapshot_target yolo
+ros2 service call /capture_snapshot std_srvs/srv/Trigger "{}"
 ```
 
 이 구조는 service가 왜 필요한지 보여준다. 이미지는 topic으로 계속 받고, 저장 명령은 service로 한 번 요청한다.
 
 ---
 
-## 5. imageYOLOlee.py - YOLO image publisher
+## 5. yolo_image_publisher.py - YOLO image publisher
 
-`imageYOLOlee.py`는 `/image_raw0`를 받아 YOLO를 실행하고, bbox가 그려진 이미지를 `/image_yolo1`로 발행한다.
+`yolo_image_publisher.py`는 `/image_raw`를 받아 YOLO를 실행하고, bbox가 그려진 이미지를 `/image_yolo`로 발행한다.
 
 ```python
-results = self.model(frame, verbose=False)
+results = self.model(frame, conf=self.confidence, verbose=False)
 cv2.rectangle(...)
 img_msg = self.bridge.cv2_to_imgmsg(frame, encoding="bgr8")
 self.publisher_.publish(img_msg)
@@ -135,16 +135,16 @@ self.publisher_.publish(img_msg)
 이 노드는 사람 눈으로 보기 좋은 결과를 만든다.
 
 ```text
-입력 : /image_raw0, sensor_msgs/Image
-출력 : /image_yolo1, sensor_msgs/Image
+입력 : /image_raw, sensor_msgs/Image
+출력 : /image_yolo, sensor_msgs/Image
 용도 : rqt_image_view/RViz 등에서 시각 확인
 ```
 
 ---
 
-## 6. imgYOLOlee.py - YOLO custom message publisher
+## 6. yolo_detection_publisher.py - YOLO custom message publisher
 
-`imgYOLOlee.py`는 같은 `/image_raw0`를 받아 YOLO를 실행하지만, 출력은 이미지가 아니라 custom message다.
+`yolo_detection_publisher.py`는 같은 `/image_raw`를 받아 YOLO를 실행하지만, 출력은 이미지가 아니라 custom message다.
 
 ```python
 detection_msg = ObjectDetection()
@@ -157,22 +157,22 @@ detection_array_msg.detections.append(detection_msg)
 발행 topic:
 
 ```text
-/img_yolo1, my_if/msg/ObjectDetectionArray
+/yolo_detections, ros2_foundation_interfaces/msg/ObjectDetectionArray
 ```
 
 이 노드는 기계가 처리하기 좋은 결과를 만든다.
 
 ```text
-입력 : /image_raw0, sensor_msgs/Image
-출력 : /img_yolo1, my_if/msg/ObjectDetectionArray
+입력 : /image_raw, sensor_msgs/Image
+출력 : /yolo_detections, ros2_foundation_interfaces/msg/ObjectDetectionArray
 용도 : TF 변환, 후처리, 다른 로직 연결
 ```
 
 ---
 
-## 7. tf_broad_yolo.py - detection을 TF frame으로 바꾸기
+## 7. yolo_tf_broadcaster.py - detection을 TF frame으로 바꾸기
 
-`tf_broad_yolo.py`는 `/img_yolo1`을 구독한다.
+`yolo_tf_broadcaster.py`는 `/yolo_detections`을 구독한다.
 
 ```python
 self.create_subscription(
@@ -185,7 +185,7 @@ self.create_subscription(
 각 detection에 대해 object frame 이름을 만든다.
 
 ```python
-object_person_0
+object_person_example_0
 ```
 
 parent frame은 우선순위가 있다.
@@ -196,25 +196,25 @@ parent frame은 우선순위가 있다.
 3. 없으면 fallback_parent_frame 사용
 ```
 
-현재 launch 흐름에서는 image header가 `camera_frame`이므로 보통 object frame은 `camera_frame` 아래에 붙는다.
+현재 launch 흐름에서는 image header가 `camera_link`이므로 보통 object frame은 `camera_link` 아래에 붙는다.
 
 ```text
-camera_frame -> object_person_0
+camera_link -> object_person_example_0
 ```
 
 ---
 
-## 8. lee_yolo_launch.py - 전체 묶음
+## 8. yolo_tf_pipeline.launch.py - 전체 묶음
 
-`lee_yolo_launch.py`는 아래를 한 번에 실행한다.
+`yolo_tf_pipeline.launch.py`는 아래를 한 번에 실행한다.
 
 ```text
-camera_pkg/image_pub1
-camera_pkg/yolo_pub_l
-tf2_ros/static_transform_publisher: map_robot_ns -> odom_robot_ns
-tf_pkg_example/odom_simul: odom_robot_ns -> base_link_robot_ns
-tf2_ros/static_transform_publisher: base_link_robot_ns -> camera_frame
-tf_pkg_example/tf_broad_yolo: camera_frame -> object_person_0
+ros2_camera_examples/image_publisher
+ros2_camera_examples/yolo_detection_publisher
+tf2_ros/static_transform_publisher: map -> odom
+ros2_tf_examples/odom_simulator: odom -> base_link
+tf2_ros/static_transform_publisher: base_link -> camera_link
+ros2_tf_examples/yolo_tf_broadcaster: camera_link -> object_person_example_0
 조건부 tf_listener
 조건부 rqt_tf_tree
 조건부 rviz2
@@ -223,11 +223,11 @@ tf_pkg_example/tf_broad_yolo: camera_frame -> object_person_0
 결과 TF tree는 대략 아래처럼 된다.
 
 ```text
-map_robot_ns
-└── odom_robot_ns
-    └── base_link_robot_ns
-        └── camera_frame
-            └── object_person_0
+map
+└── odom
+    └── base_link
+        └── camera_link
+            └── object_person_example_0
 ```
 
 ---
@@ -265,21 +265,21 @@ trans.transform.translation.x = depth
 
 ```bash
 # camera image 확인
-ros2 topic info /image_raw0
-ros2 topic echo /image_raw0 --once
+ros2 topic info /image_raw
+ros2 topic echo /image_raw --once
 rqt_image_view
 
 # YOLO image 확인
-ros2 topic info /image_yolo1
+ros2 topic info /image_yolo
 
 # YOLO custom message 확인
-ros2 topic info /img_yolo1
-ros2 topic echo /img_yolo1 --once
+ros2 topic info /yolo_detections
+ros2 topic echo /yolo_detections --once
 
 # TF 확인
 ros2 run tf2_tools view_frames
-ros2 run tf2_ros tf2_echo camera_frame object_person_0
-ros2 run tf2_ros tf2_echo odom_robot_ns object_person_0
+ros2 run tf2_ros tf2_echo camera_link object_person_example_0
+ros2 run tf2_ros tf2_echo odom object_person_example_0
 ```
 
 ---
@@ -289,9 +289,9 @@ ros2 run tf2_ros tf2_echo odom_robot_ns object_person_0
 이 흐름은 Day 10~13의 sensor/TF 문제로 이어진다.
 
 ```text
-camera_frame frame이 TF tree에 없으면 object frame도 tree에 붙지 않는다.
+camera_link frame이 TF tree에 없으면 object frame도 tree에 붙지 않는다.
 laser frame이 TF tree에 없으면 SLAM/AMCL/Nav2가 /scan을 제대로 해석하지 못한다.
-map_robot_ns -> odom_robot_ns가 없으면 RViz Fixed Frame을 map_robot_ns로 놓았을 때 로봇이 연결되지 않는다.
+map -> odom이 없으면 RViz Fixed Frame을 map으로 놓았을 때 로봇이 연결되지 않는다.
 ```
 
 즉 Day 09의 YOLO TF 실습은 SLAM/AMCL/Nav2를 위한 TF 감각을 만드는 중간 단계다.

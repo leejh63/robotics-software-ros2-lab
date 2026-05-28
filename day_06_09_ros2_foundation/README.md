@@ -1,43 +1,68 @@
-# Day 06~09 ROS2 Foundation README
+# Day 06~09 ROS2 Foundation
 
-이 폴더는 `$ROS2_WS/src`에 들어 있는 ROS2 학습 코드를 기준으로, ROS2의 기본 실행 구조를 정리한다.
+이 폴더는 Day 06~09에서 진행한 ROS2 기본 실습을 정리한 문서 모음이다. 정리 기준은 실제로 작성한 ROS2 workspace 코드이며, `tranning/` 폴더의 자료는 개념 확인을 위한 참고 자료로만 사용했다.
 
-목표는 workspace, package, executable, node, topic, service, action, launch, parameter, TF, rosbag이 실제 코드에서 어떻게 연결되는지 확인하는 것이다.
+실행 가능한 정리 코드는 아래 프로젝트 폴더에 둔다.
+
+```text
+projects/ros2_foundation_lab/
+```
+
+Day 10~15 구간은 이미 별도 문서와 프로젝트로 정리되어 있으므로, 이 문서에서는 Gazebo, SLAM, AMCL, Nav2로 넘어가기 전 필요한 ROS2 기본 구조를 다룬다.
 
 ---
 
-## 1. 이 폴더에서 다루는 실제 코드
+## 1. 정리 기준
 
-주요 기준 코드는 `$ROS2_WS/src` 안의 아래 경로다.
+Day 06~09의 실습 코드는 ROS2 기초 요소를 기준으로 다시 묶었다. 공개용 정리본에서는 패키지 이름만 봐도 역할을 알 수 있도록 다음과 같이 구성했다.
+
+| 패키지명 | 역할 |
+|---|---|
+| `ros2_topic_examples` | Python topic publisher/subscriber, turtlesim `cmd_vel` 실습 |
+| `ros2_cpp_examples` | C++ topic publisher/subscriber 실습 |
+| `ros2_foundation_interfaces` | custom msg/srv/action 정의 |
+| `ros2_service_examples` | service server/client 실습 |
+| `ros2_action_examples` | action server/client 실습 |
+| `ros2_camera_examples` | camera, OpenCV, YOLO image/custom message 실습 |
+| `ros2_launch_examples` | launch, parameter, pipeline 실행 실습 |
+| `ros2_tf_examples` | TF tree, TF listener, object TF 변환 실습 |
+
+원본 workspace의 임시 패키지명은 `09_runtime_notes.md`에 정리 과정 참고용으로만 남겼다.
+
+
+## 2. 실제 코드 구조
 
 ```text
-$ROS2_WS/src/
-├── this_test/          # Python pub/sub, turtlesim cmd_vel parameter 실습
-├── lee_pkg/            # C++ pub/sub 실습
-├── my_if/              # msg/srv/action custom interface 정의
-├── my_robot_service/   # AddTwoNum, LedControl service server/client
-├── my_robot_action/    # Movelee action server/client
-├── camera_pkg/         # camera image, Canny, snapshot service, YOLO image/msg
-├── py_launch_example/  # camera 관련 노드 launch 묶음
-└── tf_pkg_example/     # TF tree, TF listener, YOLO detection -> object TF
+projects/ros2_foundation_lab/
+├── README.md
+├── .gitignore
+└── src/
+    ├── ros2_topic_examples/
+    ├── ros2_cpp_examples/
+    ├── ros2_foundation_interfaces/
+    ├── ros2_service_examples/
+    ├── ros2_action_examples/
+    ├── ros2_camera_examples/
+    ├── ros2_launch_examples/
+    └── ros2_tf_examples/
 ```
 
-Day 06~09는 뒤쪽 Gazebo/SLAM/AMCL/Nav2로 넘어가기 전의 기반이다. 그래서 이 폴더에서는 큰 알고리즘보다 아래 질문을 우선한다.
+이 구간에서 중요한 것은 코드 한 파일 자체보다, 그 파일이 ROS graph 안에서 어떤 이름과 통신 구조를 만드는지 확인하는 것이다.
 
 ```text
-이 파일은 어떤 package에 속하는가?
-이 파일은 어떤 executable로 실행되는가?
-실행되면 node 이름은 무엇인가?
+package는 무엇인가?
+executable 이름은 무엇인가?
+실행 후 node 이름은 무엇인가?
 어떤 topic/service/action을 만들거나 사용하는가?
 message type은 무엇인가?
-launch 파일이 이 노드들을 어떤 조합으로 띄우는가?
-parameter가 실제 코드 동작을 어떻게 바꾸는가?
-TF frame 이름이 topic 이름과 어떻게 다른가?
+launch 파일이 어떤 노드 조합을 실행하는가?
+parameter가 실제 동작에 어떻게 반영되는가?
+TF frame 이름과 topic 이름은 어떻게 구분되는가?
 ```
 
 ---
 
-## 2. 문서 구성
+## 3. 문서 구성
 
 ```text
 day_06_09_ros2_foundation/
@@ -54,19 +79,9 @@ day_06_09_ros2_foundation/
 ├── 09_runtime_notes.md
 ├── 10_day06_09_review_questions.md
 ├── background/
-│   ├── ros2_name_resolution_and_namespace.md
-│   └── qos_callback_executor_lifecycle_minimum.md
 ├── commands/
-│   ├── ros2_foundation_commands.md
-│   ├── launch_parameter_debug_commands.md
-│   └── tf2_rosbag_sensor_commands.md
 └── troubleshooting/
-    └── ros2_foundation_troubleshooting.md
 ```
-
----
-
-## 3. 추천 읽는 순서
 
 처음 볼 때는 아래 순서가 좋다.
 
@@ -83,35 +98,29 @@ day_06_09_ros2_foundation/
 10. 10_day06_09_review_questions.md
 ```
 
-명령어만 다시 확인할 때는 `commands/`를 보면 된다. 실행 중 막히면 `troubleshooting/ros2_foundation_troubleshooting.md`를 먼저 본다.
+명령어만 확인할 때는 `commands/`를 보면 된다. 실행 중 막히면 `troubleshooting/ros2_foundation_troubleshooting.md`를 먼저 확인한다.
 
 ---
 
-## 4. 핵심 결론
+## 4. 핵심 관점
 
-ROS2 초반 실습에서 가장 중요한 것은 “코드 한 파일”이 아니라, **그 파일이 ROS graph 안에서 어떤 이름으로 실행되고 어떤 통신을 만드는가**다.
-
-예를 들어 `camera_pkg/camera_pkg/imagePlee.py`는 단순 웹캠 코드가 아니라 다음 구성을 가진 ROS2 node다.
+ROS2 초반 실습에서 가장 중요한 것은 다음 구분이다.
 
 ```text
-package      : camera_pkg
-source file  : camera_pkg/imagePlee.py
-executable   : image_pub1
-node name    : image_publisher1 또는 launch에서 name='test'
-publish topic: /image_raw0
+file name != executable name != node name != topic name
+```
+
+예를 들어 `ros2_camera_examples/ros2_camera_examples/image_publisher.py`는 단순한 웹캠 코드가 아니라 다음 구성을 가진 ROS2 node다.
+
+```text
+package      : ros2_camera_examples
+source file  : ros2_camera_examples/image_publisher.py
+executable   : image_publisher
+node name    : image_publisher
+publish topic: /image_raw
 message type : sensor_msgs/msg/Image
-frame_id     : camera_frame
-parameter    : publish_rate, topic_name, image_size
+frame_id     : camera_link
+parameter    : publish_rate, topic_name, image_size, frame_id
 ```
 
-이런 식으로 봐야 Day 10~13에서 아래 문제를 해석할 수 있다.
-
-```text
-Gazebo plugin이 /scan을 발행했는데 RViz에 안 보임
-SLAM Toolbox가 /scan을 못 읽음
-AMCL particle이 안 보임
-Nav2 Goal 버튼을 눌러도 action이 연결되지 않음
-TF tree가 끊겨서 map/odom/base_link가 연결되지 않음
-```
-
-대부분의 문제는 알고리즘 이전에 이름, 타입, namespace, parameter, TF, lifecycle에서 먼저 발생한다.
+이 관점을 잡아야 Day 10~15에서 만나는 SLAM, AMCL, Nav2 문제도 더 쉽게 추적할 수 있다. 대부분의 문제는 알고리즘 이전에 이름, 타입, namespace, parameter, TF, lifecycle에서 먼저 발생한다.

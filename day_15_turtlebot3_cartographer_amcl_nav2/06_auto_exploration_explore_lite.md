@@ -110,7 +110,12 @@ cd "$TB3_WS/src"
 
 ```bash
 git clone https://github.com/robo-friends/m-explore-ros2
+cd m-explore-ros2
+# 최종 실행 검증 후에는 테스트한 commit으로 고정한다.
+# git checkout <tested_commit_hash>
 ```
+
+외부 저장소의 기본 branch는 시간이 지나면서 바뀔 수 있다. 포트폴리오용 최종 정리에서는 실제로 검증한 branch 또는 commit을 고정해서 재현성을 확보한다.
 
 워크스페이스 루트로 돌아간다.
 

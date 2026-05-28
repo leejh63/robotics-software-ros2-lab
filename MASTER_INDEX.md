@@ -117,6 +117,7 @@ rosbag 원본 데이터는 저장소에 포함하지 않는다. rosbag 기반 �
 
 | 위치 | 역할 |
 |---|---|
+| [projects/ros2_foundation_lab/README.md](projects/ros2_foundation_lab/README.md) | ROS2 topic, service, action, custom interface, launch, camera, TF 기초 실습 workspace |
 | [projects/ros2_navigation_lab/README.md](projects/ros2_navigation_lab/README.md) | Gazebo → SLAM → AMCL → Nav2 실행 검증 workspace |
 | [projects/ros2_pid_arm_lab/README.md](projects/ros2_pid_arm_lab/README.md) | Gazebo + ros2_control 기반 1-DOF arm PID 제어 workspace |
 | [projects/path_planning_algorithms_lab/README.md](projects/path_planning_algorithms_lab/README.md) | Dijkstra, A*, RRT, RRT* notebook 실습 |

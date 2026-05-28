@@ -3,45 +3,40 @@
 ## 1. launch 파일 확인
 
 ```bash
-ros2 launch py_launch_example lee_bring_launch.py
-ros2 launch py_launch_example lee_ep_launch.py
-ros2 launch tf_pkg_example tf_tree_demo_launch.py
-ros2 launch tf_pkg_example lee_yolo_launch.py
+ros2 launch ros2_launch_examples camera_pipeline.launch.py --show-args
+ros2 launch ros2_launch_examples camera_yolo_pipeline.launch.py --show-args
+ros2 launch ros2_tf_examples tf_tree_demo.launch.py --show-args
+ros2 launch ros2_tf_examples yolo_tf_pipeline.launch.py --show-args
 ```
 
-launch argument 확인:
+실행:
 
 ```bash
-ros2 launch py_launch_example lee_ep_launch.py --show-args
-ros2 launch tf_pkg_example lee_yolo_launch.py --show-args
+ros2 launch ros2_launch_examples camera_pipeline.launch.py
+ros2 launch ros2_launch_examples camera_yolo_pipeline.launch.py
+ros2 launch ros2_tf_examples tf_tree_demo.launch.py
+ros2 launch ros2_tf_examples yolo_tf_pipeline.launch.py
 ```
 
 ---
 
 ## 2. parameter 확인
 
-`lee_ep_launch.py`는 `image_pub1` 노드 이름을 `test`로 실행한다.
+`camera_yolo_pipeline.launch.py`는 `image_publisher` 노드에 YAML parameter를 적용한다.
 
 ```bash
-ros2 launch py_launch_example lee_ep_launch.py
-ros2 param list /test
-ros2 param get /test publish_rate
-ros2 param get /test image_size
-ros2 param get /test topic_name
+ros2 launch ros2_launch_examples camera_yolo_pipeline.launch.py
+ros2 param list /image_publisher
+ros2 param get /image_publisher publish_rate
+ros2 param get /image_publisher image_size
+ros2 param get /image_publisher topic_name
 ```
 
 변경:
 
 ```bash
-ros2 param set /test publish_rate 5.0
-ros2 param set /test image_size "[320, 240]"
-```
-
-주의:
-
-```text
-현재 imagePlee.py에서는 topic_name parameter를 읽지만 publisher는 image_raw0로 고정되어 있다.
-따라서 topic_name을 바꿔도 실제 topic은 바뀌지 않는다.
+ros2 param set /image_publisher publish_rate 5.0
+ros2 param set /image_publisher image_size "[320, 240]"
 ```
 
 ---
@@ -50,10 +45,10 @@ ros2 param set /test image_size "[320, 240]"
 
 ```bash
 ros2 node list
-ros2 node info /test
+ros2 node info /image_publisher
 ros2 topic list
-ros2 topic info /image_raw0
-ros2 topic hz /image_raw0
+ros2 topic info /image_raw
+ros2 topic hz /image_raw
 ```
 
 ---
@@ -61,21 +56,21 @@ ros2 topic hz /image_raw0
 ## 4. custom interface 확인
 
 ```bash
-ros2 interface list | grep my_if
-ros2 interface show my_if/msg/ObjectDetectionArray
-ros2 interface show my_if/srv/AddTwoNum
-ros2 interface show my_if/action/Movelee
+ros2 interface list | grep ros2_foundation_interfaces
+ros2 interface show ros2_foundation_interfaces/msg/ObjectDetectionArray
+ros2 interface show ros2_foundation_interfaces/srv/AddTwoNum
+ros2 interface show ros2_foundation_interfaces/action/MoveDistance
 ```
 
 ---
 
-## 5. YOLO model_path parameter로 지정
+## 5. YOLO model_path parameter 지정
 
-상대경로 문제를 피하려면 명시적으로 model path를 넘긴다.
+`yolov8n.pt`는 저장소에 포함하지 않는다. 실행할 때 모델 경로를 명시한다.
 
 ```bash
-ros2 run camera_pkg yolo_pub_l --ros-args -p model_path:=/absolute/path/to/yolov8n.pt
-ros2 run camera_pkg image_yolo1 --ros-args -p model_path:=/absolute/path/to/yolov8n.pt -p confidence:=0.5
+ros2 run ros2_camera_examples yolo_detection_publisher --ros-args -p model_path:=/absolute/path/to/yolov8n.pt
+ros2 run ros2_camera_examples yolo_image_publisher --ros-args -p model_path:=/absolute/path/to/yolov8n.pt -p confidence:=0.5
 ```
 
 ---
@@ -88,4 +83,4 @@ rqt_image_view
 ros2 run rqt_tf_tree rqt_tf_tree
 ```
 
-`rqt_graph`는 node/topic 연결을 보기 좋고, `rqt_image_view`는 image topic 확인에 좋다. TF는 `rqt_tf_tree`나 `view_frames`가 더 적합하다.
+`rqt_graph`는 node/topic 연결 확인에 좋고, `rqt_image_view`는 image topic 확인에 좋다. TF는 `rqt_tf_tree`나 `view_frames`가 더 적합하다.

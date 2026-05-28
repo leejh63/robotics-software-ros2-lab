@@ -62,6 +62,33 @@ README.md
 
 실행 코드와 설정 파일은 `projects/` 아래에 분리되어 있습니다.
 
+### ROS2 Foundation Lab
+
+Day 06~09에서 작성한 ROS2 기본 기능 예제입니다. Topic, Service, Action, custom interface, launch, camera, TF 예제를 패키지별로 분리했습니다.
+
+```bash
+cd projects/ros2_foundation_lab
+source /opt/ros/humble/setup.bash
+rosdep install --from-paths src -y --ignore-src
+colcon build --symlink-install
+source install/setup.bash
+```
+
+기본 topic/service/action 확인:
+
+```bash
+ros2 run ros2_topic_examples string_talker
+ros2 run ros2_topic_examples string_listener
+
+ros2 run ros2_service_examples add_two_num_server
+ros2 run ros2_service_examples add_two_num_client
+
+ros2 run ros2_action_examples move_action_server
+ros2 run ros2_action_examples move_action_client
+```
+
+Camera/YOLO/TF 예제는 camera device, OpenCV, `cv_bridge`, `ultralytics`, 로컬 YOLO weight 파일 준비 여부를 먼저 확인합니다.
+
 ### ROS2 Navigation Lab
 
 ```bash

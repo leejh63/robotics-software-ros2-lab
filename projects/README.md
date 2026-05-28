@@ -4,6 +4,7 @@
 
 ```text
 projects/
+├── ros2_foundation_lab/
 ├── ros2_navigation_lab/
 ├── ros2_pid_arm_lab/
 └── path_planning_algorithms_lab/
@@ -11,6 +12,7 @@ projects/
 
 | Project | Description |
 |---|---|
+| [`ros2_foundation_lab/`](ros2_foundation_lab/) | ROS2 topic, service, action, custom interface, launch, camera, TF 기초 실습 |
 | [`ros2_navigation_lab/`](ros2_navigation_lab/) | Gazebo, SLAM, AMCL, Nav2 실행 흐름 정리 |
 | [`ros2_pid_arm_lab/`](ros2_pid_arm_lab/) | Gazebo + ros2_control 기반 1-DOF arm PID 제어 실습 |
 | [`path_planning_algorithms_lab/`](path_planning_algorithms_lab/) | Dijkstra, A*, RRT, RRT* notebook 실습 |

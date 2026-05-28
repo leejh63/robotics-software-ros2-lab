@@ -88,7 +88,7 @@ ros2 param get /node_name parameter_name
 현재 예시:
 
 ```text
-imagePlee.py는 topic_name parameter를 읽지만 publisher는 image_raw0로 고정되어 있다.
+정리본의 image_publisher.py는 topic_name parameter를 publisher topic에 반영한다. topic이 보이지 않으면 실제 parameter 값과 topic list를 먼저 확인한다.
 따라서 topic_name 변경은 실제 topic 변경으로 이어지지 않는다.
 ```
 
@@ -121,8 +121,8 @@ ros2 service call /service_name <type> "{...}"
 
 ```bash
 ros2 action list
-ros2 action info /move_robot1
-ros2 action send_goal /move_robot1 my_if/action/Movelee "{target_distance: 5.0}" --feedback
+ros2 action info /move_robot
+ros2 action send_goal /move_robot ros2_foundation_interfaces/action/MoveDistance "{target_distance: 5.0}" --feedback
 ```
 
 원인 후보:
@@ -144,9 +144,9 @@ Nav2에서도 같은 원리가 적용된다.
 
 ```bash
 ls /dev/video*
-ros2 run camera_pkg image_pub1
+ros2 run ros2_camera_examples image_publisher
 ros2 topic list
-ros2 topic echo /image_raw0 --once
+ros2 topic echo /image_raw --once
 ```
 
 원인 후보:
@@ -166,7 +166,7 @@ ros2 topic echo /image_raw0 --once
 
 ```bash
 python3 -c "from ultralytics import YOLO; print('ok')"
-ros2 run camera_pkg yolo_pub_l --ros-args -p model_path:=/absolute/path/to/yolov8n.pt
+ros2 run ros2_camera_examples yolo_detection_publisher --ros-args -p model_path:=/absolute/path/to/yolov8n.pt
 ```
 
 원인 후보:
@@ -176,7 +176,7 @@ ros2 run camera_pkg yolo_pub_l --ros-args -p model_path:=/absolute/path/to/yolov
 - .venv 경로를 못 찾음
 - yolov8n.pt 상대경로 문제
 - GPU/CPU 환경 문제
-- image_raw0가 발행되지 않음
+- image_raw가 발행되지 않음
 ```
 
 ---
@@ -188,8 +188,8 @@ ros2 run camera_pkg yolo_pub_l --ros-args -p model_path:=/absolute/path/to/yolov
 ```bash
 ros2 topic list | grep tf
 ros2 run tf2_tools view_frames
-ros2 run tf2_ros tf2_echo odom_robot_ns base_link_robot_ns
-ros2 run tf2_ros tf2_echo camera_frame object_person_0
+ros2 run tf2_ros tf2_echo odom base_link
+ros2 run tf2_ros tf2_echo camera_link object_person_example_0
 ```
 
 원인 후보:

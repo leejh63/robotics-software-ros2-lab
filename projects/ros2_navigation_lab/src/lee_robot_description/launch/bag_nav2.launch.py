@@ -46,7 +46,7 @@ def generate_launch_description():
         DeclareLaunchArgument(
             'map_yaml',
             default_value=default_map_yaml,
-            description='Map yaml generated from rosbag SLAM.',
+            description='Map yaml generated from rosbag SLAM. Default bag_slam_map.yaml must be created with map_saver_cli before using the default path.',
         ),
         DeclareLaunchArgument(
             'amcl_params_file',

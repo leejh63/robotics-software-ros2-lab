@@ -25,47 +25,47 @@ namespace
 ROS2 이름에는 `/`로 시작하는 절대 이름과, `/` 없이 쓰는 상대 이름이 있다.
 
 ```text
-/image_raw0  -> 절대 topic 이름
-image_raw0   -> 현재 namespace 아래에서 해석되는 상대 이름
+/image_raw  -> 절대 topic 이름
+image_raw   -> 현재 namespace 아래에서 해석되는 상대 이름
 ```
 
 namespace가 없으면 둘이 거의 비슷하게 보일 수 있다. 하지만 namespace가 붙으면 차이가 커진다.
 
 ```text
 namespace=/robot_ns
-relative name image_raw0 -> /robot_ns/image_raw0
-absolute name /image_raw0 -> /image_raw0
+relative name image_raw -> /robot_ns/image_raw
+absolute name /image_raw -> /image_raw
 ```
 
 ---
 
 ## 3. 이번 코드에서 볼 수 있는 예
 
-`this_test/test.py`는 topic을 `user_ns`처럼 상대 이름으로 만든다.
+`ros2_topic_examples/string_talker.py`는 기본 topic을 `chatter`로 만든다.
 
 ```python
-self.create_publisher(String, 'user_ns', 10)
+self.create_publisher(String, topic_name, 10)
 ```
 
-namespace 없이 실행하면 `/user_ns`처럼 보인다. 만약 namespace를 붙여 실행하면 `/some_namespace/user_ns`가 될 수 있다.
+`topic_name`의 기본값은 `chatter`이므로 namespace 없이 실행하면 `/chatter`처럼 보인다. namespace를 붙여 실행하면 상대 이름 규칙에 따라 `/some_namespace/chatter`가 될 수 있다.
 
-반면 `this_test/ssss.py`는 `/turtle3/cmd_vel`처럼 절대 이름을 쓴다.
+`turtle_square.py`는 `cmd_vel_topic` parameter를 통해 발행 topic을 고를 수 있게 했다. 기본값은 `/turtle1/cmd_vel`이다.
 
 ```python
-self.create_publisher(Twist, '/turtle3/cmd_vel', 10)
+self.declare_parameter('cmd_vel_topic', '/turtle1/cmd_vel')
 ```
 
-이 경우 namespace를 줘도 앞에 namespace가 붙지 않을 가능성이 높다.
+절대 이름을 쓰면 namespace가 자동으로 붙지 않는다. namespace 실습이 필요하면 `cmd_vel_topic`을 상대 이름으로 바꿔 실행하면서 차이를 확인할 수 있다.
 
 ---
 
 ## 4. frame name은 topic namespace와 별개다
 
-`camera_frame` 같은 frame 이름은 topic namespace와 자동으로 같이 바뀌지 않는다.
+`camera_link` 같은 frame 이름은 topic namespace와 자동으로 같이 바뀌지 않는다.
 
 ```text
-/image_raw0 topic에 namespace를 붙여 /robot1/image_raw0로 만들었다고 해서
-header.frame_id가 자동으로 robot1/camera_frame가 되는 것은 아니다.
+/image_raw topic에 namespace를 붙여 /robot1/image_raw로 만들었다고 해서
+header.frame_id가 자동으로 robot1/camera_link가 되는 것은 아니다.
 ```
 
 frame 이름은 코드나 parameter에서 별도로 맞춰야 한다.

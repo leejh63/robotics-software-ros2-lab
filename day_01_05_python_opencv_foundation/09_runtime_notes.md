@@ -97,7 +97,7 @@ worker 수는 CPU core, 작업량, queue 처리 속도를 고려해야 한다.
 
 ---
 
-## 3. Day 04 / Day 67 YOLO-Kalman 코드
+## 3. Day 04 / 별도 작업공간 YOLO-Kalman 코드
 
 ### 3.1 `05.02.02.Webcam-Kalman.py`
 

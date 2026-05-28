@@ -28,15 +28,15 @@ Day 06~09는 ROS2에서 “코드가 노드가 되고, 노드가 topic/service/a
 ### 2.1 가장 작은 예시: Python topic
 
 ```text
-this_test/test.py
-  -> executable: lee_node
-  -> node: talker
-  -> publish: user_ns, std_msgs/String
+ros2_topic_examples/string_talker.py
+  -> executable: string_talker
+  -> node: string_talker
+  -> publish: chatter, std_msgs/String
 
-this_test/listener.py
-  -> executable: lee_node2
-  -> node: listener
-  -> subscribe: user_ns, std_msgs/String
+ros2_topic_examples/string_listener.py
+  -> executable: string_listener
+  -> node: string_listener
+  -> subscribe: chatter, std_msgs/String
 ```
 
 이 예시는 ROS2 topic의 최소 구조다.
@@ -44,15 +44,15 @@ this_test/listener.py
 ### 2.2 C++에서도 같은 구조
 
 ```text
-lee_pkg/src/cpp_test1.cpp
-  -> executable: talker
-  -> node: talker1
-  -> publish: cpp_1, std_msgs/String
+ros2_cpp_examples/src/cpp_talker.cpp
+  -> executable: cpp_talker
+  -> node: cpp_talker
+  -> publish: cpp_chatter, std_msgs/String
 
-lee_pkg/src/cpp_test2.cpp
-  -> executable: listener
-  -> node: listener
-  -> subscribe: cpp_1, std_msgs/String
+ros2_cpp_examples/src/cpp_listener.cpp
+  -> executable: cpp_listener
+  -> node: cpp_listener
+  -> subscribe: cpp_chatter, std_msgs/String
 ```
 
 Python이든 C++이든 ROS graph 관점에서는 “node가 topic을 publish/subscribe한다”는 점이 같다.
@@ -60,12 +60,12 @@ Python이든 C++이든 ROS graph 관점에서는 “node가 topic을 publish/sub
 ### 2.3 Service와 Action으로 확장
 
 ```text
-my_robot_service
-  -> add_two_num1 service
-  -> set_led1 service
+ros2_service_examples
+  -> add_two_num service
+  -> set_led service
 
-my_robot_action
-  -> move_robot1 action
+ros2_action_examples
+  -> move_robot action
 ```
 
 Service는 요청과 응답이 짧게 끝나는 구조다. Action은 goal을 보내고, 중간 feedback을 받다가, 마지막 result를 받는 구조다.
@@ -73,20 +73,20 @@ Service는 요청과 응답이 짧게 끝나는 구조다. Action은 goal을 보
 ### 2.4 Camera와 YOLO로 sensor data 처리
 
 ```text
-imagePlee.py
-  -> /image_raw0 publish
+image_publisher.py
+  -> /image_raw publish
 
-imageOPENlee.py
-  -> /image_raw0 subscribe
-  -> /image_edge1 publish
+image_edge_publisher.py
+  -> /image_raw subscribe
+  -> /image_edge publish
 
-imageYOLOlee.py
-  -> /image_raw0 subscribe
-  -> /image_yolo1 publish
+yolo_image_publisher.py
+  -> /image_raw subscribe
+  -> /image_yolo publish
 
-imgYOLOlee.py
-  -> /image_raw0 subscribe
-  -> /img_yolo1 publish
+yolo_detection_publisher.py
+  -> /image_raw subscribe
+  -> /yolo_detections publish
 ```
 
 Day 01~05의 OpenCV/YOLO가 여기서 ROS2 topic으로 연결된다.
@@ -94,15 +94,15 @@ Day 01~05의 OpenCV/YOLO가 여기서 ROS2 topic으로 연결된다.
 ### 2.5 Custom message와 TF로 확장
 
 ```text
-my_if/msg/ObjectDetectionArray.msg
+ros2_foundation_interfaces/msg/ObjectDetectionArray.msg
   -> YOLO 결과를 구조화한 메시지
 
-camera_pkg/imgYOLOlee.py
-  -> /img_yolo1 publish
+ros2_camera_examples/yolo_detection_publisher.py
+  -> /yolo_detections publish
 
-tf_pkg_example/tf_broad_yolo.py
-  -> /img_yolo1 subscribe
-  -> object_person_0 같은 TF frame publish
+ros2_tf_examples/yolo_tf_broadcaster.py
+  -> /yolo_detections subscribe
+  -> object_person_example_0 같은 TF frame publish
 ```
 
 이 흐름은 “인식 결과를 좌표계에 붙인다”는 연습이다. 실제 거리 추정은 고정 depth 기반의 단순화이므로 정확한 3D 인식으로 과장하면 안 된다.
@@ -176,7 +176,7 @@ Day 09 TF2/sensor/rosbag
 | package와 node | package는 빌드/배포 단위, node는 실행 중인 프로세스 단위 |
 | file name과 executable | 파일명은 source 파일 이름, executable은 `setup.py`/`CMakeLists.txt`에서 등록한 실행 이름 |
 | topic과 message type | topic은 통신 채널 이름, message type은 데이터 구조 |
-| topic 이름과 frame 이름 | `/image_raw0`는 topic, `camera_frame`는 frame |
+| topic 이름과 frame 이름 | `/image_raw`는 topic, `camera_link`는 frame |
 | service와 action | service는 짧은 요청/응답, action은 goal/feedback/result |
 | launch와 shell script | launch는 여러 ROS node와 parameter, condition, namespace를 선언하는 ROS 실행 구성 |
 | TF와 일반 topic | TF는 좌표계 사이의 시간 포함 변환 관계를 관리하는 특수한 데이터 흐름 |

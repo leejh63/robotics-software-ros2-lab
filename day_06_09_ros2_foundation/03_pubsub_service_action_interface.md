@@ -21,13 +21,13 @@ Topic은 센서값, 상태값, 명령처럼 계속 갱신되는 데이터를 흘
 
 | publisher | topic | type | subscriber |
 |---|---|---|---|
-| `this_test/test.py` | `user_ns` | `std_msgs/msg/String` | `this_test/listener.py` |
-| `lee_pkg/cpp_test1.cpp` | `cpp_1` | `std_msgs/msg/String` | `lee_pkg/cpp_test2.cpp` |
-| `this_test/ssss.py` | `/turtle3/cmd_vel` | `geometry_msgs/msg/Twist` | turtlesim node |
-| `camera_pkg/imagePlee.py` | `/image_raw0` | `sensor_msgs/msg/Image` | OpenCV/YOLO 관련 노드 |
-| `camera_pkg/imageOPENlee.py` | `/image_edge1` | `sensor_msgs/msg/Image` | viewer/snapshot node |
-| `camera_pkg/imageYOLOlee.py` | `/image_yolo1` | `sensor_msgs/msg/Image` | viewer/snapshot node |
-| `camera_pkg/imgYOLOlee.py` | `/img_yolo1` | `my_if/msg/ObjectDetectionArray` | `tf_pkg_example/tf_broad_yolo.py` |
+| `ros2_topic_examples/string_talker.py` | `chatter` | `std_msgs/msg/String` | `ros2_topic_examples/string_listener.py` |
+| `ros2_cpp_examples/cpp_talker.cpp` | `cpp_chatter` | `std_msgs/msg/String` | `ros2_cpp_examples/cpp_listener.cpp` |
+| `ros2_topic_examples/turtle_square.py` | `/turtle1/cmd_vel` | `geometry_msgs/msg/Twist` | turtlesim node |
+| `ros2_camera_examples/image_publisher.py` | `/image_raw` | `sensor_msgs/msg/Image` | OpenCV/YOLO 관련 노드 |
+| `ros2_camera_examples/image_edge_publisher.py` | `/image_edge` | `sensor_msgs/msg/Image` | viewer/snapshot node |
+| `ros2_camera_examples/yolo_image_publisher.py` | `/image_yolo` | `sensor_msgs/msg/Image` | viewer/snapshot node |
+| `ros2_camera_examples/yolo_detection_publisher.py` | `/yolo_detections` | `ros2_foundation_interfaces/msg/ObjectDetectionArray` | `ros2_tf_examples/yolo_tf_broadcaster.py` |
 
 Topic이 적합한 경우:
 
@@ -44,10 +44,10 @@ Topic이 적합한 경우:
 
 ### Python publisher
 
-`this_test/test.py`의 구조:
+`ros2_topic_examples/string_talker.py`의 구조:
 
 ```python
-self.publisher_ = self.create_publisher(String, 'user_ns', 10)
+self.publisher_ = self.create_publisher(String, 'chatter', 10)
 self.timer = self.create_timer(0.5, self.timer_callback)
 ```
 
@@ -55,35 +55,35 @@ self.timer = self.create_timer(0.5, self.timer_callback)
 
 ```text
 메시지 타입: String
-topic 이름 : user_ns
+topic 이름 : chatter
 큐 크기    : 10
 주기       : 0.5초마다 timer_callback 실행
 ```
 
 ### Python subscriber
 
-`this_test/listener.py`의 구조:
+`ros2_topic_examples/string_listener.py`의 구조:
 
 ```python
 self.subscription = self.create_subscription(
-    String, 'user_ns', self.listener_callback, 10)
+    String, 'chatter', self.listener_callback, 10)
 ```
 
 메시지가 들어오면 `listener_callback()`이 실행된다.
 
 ### C++도 구조는 같다
 
-`lee_pkg/cpp_test1.cpp`:
+`ros2_cpp_examples/cpp_talker.cpp`:
 
 ```cpp
-publisher_ = this->create_publisher<std_msgs::msg::String>("cpp_1", 10);
+publisher_ = this->create_publisher<std_msgs::msg::String>("cpp_chatter", 10);
 ```
 
-`lee_pkg/cpp_test2.cpp`:
+`ros2_cpp_examples/cpp_listener.cpp`:
 
 ```cpp
 subscription_ = this->create_subscription<std_msgs::msg::String>(
-    "cpp_1", 10,
+    "cpp_chatter", 10,
     std::bind(&Listener::listener_callback, this, std::placeholders::_1));
 ```
 
@@ -99,9 +99,9 @@ Service는 request/response 구조다.
 
 | server | client | service name | type |
 |---|---|---|---|
-| `add_server.py` | `add_client.py` | `add_two_num1` | `my_if/srv/AddTwoNum` |
-| `led_server.py` | `led_client.py` | `set_led1` | `my_if/srv/LedControl` |
-| `imageSlee.py` | CLI 또는 client | `capture_snapshot1` | `std_srvs/srv/Trigger` |
+| `add_server.py` | `add_client.py` | `add_two_num` | `ros2_foundation_interfaces/srv/AddTwoNum` |
+| `led_server.py` | `led_client.py` | `set_led` | `ros2_foundation_interfaces/srv/LedControl` |
+| `image_processor.py` | CLI 또는 client | `capture_snapshot` | `std_srvs/srv/Trigger` |
 
 Service가 적합한 경우:
 
@@ -125,14 +125,14 @@ Service가 부적합한 경우:
 
 ## 4. AddTwoNum.srv 해석
 
-`my_if/srv/AddTwoNum.srv`:
+`ros2_foundation_interfaces/srv/AddTwoNum.srv`:
 
 ```text
 int32 num1
 int32 num2
 ---
 int32 result
-string test
+string message
 ```
 
 `---` 위는 request, 아래는 response다.
@@ -148,14 +148,14 @@ self.req.num2 = num2
 
 ```python
 response.result = request.num1 + request.num2
-response.test = "테스트 입니다.     " + str(response.result)
+response.message = f'{request.num1} + {request.num2} = {response.result}'
 ```
 
 ---
 
 ## 5. LedControl.srv 해석
 
-`my_if/srv/LedControl.srv`:
+`ros2_foundation_interfaces/srv/LedControl.srv`:
 
 ```text
 bool state
@@ -170,7 +170,7 @@ string message
 request.state = True
   -> "LED 켜기 요청 수신"
   -> response.success = True
-  -> response.message = "LED를 성공적으로 켰습니다."
+  -> response.message = "LED turned on."
 ```
 
 ---
@@ -182,12 +182,12 @@ Action은 오래 걸리는 목표 작업에 적합하다.
 이번 코드:
 
 ```text
-my_robot_action/move_server.py
-my_robot_action/move_client.py
-my_if/action/Movelee.action
+ros2_action_examples/move_server.py
+ros2_action_examples/move_client.py
+ros2_foundation_interfaces/action/MoveDistance.action
 ```
 
-`Movelee.action`:
+`MoveDistance.action`:
 
 ```text
 float32 target_distance
@@ -208,7 +208,7 @@ float32 current_distance
 `move_client.py`는 목표를 보낸다.
 
 ```python
-goal_msg = Movelee.Goal()
+goal_msg = MoveDistance.Goal()
 goal_msg.target_distance = distance
 self._action_client.send_goal_async(goal_msg, feedback_callback=self.feedback_callback)
 ```
@@ -242,9 +242,9 @@ Nav2의 `/navigate_to_pose`가 service가 아니라 action인 이유도 같다. 
 
 ---
 
-## 8. Interface 패키지 my_if
+## 8. Interface 패키지 ros2_foundation_interfaces
 
-`my_if`는 직접 실행하는 노드가 아니다. 메시지 타입을 정의해서 다른 패키지에서 import하게 해주는 패키지다.
+`ros2_foundation_interfaces`는 직접 실행하는 노드가 아니다. 메시지 타입을 정의해서 다른 패키지에서 import하게 해주는 패키지다.
 
 ```text
 .msg    -> Topic 데이터 구조
@@ -252,13 +252,13 @@ Nav2의 `/navigate_to_pose`가 service가 아니라 action인 이유도 같다. 
 .action -> Action goal/result/feedback 구조
 ```
 
-`my_if/CMakeLists.txt`의 핵심:
+`ros2_foundation_interfaces/CMakeLists.txt`의 핵심:
 
 ```cmake
 rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/LedControl.srv"
   "srv/AddTwoNum.srv"
-  "action/Movelee.action"
+  "action/MoveDistance.action"
   "msg/ObjectDetection.msg"
   "msg/ObjectDetectionArray.msg"
   DEPENDENCIES std_msgs
@@ -268,9 +268,9 @@ rosidl_generate_interfaces(${PROJECT_NAME}
 빌드 후 Python에서는 이런 식으로 import한다.
 
 ```python
-from my_if.srv import AddTwoNum
-from my_if.action import Movelee
-from my_if.msg import ObjectDetectionArray
+from ros2_foundation_interfaces.srv import AddTwoNum
+from ros2_foundation_interfaces.action import MoveDistance
+from ros2_foundation_interfaces.msg import ObjectDetectionArray
 ```
 
 ---
@@ -299,13 +299,13 @@ header.stamp    -> 이 detection이 어느 시각의 이미지에서 나왔는�
 header.frame_id -> 이 detection을 어느 camera frame 기준으로 해석할 것인가
 ```
 
-`imgYOLOlee.py`는 원본 이미지 메시지의 header를 detection array에 그대로 복사한다.
+`yolo_detection_publisher.py`는 원본 이미지 메시지의 header를 detection array에 그대로 복사한다.
 
 ```python
 detection_array_msg.header = msg.header
 ```
 
-그래서 뒤의 `tf_broad_yolo.py`가 detection message의 `header.frame_id`를 parent frame으로 사용할 수 있다.
+그래서 뒤의 `yolo_tf_broadcaster.py`가 detection message의 `header.frame_id`를 parent frame으로 사용할 수 있다.
 
 ---
 

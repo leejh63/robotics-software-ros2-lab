@@ -21,69 +21,67 @@ namespace/remap을 줄지
 이번 코드의 launch 파일:
 
 ```text
-py_launch_example/launch/robot_ns_bring_launch.py
-py_launch_example/launch/robot_ns_ep_launch.py
-tf_pkg_example/launch/tf_tree_demo_launch.py
-tf_pkg_example/launch/robot_ns_yolo_launch.py
+ros2_launch_examples/launch/camera_pipeline.launch.py
+ros2_launch_examples/launch/camera_yolo_pipeline.launch.py
+ros2_tf_examples/launch/tf_tree_demo.launch.py
+ros2_tf_examples/launch/yolo_tf_pipeline.launch.py
 ```
 
 ---
 
-## 2. lee_bring_launch.py 해석
+## 2. camera_pipeline.launch.py 해석
 
-`lee_bring_launch.py`는 카메라 처리 노드들을 한 번에 실행한다.
+`camera_pipeline.launch.py`는 카메라 처리 노드들을 한 번에 실행한다.
 
 실행되는 노드:
 
-| package | executable | launch name | 역할 |
+| package | executable | launch node name | 역할 |
 |---|---|---|---|
-| `camera_pkg` | `image_pub1` | `image_publisher_l` | `/image_raw0` 발행 |
-| `camera_pkg` | `image_yolo1` | `image_yolo_l` | `/image_yolo1` 발행 |
-| `camera_pkg` | `image_edge1` | `img_canny_l` | `/image_edge1` 발행 |
-| `rqt_image_view` | `rqt_image_view` | `rqt_image_view_l` | 조건부 GUI 실행 |
+| `ros2_camera_examples` | `image_publisher` | `image_publisher` | `/image_raw` 발행 |
+| `ros2_camera_examples` | `yolo_image_publisher` | `yolo_image_publisher` | `/image_yolo` 발행 |
+| `ros2_camera_examples` | `image_edge_publisher` | `image_edge_publisher` | `/image_edge` 발행 |
+| `rqt_image_view` | `rqt_image_view` | `rqt_image_view` | 조건부 GUI 실행 |
 
 중요한 구조:
 
 ```python
-use_rviz_arg = DeclareLaunchArgument(
-    'use_rviz',
+use_viewer_arg = DeclareLaunchArgument(
+    'use_viewer',
     default_value='false',
-    description='Run rqt_image_view',
+    description='Run rqt_image_view for image topic inspection.',
 )
 ```
 
-이 이름은 `use_rviz`지만 실제로 실행하는 것은 `rqt_image_view`다. 학습 코드에서는 이름이 완벽하지 않을 수 있으므로, 문서화할 때는 “RViz”가 아니라 “rqt_image_view 조건 실행”으로 보는 게 정확하다.
+`use_viewer:=true`로 실행하면 `rqt_image_view`도 함께 실행된다.
 
 ---
 
-## 3. lee_ep_launch.py와 parameter YAML
+## 3. camera_yolo_pipeline.launch.py와 parameter YAML
 
-`lee_ep_launch.py`는 `camera_pkg/config/pub_cam_params.yaml`을 `image_pub1` 노드에 적용한다.
+`camera_yolo_pipeline.launch.py`는 `ros2_camera_examples/config/pub_cam_params.yaml`을 `image_publisher` 노드에 적용한다.
 
 ```python
-config = os.path.join(
-    get_package_share_directory('camera_pkg'),
+camera_config = os.path.join(
+    get_package_share_directory('ros2_camera_examples'),
     'config',
-    'pub_cam_params.yaml'
+    'pub_cam_params.yaml',
 )
 
 image_publisher = Node(
-    package='camera_pkg',
-    executable='image_pub1',
-    name='test',
-    parameters=[config]
+    package='ros2_camera_examples',
+    executable='image_publisher',
+    name='image_publisher',
+    parameters=[camera_config],
 )
 ```
 
-여기서 중요한 점은 node 이름을 `test`로 바꾼다는 것이다.
-
-따라서 YAML도 이렇게 되어 있다.
+YAML도 node 이름에 맞춰 아래처럼 둔다.
 
 ```yaml
-test:
+image_publisher:
   ros__parameters:
     publish_rate: 10.0
-    topic_name: "what"
+    topic_name: "image_raw"
     image_size: [320, 240]
 ```
 
@@ -99,14 +97,15 @@ node 이름과 YAML 최상위 키가 다르면 parameter가 적용되지 않을 
 
 ---
 
-## 4. imagePlee.py의 parameter 해석
+## 4. image_publisher.py의 parameter 해석
 
-`imagePlee.py`는 세 가지 parameter를 선언한다.
+`image_publisher.py`는 네 가지 parameter를 선언한다.
 
 ```python
 self.declare_parameter('publish_rate', 15.0)
-self.declare_parameter('topic_name', 'image_raw0')
+self.declare_parameter('topic_name', 'image_raw')
 self.declare_parameter('image_size', [640, 480])
+self.declare_parameter('frame_id', 'camera_link')
 ```
 
 역할:
@@ -114,23 +113,17 @@ self.declare_parameter('image_size', [640, 480])
 | parameter | 의미 | 현재 코드에서의 사용 |
 |---|---|---|
 | `publish_rate` | 이미지 발행 주기 | timer 주기 변경에 사용 |
-| `topic_name` | 발행 topic 이름으로 의도된 값 | 현재 publisher는 `image_raw0` 고정이라 실제 미사용 |
-| `image_size` | resize 크기 | `cv2.resize(frame, tuple(self.size))`에 사용 |
+| `topic_name` | 발행 topic 이름 | publisher 생성에 사용 |
+| `image_size` | resize 크기 | camera width/height와 `cv2.resize()`에 사용 |
+| `frame_id` | Image header frame | `msg.header.frame_id`에 사용 |
 
-주의할 점은 현재 코드에서 publisher가 아래처럼 고정되어 있다는 점이다.
-
-```python
-self.publisher_ = self.create_publisher(Image, 'image_raw0', 10)
-# self.publisher_ = self.create_publisher(Image, self.topic, 10)
-```
-
-따라서 YAML에서 `topic_name: "what"`을 줘도 실제 발행 topic은 바뀌지 않는다. 이 경우 parameter 선언과 실제 publisher 생성 코드가 일치하는지 확인해야 한다.
+주의할 점은 `topic_name`은 publisher 생성 시점에 반영된다는 것이다. 실행 중 topic 이름을 바꾸는 동적 publisher 재생성까지는 이 예제에서 다루지 않는다.
 
 ---
 
 ## 5. parameter를 런타임에 바꾸는 흐름
 
-`imagePlee.py`에는 parameter callback이 있다.
+`image_publisher.py`에는 parameter callback이 있다.
 
 ```python
 self.add_on_set_parameters_callback(self.parameter_callback)
@@ -146,13 +139,12 @@ self.timer = self.create_timer(1.0 / self.rate, self.timer_callback)
 실습 명령 예시:
 
 ```bash
-ros2 param list /test
-ros2 param get /test publish_rate
-ros2 param set /test publish_rate 5.0
-ros2 param set /test image_size "[320, 240]"
+ros2 param list /image_publisher
+ros2 param get /image_publisher publish_rate
+ros2 param set /image_publisher publish_rate 5.0
+ros2 param set /image_publisher image_size "[320, 240]"
+ros2 param set /image_publisher frame_id camera_link
 ```
-
-node 이름이 launch에서 `test`로 바뀌었으면 `/image_publisher1`가 아니라 `/test`를 대상으로 확인해야 한다.
 
 ---
 
@@ -166,7 +158,7 @@ YOLO 결과를 문자열로 보내는 것도 가능은 하다.
 
 하지만 이렇게 보내면 subscriber가 다시 문자열을 파싱해야 하고, bbox나 confidence의 타입 안정성이 없다.
 
-그래서 `my_if/msg/ObjectDetection.msg`를 정의했다.
+그래서 `ros2_foundation_interfaces/msg/ObjectDetection.msg`를 정의했다.
 
 ```text
 string class_name
@@ -181,13 +173,13 @@ std_msgs/Header header
 ObjectDetection[] detections
 ```
 
-이 구조 덕분에 `camera_pkg/imgYOLOlee.py`는 detection 결과를 명확한 타입으로 발행할 수 있고, `tf_pkg_example/tf_broad_yolo.py`는 그 메시지를 받아 TF frame으로 바꿀 수 있다.
+이 구조 덕분에 `ros2_camera_examples/yolo_detection_publisher.py`는 detection 결과를 명확한 타입으로 발행할 수 있고, `ros2_tf_examples/yolo_tf_broadcaster.py`는 그 메시지를 받아 TF frame으로 바꿀 수 있다.
 
 ---
 
 ## 7. Interface build 흐름
 
-`my_if`는 `rosidl_generate_interfaces()`로 msg/srv/action 코드를 생성한다.
+`ros2_foundation_interfaces`는 `rosidl_generate_interfaces()`로 msg/srv/action 코드를 생성한다.
 
 ```text
 .msg/.srv/.action 파일 작성
@@ -214,10 +206,10 @@ source install/setup.bash도 다시 해야 한다.
 ### package/executable 확인
 
 ```bash
-ros2 pkg executables camera_pkg
-ros2 pkg executables this_test
-ros2 pkg executables my_robot_service
-ros2 pkg executables my_robot_action
+ros2 pkg executables ros2_camera_examples
+ros2 pkg executables ros2_topic_examples
+ros2 pkg executables ros2_service_examples
+ros2 pkg executables ros2_action_examples
 ```
 
 ### node/topic 확인
@@ -225,8 +217,8 @@ ros2 pkg executables my_robot_action
 ```bash
 ros2 node list
 ros2 topic list
-ros2 topic info /image_raw0
-ros2 topic echo /img_yolo1
+ros2 topic info /image_raw
+ros2 topic echo /yolo_detections
 ```
 
 ### parameter 확인
@@ -240,22 +232,22 @@ ros2 param get /test publish_rate
 ### interface 확인
 
 ```bash
-ros2 interface show my_if/msg/ObjectDetection
-ros2 interface show my_if/msg/ObjectDetectionArray
-ros2 interface show my_if/srv/AddTwoNum
-ros2 interface show my_if/action/Movelee
+ros2 interface show ros2_foundation_interfaces/msg/ObjectDetection
+ros2 interface show ros2_foundation_interfaces/msg/ObjectDetectionArray
+ros2 interface show ros2_foundation_interfaces/srv/AddTwoNum
+ros2 interface show ros2_foundation_interfaces/action/MoveDistance
 ```
 
 ### service/action 확인
 
 ```bash
 ros2 service list
-ros2 service type /add_two_num1
-ros2 service call /add_two_num1 my_if/srv/AddTwoNum "{num1: 5, num2: 10}"
+ros2 service type /add_two_num
+ros2 service call /add_two_num ros2_foundation_interfaces/srv/AddTwoNum "{num1: 5, num2: 10}"
 
 ros2 action list
-ros2 action info /move_robot1
-ros2 action send_goal /move_robot1 my_if/action/Movelee "{target_distance: 5.0}" --feedback
+ros2 action info /move_robot
+ros2 action send_goal /move_robot ros2_foundation_interfaces/action/MoveDistance "{target_distance: 5.0}" --feedback
 ```
 
 ---

@@ -3,6 +3,9 @@
 > rosbag 원본 데이터는 이 저장소에 포함하지 않습니다. 실행할 때는 사용자가 직접 준비한 bag 디렉토리를 `BAG_DIR=/path/to/rosbag_directory`로 지정합니다.
 
 
+
+> `bag_localization.launch.py`와 `bag_nav2.launch.py`의 기본 map 경로는 `src/lee_robot_description/maps/bag_slam_map.yaml`입니다. 이 파일은 저장소 기본 제공 파일이 아니라, 이 문서의 SLAM replay와 `map_saver_cli` 단계에서 생성하는 결과물입니다. 이미 다른 map을 사용할 경우 `map_yaml:=...` 인자로 명시합니다.
+
 `$BAG_DIR`는 실제 rosbag 디렉토리 경로로 바꿔서 사용합니다. 개인 PC 경로나 특정 rosbag 이름은 문서에 고정하지 않습니다.
 
 ```bash
@@ -102,6 +105,8 @@ ros2 run nav2_map_server map_saver_cli \
 
 ## 6. Localization with saved map
 
+`bag_localization.launch.py`는 `src/lee_robot_description/maps/bag_slam_map.yaml`과 `bag_slam_map.pgm`이 먼저 있어야 실행할 수 있습니다. 아직 map을 만들지 않았다면 3~5단계의 SLAM launch, rosbag replay, `map_saver_cli`를 먼저 진행합니다.
+
 ```bash
 source /opt/ros/humble/setup.bash
 source install/setup.bash
@@ -143,6 +148,8 @@ orientation은 2D yaw 기준으로 `z = sin(yaw / 2)`, `w = cos(yaw / 2)`입니�
 ---
 
 ## 7. Nav2 costmap with saved map + rosbag scan
+
+`bag_nav2.launch.py`도 저장된 `bag_slam_map.yaml`을 기준으로 map server와 AMCL을 올립니다. map 파일이 없다면 먼저 5단계에서 map을 저장합니다.
 
 ```bash
 source /opt/ros/humble/setup.bash

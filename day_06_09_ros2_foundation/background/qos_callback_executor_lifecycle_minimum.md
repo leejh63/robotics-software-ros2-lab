@@ -11,8 +11,8 @@ QoS는 Quality of Service의 약자다. ROS2 topic 통신에서 메시지를 얼
 이번 코드에서는 대부분 간단히 `10`을 넘긴다.
 
 ```python
-self.create_publisher(Image, 'image_raw0', 10)
-self.create_subscription(Image, 'image_raw0', self.image_callback, 10)
+self.create_publisher(Image, 'image_raw', 10)
+self.create_subscription(Image, 'image_raw', self.image_callback, 10)
 ```
 
 여기서 `10`은 queue depth로 보면 된다. subscriber가 잠깐 처리하지 못해도 최근 메시지를 몇 개까지 쌓아둘지에 대한 값이다.

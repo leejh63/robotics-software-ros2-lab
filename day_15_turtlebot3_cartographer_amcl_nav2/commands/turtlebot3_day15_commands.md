@@ -230,6 +230,9 @@ ros2 topic pub --once /initialpose geometry_msgs/msg/PoseWithCovarianceStamped \
 ```bash
 cd "$TB3_WS/src"
 git clone https://github.com/robo-friends/m-explore-ros2
+cd m-explore-ros2
+# 최종 실행 검증 후에는 테스트한 commit으로 고정한다.
+# git checkout <tested_commit_hash>
 
 cd "$TB3_WS"
 rosdep install --from-paths src -y --ignore-src

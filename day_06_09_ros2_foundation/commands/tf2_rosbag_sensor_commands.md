@@ -3,16 +3,16 @@
 ## 1. TF tree demo
 
 ```bash
-ros2 launch tf_pkg_example tf_tree_demo_launch.py
-ros2 launch tf_pkg_example tf_tree_demo_launch.py use_listener:=true
-ros2 launch tf_pkg_example tf_tree_demo_launch.py use_listener:=true use_rqt_tree:=true
+ros2 launch ros2_tf_examples tf_tree_demo.launch.py
+ros2 launch ros2_tf_examples tf_tree_demo.launch.py use_listener:=true
+ros2 launch ros2_tf_examples tf_tree_demo.launch.py use_listener:=true use_rqt_tree:=true
 ```
 
 확인:
 
 ```bash
-ros2 run tf2_ros tf2_echo odom_robot_ns base_link_robot_ns
-ros2 run tf2_ros tf2_echo odom_robot_ns m_lee
+ros2 run tf2_ros tf2_echo odom base_link
+ros2 run tf2_ros tf2_echo odom left_marker
 ros2 run tf2_tools view_frames
 ros2 run rqt_tf_tree rqt_tf_tree
 ```
@@ -22,19 +22,19 @@ ros2 run rqt_tf_tree rqt_tf_tree
 ## 2. YOLO TF launch
 
 ```bash
-ros2 launch tf_pkg_example lee_yolo_launch.py
-ros2 launch tf_pkg_example lee_yolo_launch.py use_listener:=true use_rqt_tree:=true
-ros2 launch tf_pkg_example lee_yolo_launch.py class_filter:=person object_depth:=1.5 use_listener:=true
+ros2 launch ros2_tf_examples yolo_tf_pipeline.launch.py
+ros2 launch ros2_tf_examples yolo_tf_pipeline.launch.py use_listener:=true use_rqt_tree:=true
+ros2 launch ros2_tf_examples yolo_tf_pipeline.launch.py class_filter:=person object_depth:=1.5 use_listener:=true
 ```
 
 확인:
 
 ```bash
-ros2 topic info /image_raw0
-ros2 topic info /img_yolo1
-ros2 topic echo /img_yolo1 --once
-ros2 run tf2_ros tf2_echo camera_frame object_person_0
-ros2 run tf2_ros tf2_echo odom_robot_ns object_person_0
+ros2 topic info /image_raw
+ros2 topic info /yolo_detections
+ros2 topic echo /yolo_detections --once
+ros2 run tf2_ros tf2_echo camera_link object_person_example_0
+ros2 run tf2_ros tf2_echo odom object_person_example_0
 ```
 
 ---
@@ -55,30 +55,22 @@ ros2 topic info /tf_static
 카메라/YOLO 관련 topic 기록:
 
 ```bash
-ros2 bag record /image_raw0 /image_yolo1 /img_yolo1 /tf /tf_static
+ros2 bag record /image_raw /image_yolo /yolo_detections /tf /tf_static
 ```
 
 재생:
 
 ```bash
 ros2 bag play <bag_dir>
-```
-
-반복 재생:
-
-```bash
 ros2 bag play <bag_dir> --loop
-```
-
-느리게 재생:
-
-```bash
 ros2 bag play <bag_dir> -r 0.5
 ```
 
+저장소에는 rosbag 원본을 포함하지 않는다. 필요한 경우 `rosbag2_*`, `bags/`, `*.db3`, `*.mcap`은 `.gitignore`로 제외한다.
+
 ---
 
-## 5. Day 10~13용 rosbag 기록 관점
+## 5. Day 10~15용 rosbag 기록 관점
 
 SLAM/AMCL/Nav2 재현용으로는 단순히 센서 하나만 기록하면 부족할 수 있다.
 
@@ -103,8 +95,8 @@ ros2 bag info <bag_dir>
 ## 6. sensor header 확인
 
 ```bash
-ros2 topic echo /image_raw0 --once
-ros2 topic echo /img_yolo1 --once
+ros2 topic echo /image_raw --once
+ros2 topic echo /yolo_detections --once
 ```
 
 확인할 필드:
@@ -114,4 +106,4 @@ header.stamp
 header.frame_id
 ```
 
-header.frame_id가 TF tree에 연결되지 않으면 RViz/알고리즘에서 공간적으로 해석하기 어렵다.
+`header.frame_id`가 TF tree에 연결되지 않으면 RViz나 알고리즘에서 데이터를 공간적으로 해석하기 어렵다.
