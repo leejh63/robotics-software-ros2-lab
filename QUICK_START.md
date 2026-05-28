@@ -62,6 +62,24 @@ README.md
 
 실행 코드와 설정 파일은 `projects/` 아래에 분리되어 있습니다.
 
+### Python / OpenCV Foundation Lab
+
+Day 01~05에서 작성한 Python, OpenCV, Camera Calibration, YOLO, Kalman 기초 실습 코드입니다. 이 폴더는 완성 애플리케이션이 아니라 ROS2 camera/perception 실습으로 넘어가기 위한 foundation lab입니다.
+
+```bash
+cd projects/python_opencv_foundation_lab
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
+
+대표 실행 예시는 아래 문서를 봅니다.
+
+```text
+projects/python_opencv_foundation_lab/RUN_COMMANDS.md
+```
+
 ### ROS2 Foundation Lab
 
 Day 06~09에서 작성한 ROS2 기본 기능 예제입니다. Topic, Service, Action, custom interface, launch, camera, TF 예제를 패키지별로 분리했습니다.

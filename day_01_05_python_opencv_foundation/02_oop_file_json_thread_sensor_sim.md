@@ -19,12 +19,10 @@ ROS2를 쓰면 직접 thread를 많이 만들지 않아도 된다. 하지만 sen
 ## 2. 관련 실습 파일
 
 ```text
-day_2/ioff.py
 day_2/calib.json
 day_2/03_01_Python-File-JSON.ipynb
 day_2/03_02_01_Python-Thread-Daemon.py
 day_2/03_02_02_Python-Multi-Thread.py
-day_2/03_02_02_02_Python-Multi-Thread..py
 day_2/03_02_03_Python-Process-Pool.py
 day_2/03_02_04_Python-Process-Queue.py
 day_2/03_02_05_Python-Thread-Practice.py
@@ -81,7 +79,7 @@ Node class
 
 ## 4. 추상 클래스와 인터페이스
 
-`ioff.py`와 기존 OOP 정리에서는 `Sensor` 추상 클래스를 만들고, 구체 센서가 이를 구현하는 형태를 다룬다.
+기존 OOP 정리에서는 `Sensor` 추상 클래스를 만들고, 구체 센서가 이를 구현하는 형태를 다룬다. 현재 정리본의 실행 코드에서는 이 내용을 별도 스크립트로 강조하기보다 문서 설명 중심으로 남긴다.
 
 ```python
 from abc import ABC, abstractmethod

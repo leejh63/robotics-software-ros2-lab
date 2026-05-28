@@ -16,86 +16,17 @@
 
 ## 2. Day 02 thread/process 실습 코드
 
-### 2.1 `03.02.02.02.Python-Multi-Thread.py`
+현재 정리본에서는 문제 관찰용 중간 파일을 실행 코드 목록에서 제외했다. 남긴 파일은 아래 기준으로 본다.
 
-관찰 사항:
+| 파일 | 현재 기준 | 주의할 점 |
+|---|---|---|
+| `03_02_01_Python-Thread-Daemon.py` | daemon thread 종료 동작 확인 | 메인 스레드가 끝나면 daemon thread도 함께 종료됨 |
+| `03_02_02_Python-Multi-Thread.py` | Lock으로 공유 telemetry를 보호하는 예제 | ROS2 callback에서 공유 상태를 다룰 때의 감각과 연결 |
+| `03_02_03_Python-Process-Pool.py` | 독립 데이터 병렬 처리 예제 | 작업 간 공유 상태가 거의 없을 때 적합 |
+| `03_02_04_Python-Process-Queue.py` | process-safe Queue와 Event 기반 종료 예제 | worker 수를 과하게 늘리지 않고 전체 process를 join해야 함 |
+| `03_02_05_Python-Thread-Practice.py` | Thread + Queue 기반 producer/consumer 예제 | producer 주기를 명시적으로 제한해야 queue backlog를 피할 수 있음 |
 
-```text
-extract_error_logs() 안에서 re.search()를 사용하지만 import re가 보이지 않는다.
-live_tail()이 error_data.txt를 열려고 할 때 파일이 아직 없으면 FileNotFoundError가 날 수 있다.
-live_tail()의 `for line in f:`는 일반 파일 반복이라 tail -f처럼 새로 추가되는 줄을 계속 따라가지 못할 수 있다.
-```
-
-학습 포인트:
-
-```text
-thread를 여러 개 시작하면 실행 순서가 항상 기대한 순서대로 보장되지 않는다.
-파일 생산자와 소비자가 동시에 움직일 때는 파일 존재 여부, flush, polling, EOF 처리를 고려해야 한다.
-```
-
----
-
-### 2.2 `03_02_02_02_Python-Multi-Thread..py`
-
-관찰 사항:
-
-```text
-counter를 두 thread가 동시에 증가시키는 구조다.
-Lock 코드가 주석 처리되어 있다.
-```
-
-이것은 실수라기보다 race condition을 관찰하기 좋은 코드다.
-
-```text
-읽기
-계산
-쓰기
-```
-
-이 세 단계 사이에 다른 thread가 끼어들면 증가 횟수가 누락될 수 있다.
-
----
-
-### 2.3 `03_02_05_Python-Thread-Practice.py`
-
-관찰 사항:
-
-```text
-producer() 내부의 time.sleep(0.1)이 주석 처리되어 있다.
-```
-
-요구사항에는 0.1초마다 센서 값을 생성한다고 되어 있지만, sleep이 없으면 producer가 매우 빠르게 queue를 채울 수 있다.
-
-학습 포인트:
-
-```text
-producer 속도 > consumer 속도
-  -> queue backlog 증가
-  -> 메모리 사용량 증가
-  -> 출력 폭주
-```
-
-ROS2에서도 publisher가 너무 빠르고 subscriber 처리가 느리면 queue가 밀리거나 message drop이 생길 수 있다.
-
----
-
-### 2.4 `03_02_04_Python-Process-Queue.py`
-
-관찰 사항:
-
-```text
-AI worker process를 19개 만든다.
-finally에서 p2.join()은 반복문 마지막 p2만 기다릴 가능성이 있다.
-```
-
-학습 포인트:
-
-```text
-여러 process를 만들었다면 리스트 전체를 순회하며 join하는 구조가 필요하다.
-worker 수는 CPU core, 작업량, queue 처리 속도를 고려해야 한다.
-```
-
----
+정리하면서 제외한 중간 파일은 `projects/python_opencv_foundation_lab/SOURCE_MAP.md`에 따로 기록했다.
 
 ## 3. Day 04 / 별도 작업공간 YOLO-Kalman 코드
 

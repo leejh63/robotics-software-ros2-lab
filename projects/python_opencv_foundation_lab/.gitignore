@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OpenCV / YOLO runtime outputs
+calib_images/
+output_gray.png
+*.plk
+runs/
+*.avi
+*.mp4
+*.mov
+*.mkv
+nis_log.csv
+detection_log.json
+raw_data.txt
+error_data.txt
+
+# Model weights and exported models
+*.pt
+*.onnx
+*.engine
+*.tflite
+
+# Local calibration outputs
+camera_info.yaml
+camera_calibration.yml
+camera_calibration.yaml
+calibration_images/
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/

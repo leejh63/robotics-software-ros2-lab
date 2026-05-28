@@ -4,6 +4,7 @@
 
 ```text
 projects/
+├── python_opencv_foundation_lab/
 ├── ros2_foundation_lab/
 ├── ros2_navigation_lab/
 ├── ros2_pid_arm_lab/
@@ -12,6 +13,7 @@ projects/
 
 | Project | Description |
 |---|---|
+| [`python_opencv_foundation_lab/`](python_opencv_foundation_lab/) | Day 01~05 Python, OpenCV, Camera Calibration, YOLO, Kalman foundation 실습 |
 | [`ros2_foundation_lab/`](ros2_foundation_lab/) | ROS2 topic, service, action, custom interface, launch, camera, TF 기초 실습 |
 | [`ros2_navigation_lab/`](ros2_navigation_lab/) | Gazebo, SLAM, AMCL, Nav2 실행 흐름 정리 |
 | [`ros2_pid_arm_lab/`](ros2_pid_arm_lab/) | Gazebo + ros2_control 기반 1-DOF arm PID 제어 실습 |
