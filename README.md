@@ -116,3 +116,4 @@ ros2 bag play "$BAG_DIR" --clock --remap /scan:=/robot_ns/scan
 ```
 
 위 예시는 일반화된 표기입니다. 현재 `projects/ros2_navigation_lab`를 그대로 실행할 때는 `/robot_ns`가 아니라 `/lee` 기준 명령어를 먼저 봅니다. 실행할 때는 placeholder를 본인 환경에 맞게 바꿔야 합니다.
+

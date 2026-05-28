@@ -27,12 +27,6 @@ source ~/envs/tb3_humble.bash
 mkdir -p "$TB3_WS/maps"
 ```
 
-또는:
-
-```bash
-mkdir -p "$TB3_WS/maps"
-```
-
 ## 3. 터미널 1 — Gazebo 실행
 
 ```bash

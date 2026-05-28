@@ -136,3 +136,4 @@ Appendix는 전부 순서대로 읽는 폴더가 아니다. 필요한 상황에 
 | 문제 진단 | [appendix/troubleshooting_quick_diagnosis.md](appendix/troubleshooting_quick_diagnosis.md), [appendix/troubleshooting_index.md](appendix/troubleshooting_index.md) |
 | 용어 확인 | [appendix/glossary_ros2_navigation_pipeline.md](appendix/glossary_ros2_navigation_pipeline.md) |
 | 직접 작성/설정한 범위 확인 | [appendix/external_package_boundary.md](appendix/external_package_boundary.md) |
+

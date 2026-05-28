@@ -123,7 +123,7 @@ Display 추가:
 Map        → /map
 TF         → 활성화
 LaserScan  → /scan
-PoseArray  → /particle_cloud
+PoseArray  → /particlecloud
 ```
 
 Map Display 설정:
@@ -172,10 +172,10 @@ AMCL pose 확인:
 ros2 topic echo /amcl_pose --once
 ```
 
-particle_cloud 확인:
+particlecloud 확인:
 
 ```bash
-ros2 topic echo /particle_cloud --once
+ros2 topic echo /particlecloud --once
 ```
 
 AMCL이 `map -> odom`을 발행하는지 확인:

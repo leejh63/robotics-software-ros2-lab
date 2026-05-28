@@ -79,7 +79,7 @@ Fixed Frame: map
 Map: /map
 LaserScan: /scan
 TF: enabled
-PoseArray: /particle_cloud
+PoseArray: /particlecloud
 ```
 
 ## 6. 초기 위치 설정
