@@ -53,7 +53,7 @@ node       : image_publisher 또는 launch에서 test
 publish    : /image_raw
 msg type   : sensor_msgs/msg/Image
 frame_id   : camera_link
-parameters : publish_rate, topic_name, image_size, frame_id
+parameters : publish_rate, topic_name, image_size, camera_index, frame_id
 ```
 
 ---

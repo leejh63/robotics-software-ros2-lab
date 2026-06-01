@@ -48,6 +48,8 @@ URDF/Xacro model
 │   ├── BAG_SLAM_NAV2_WORKFLOW.md
 │   ├── REFERENCES.md
 │   ├── RUNTIME_WORKFLOW.md
+│   ├── RUNTIME_VALIDATION_CHECKLIST.md
+│   ├── RUNTIME_SESSION_GUIDE.md
 │   └── TROUBLESHOOTING.md
 └── src/
     └── lee_robot_description/
@@ -58,6 +60,13 @@ URDF/Xacro model
         ├── scripts/
         ├── urdf/
         └── worlds/
+```
+
+런타임 검증 항목과 terminal별 실행 순서는 다음 문서에 별도로 분리했습니다. 정적 검사를 통과해도 Nav2 lifecycle, costmap publish, goal 처리 여부는 실제 ROS2/Gazebo 환경에서 확인해야 합니다.
+
+```text
+docs/RUNTIME_VALIDATION_CHECKLIST.md  통과 기준
+docs/RUNTIME_SESSION_GUIDE.md        terminal별 실행 순서
 ```
 
 ---

@@ -187,7 +187,7 @@ libgazebo_ros_camera.so
 RViz2 또는 OpenCV/YOLO 노드로 연결 가능
 ```
 
-Day 06~09의 `camera_pkg`에서 다룬 OpenCV/YOLO 흐름과 연결할 수 있지만, Day 10 자체의 핵심은 camera plugin이 image topic을 만들어준다는 점이다.
+Day 06~09의 `ros2_camera_examples`에서 다룬 OpenCV/YOLO 흐름과 연결할 수 있지만, Day 10 자체의 핵심은 camera plugin이 image topic을 만들어준다는 점이다.
 
 ---
 

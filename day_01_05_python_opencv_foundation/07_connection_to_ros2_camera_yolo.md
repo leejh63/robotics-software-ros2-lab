@@ -57,7 +57,7 @@ sensor_msgs/Image
   -> OpenCV ndarray
 ```
 
-`camera_pkg/imagePlee.py`는 OpenCV frame을 ROS2 Image message로 바꾸어 publish한다.
+`ros2_camera_examples/image_publisher.py`는 OpenCV frame을 ROS2 Image message로 바꾸어 publish한다.
 
 ```text
 cv2.VideoCapture(0)
@@ -66,7 +66,7 @@ cv2.VideoCapture(0)
   -> /image_raw0 publish
 ```
 
-반대로 `imageOPENlee.py`, `imageYOLOlee.py`, `imgYOLOlee.py`는 Image message를 받아 OpenCV frame으로 바꾼다.
+반대로 `image_processor.py`, `yolo_image_publisher.py`, `yolo_detection_publisher.py`는 Image message를 받아 OpenCV frame으로 바꾼다.
 
 ```text
 /image_raw0 subscribe
@@ -102,7 +102,7 @@ ROS2 코드 입력/출력
 
 ## 5. YOLO 결과 이미지와 YOLO 결과 데이터는 다르다
 
-`imageYOLOlee.py`는 YOLO 결과를 이미지에 그려 `/image_yolo1`로 publish한다.
+`yolo_image_publisher.py`는 YOLO 결과를 이미지에 그려 `/image_yolo1`로 publish한다.
 
 ```text
 /image_raw0
@@ -113,7 +113,7 @@ ROS2 코드 입력/출력
 
 이것은 사람이 보기 좋은 결과다.
 
-반면 `imgYOLOlee.py`는 YOLO 결과를 custom message로 발행한다.
+반면 `yolo_detection_publisher.py`는 YOLO 결과를 custom message로 발행한다.
 
 ```text
 /image_raw0
@@ -169,7 +169,7 @@ ObjectDetection[] detections
 
 ## 7. frame_id가 왜 중요한가
 
-`imagePlee.py`는 Image message의 header에 frame id를 넣는다.
+`image_publisher.py`는 Image message의 header에 frame id를 넣는다.
 
 ```python
 img_msg.header.frame_id = "camera_frame"

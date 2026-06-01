@@ -53,6 +53,7 @@ YOLO 예제에서 필요한 `yolov8n.pt`는 저장소에 직접 넣지 않고, �
 
 ```text
 publish topic: topic_name parameter 사용
+camera index: camera_index parameter 사용
 camera width/height: image_size parameter 사용
 ```
 

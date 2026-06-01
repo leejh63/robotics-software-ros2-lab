@@ -32,7 +32,7 @@ source install/setup.bash
 
 ```bash
 colcon build --packages-select lee_robot_description
-colcon build --packages-select camera_pkg my_if
+colcon build --packages-select ros2_camera_examples ros2_foundation_interfaces
 ```
 
 빌드 결과 초기화가 필요할 때:

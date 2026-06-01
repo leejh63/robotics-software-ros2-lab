@@ -918,7 +918,7 @@ results = model.predict("bus.jpg")
 해결:
 
 ```python
-results = model.predict("/home/jaeholee/work/roooooboot/day_4/prac/bus.jpg")
+results = model.predict("/path/to/source_materials/day_4/prac/bus.jpg")
 ```
 
 처럼 절대 경로를 사용하면 헷갈림이 줄어든다.
@@ -1093,6 +1093,6 @@ YOLO를 처음 배울 때는 아래만 확실히 잡아도 된다.
 
 ## 30. 이 문서에서 참고한 자료
 
-- `/home/jaeholee/work/roooooboot/pract/05.02.YOLO-Kalman.pdf`
-- `/home/jaeholee/work/roooooboot/day_4/05_02_YOLO-Kalman-code-analysis.md`
+- `/path/to/source_materials/pract/05.02.YOLO-Kalman.pdf`
+- `/path/to/source_materials/day_4/05_02_YOLO-Kalman-code-analysis.md`
 

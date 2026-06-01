@@ -3,3 +3,4 @@ image_publisher:
     publish_rate: 10.0
     topic_name: "image_raw"
     image_size: [320, 240]
+    camera_index: 0

@@ -120,7 +120,7 @@ node name    : image_publisher
 publish topic: /image_raw
 message type : sensor_msgs/msg/Image
 frame_id     : camera_link
-parameter    : publish_rate, topic_name, image_size, frame_id
+parameter    : publish_rate, topic_name, image_size, camera_index, frame_id
 ```
 
 이 관점을 잡아야 Day 10~15에서 만나는 SLAM, AMCL, Nav2 문제도 더 쉽게 추적할 수 있다. 대부분의 문제는 알고리즘 이전에 이름, 타입, namespace, parameter, TF, lifecycle에서 먼저 발생한다.

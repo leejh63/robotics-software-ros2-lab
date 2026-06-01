@@ -6,7 +6,7 @@
 
 ## 1. 이 저장소의 기준
 
-이 저장소는 ROS2 Navigation 실습을 학습 흐름에 맞게 정리한 노트입니다. 핵심은 Gazebo, SLAM, AMCL, Nav2를 `topic`, `frame`, `message`, `action` 기준으로 설명할 수 있게 만드는 것입니다.
+이 저장소는 ROS2 Navigation 실습을 학습 흐름에 맞게 정리한 노트입니다. 핵심은 Gazebo, SLAM, AMCL, Nav2를 `topic`, `frame`, `message`, `action` 기준으로 설명할 수 있게 만드는 것입니다. 원본 archive와 현재 수정본의 차이는 [REVISION_SUMMARY.md](REVISION_SUMMARY.md)를 먼저 확인합니다.
 
 ```text
 목표:
@@ -78,6 +78,7 @@ python -m pip install -r requirements.txt
 
 ```text
 projects/python_opencv_foundation_lab/RUN_COMMANDS.md
+projects/python_opencv_foundation_lab/ASSET_NOTEBOOK_INVENTORY_STAGE06.md
 ```
 
 ### ROS2 Foundation Lab
@@ -105,7 +106,7 @@ ros2 run ros2_action_examples move_action_server
 ros2 run ros2_action_examples move_action_client
 ```
 
-Camera/YOLO/TF 예제는 camera device, OpenCV, `cv_bridge`, `ultralytics`, 로컬 YOLO weight 파일 준비 여부를 먼저 확인합니다.
+Camera/YOLO/TF 예제는 camera device, OpenCV, `cv_bridge`, `ultralytics`, 로컬 YOLO weight 파일 준비 여부를 먼저 확인합니다. Notebook output은 commit 기준에서 제거되어 있으므로 실행하면 결과가 재생성됩니다.
 
 ### ROS2 Navigation Lab
 
@@ -197,6 +198,14 @@ appendix/full_command_quick_reference.md
 appendix/validation_sequence_gazebo_slam_amcl_nav2.md
 ```
 
+공개 전 정적 검증은 아래 명령으로 확인합니다.
+
+```bash
+python3 tools/static_repo_check.py
+```
+
+이 명령은 runtime 검증이 아니라 문법, 링크, 설정 파일, 민감 경로 잔존 여부를 확인하는 단계입니다.
+
 특히 아래 네 가지를 구분합니다.
 
 ```text
@@ -229,3 +238,26 @@ appendix/troubleshooting_quick_diagnosis.md
 7. Behavior Tree의 어느 단계에서 실패하는가?
 ```
 
+---
+
+## Runtime 검증 기록
+
+정적 검증은 다음 명령으로 실행합니다.
+
+```bash
+python3 tools/static_repo_check.py
+```
+
+ROS2/Gazebo/Nav2 runtime 검증은 프로젝트별 session guide를 따른 뒤, 루트의 [RUNTIME_VALIDATION_RESULT_TEMPLATE.md](RUNTIME_VALIDATION_RESULT_TEMPLATE.md)에 실제 결과를 기록합니다.
+
+```text
+projects/ros2_navigation_lab/docs/RUNTIME_SESSION_GUIDE.md
+projects/ros2_pid_arm_lab/docs/RUNTIME_SESSION_GUIDE.md
+```
+
+Revision 세부 이력은 아래 문서를 봅니다.
+
+```text
+REVISION_SUMMARY.md
+docs/revision_history/README.md
+```

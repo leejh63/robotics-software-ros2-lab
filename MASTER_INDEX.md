@@ -45,6 +45,10 @@ Navigation debugging: rosbag-frame / DWB / Behavior Tree
 | rosbag 기반 SLAM/Nav2 실습 | [projects/ros2_navigation_lab/docs/BAG_SLAM_NAV2_WORKFLOW.md](projects/ros2_navigation_lab/docs/BAG_SLAM_NAV2_WORKFLOW.md), [projects/ros2_navigation_lab/docs/BAG_COMMANDS_ONLY.md](projects/ros2_navigation_lab/docs/BAG_COMMANDS_ONLY.md) |
 | 명령어 실행 기준 | [appendix/command_execution_conventions.md](appendix/command_execution_conventions.md) |
 | 문제 발생 시 빠른 진단 | [appendix/troubleshooting_quick_diagnosis.md](appendix/troubleshooting_quick_diagnosis.md) |
+| 공개 전 검증 기준 | [PUBLICATION_CHECKLIST.md](PUBLICATION_CHECKLIST.md) |
+| 원본 대비 수정 요약 | [REVISION_SUMMARY.md](REVISION_SUMMARY.md) |
+| Runtime 결과 기록 양식 | [RUNTIME_VALIDATION_RESULT_TEMPLATE.md](RUNTIME_VALIDATION_RESULT_TEMPLATE.md) |
+| Notebook/asset 정리 결과 | [projects/python_opencv_foundation_lab/ASSET_NOTEBOOK_INVENTORY_STAGE06.md](projects/python_opencv_foundation_lab/ASSET_NOTEBOOK_INVENTORY_STAGE06.md) |
 
 ---
 
@@ -117,10 +121,13 @@ rosbag 원본 데이터는 저장소에 포함하지 않는다. rosbag 기반 �
 
 | 위치 | 역할 |
 |---|---|
+| [projects/python_opencv_foundation_lab/README.md](projects/python_opencv_foundation_lab/README.md) | Python, NumPy, OpenCV, Camera Calibration, YOLO, Kalman foundation 실습 workspace |
 | [projects/ros2_foundation_lab/README.md](projects/ros2_foundation_lab/README.md) | ROS2 topic, service, action, custom interface, launch, camera, TF 기초 실습 workspace |
 | [projects/ros2_navigation_lab/README.md](projects/ros2_navigation_lab/README.md) | Gazebo → SLAM → AMCL → Nav2 실행 검증 workspace |
 | [projects/ros2_pid_arm_lab/README.md](projects/ros2_pid_arm_lab/README.md) | Gazebo + ros2_control 기반 1-DOF arm PID 제어 workspace |
 | [projects/path_planning_algorithms_lab/README.md](projects/path_planning_algorithms_lab/README.md) | Dijkstra, A*, RRT, RRT* notebook 실습 |
+
+정적 검증은 [`tools/static_repo_check.py`](tools/static_repo_check.py)로 실행한다. Notebook output만 별도로 확인할 때는 [`tools/notebook_output_audit.py`](tools/notebook_output_audit.py)를 사용한다. 단, 이 검증은 runtime 성공을 보장하지 않는다.
 
 ---
 
@@ -137,4 +144,26 @@ Appendix는 전부 순서대로 읽는 폴더가 아니다. 필요한 상황에 
 | 문제 진단 | [appendix/troubleshooting_quick_diagnosis.md](appendix/troubleshooting_quick_diagnosis.md), [appendix/troubleshooting_index.md](appendix/troubleshooting_index.md) |
 | 용어 확인 | [appendix/glossary_ros2_navigation_pipeline.md](appendix/glossary_ros2_navigation_pipeline.md) |
 | 직접 작성/설정한 범위 확인 | [appendix/external_package_boundary.md](appendix/external_package_boundary.md) |
+
+---
+
+## Runtime 검증 문서
+
+| 프로젝트 | 기준 문서 | 세션 가이드 |
+|---|---|---|
+| Navigation | [projects/ros2_navigation_lab/docs/RUNTIME_VALIDATION_CHECKLIST.md](projects/ros2_navigation_lab/docs/RUNTIME_VALIDATION_CHECKLIST.md) | [projects/ros2_navigation_lab/docs/RUNTIME_SESSION_GUIDE.md](projects/ros2_navigation_lab/docs/RUNTIME_SESSION_GUIDE.md) |
+| PID Arm | [projects/ros2_pid_arm_lab/docs/RUNTIME_VALIDATION_CHECKLIST.md](projects/ros2_pid_arm_lab/docs/RUNTIME_VALIDATION_CHECKLIST.md) | [projects/ros2_pid_arm_lab/docs/RUNTIME_SESSION_GUIDE.md](projects/ros2_pid_arm_lab/docs/RUNTIME_SESSION_GUIDE.md) |
+
+실제 실행 결과는 루트의 [RUNTIME_VALIDATION_RESULT_TEMPLATE.md](RUNTIME_VALIDATION_RESULT_TEMPLATE.md)에 맞춰 기록한 뒤 README 반영 여부를 결정한다.
+---
+
+## Revision history
+
+| 문서 | 역할 |
+|---|---|
+| [REVISION_SUMMARY.md](REVISION_SUMMARY.md) | 원본 archive와 현재 수정본의 차이 요약 |
+| [docs/revision_history/README.md](docs/revision_history/README.md) | Stage별 세부 수정 이력 위치 |
+| [docs/revision_history/STAGE07_FINAL_PACKAGE_REVIEW.md](docs/revision_history/STAGE07_FINAL_PACKAGE_REVIEW.md) | 최종 공개 패키지 정리 결과 |
+
+Raw stage diff는 공개 패키지에 포함하지 않는다. 필요하면 원본 archive와 현재 수정본으로 별도 생성해서 검토한다.
 

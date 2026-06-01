@@ -3,7 +3,7 @@
   <name>pid_arm_lab</name>
   <version>0.1.0</version>
   <description>ROS2 Humble과 Gazebo Classic에서 1자유도 팔을 PID effort 제어로 실습하는 재현 가능한 패키지.</description>
-  <maintainer email="jaeholee@example.com">Jaeho Lee</maintainer>
+  <maintainer email="leejh63@users.noreply.github.com">Jaeho Lee</maintainer>
   <license>Apache-2.0</license>
 
   <buildtool_depend>ament_python</buildtool_depend>

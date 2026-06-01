@@ -56,6 +56,10 @@ rosbag 기반 SLAM/Nav2 실행 흐름은 [`projects/ros2_navigation_lab/docs/BAG
 | topic / frame / message / action 기준 | [appendix/table_reference_guide.md](appendix/table_reference_guide.md), [appendix/topic_frame_message_action_master_table.md](appendix/topic_frame_message_action_master_table.md) |
 | 명령어 실행 규칙 | [appendix/command_execution_conventions.md](appendix/command_execution_conventions.md) |
 | 문제 발생 시 빠른 진단 | [appendix/troubleshooting_quick_diagnosis.md](appendix/troubleshooting_quick_diagnosis.md) |
+| 공개 전 검증 기준 | [PUBLICATION_CHECKLIST.md](PUBLICATION_CHECKLIST.md) |
+| 원본 대비 수정 요약 | [REVISION_SUMMARY.md](REVISION_SUMMARY.md) |
+| Runtime 결과 기록 양식 | [RUNTIME_VALIDATION_RESULT_TEMPLATE.md](RUNTIME_VALIDATION_RESULT_TEMPLATE.md) |
+| Notebook/asset 정리 결과 | [projects/python_opencv_foundation_lab/ASSET_NOTEBOOK_INVENTORY_STAGE06.md](projects/python_opencv_foundation_lab/ASSET_NOTEBOOK_INVENTORY_STAGE06.md) |
 
 ---
 
@@ -83,10 +87,23 @@ rosbag 기반 SLAM/Nav2 실행 흐름은 [`projects/ros2_navigation_lab/docs/BAG
 
 | 위치 | 역할 |
 |---|---|
+| [projects/python_opencv_foundation_lab/](projects/python_opencv_foundation_lab/) | Python, NumPy, OpenCV, Camera Calibration, YOLO, Kalman foundation 실습 |
 | [projects/ros2_foundation_lab/](projects/ros2_foundation_lab/) | ROS2 topic, service, action, custom interface, launch, camera, TF 기초 실습 |
 | [projects/ros2_navigation_lab/](projects/ros2_navigation_lab/) | Gazebo, SLAM, AMCL, Nav2 실행 흐름 정리 |
 | [projects/ros2_pid_arm_lab/](projects/ros2_pid_arm_lab/) | Gazebo + ros2_control 기반 1-DOF arm PID 제어 실습 |
 | [projects/path_planning_algorithms_lab/](projects/path_planning_algorithms_lab/) | Dijkstra, A*, RRT, RRT* notebook 실습 |
+
+---
+
+## 공개 전 정적 검증
+
+수정본을 공유하거나 commit하기 전에는 아래 정적 검증을 먼저 실행합니다.
+
+```bash
+python3 tools/static_repo_check.py
+```
+
+이 검사는 Python/XML/YAML/notebook JSON/notebook output/Markdown link/민감 경로 잔존 여부만 확인합니다. ROS2, Gazebo, Nav2, camera, controller runtime 성공은 각 프로젝트의 runtime checklist와 session guide에서 별도로 확인해야 합니다. 결과를 공개 문서에 반영하기 전에는 [RUNTIME_VALIDATION_RESULT_TEMPLATE.md](RUNTIME_VALIDATION_RESULT_TEMPLATE.md)에 실제 관찰 결과를 남깁니다. 원본 archive와 현재 수정본의 차이는 [REVISION_SUMMARY.md](REVISION_SUMMARY.md)와 [docs/revision_history/](docs/revision_history/)에서 확인합니다.
 
 ---
 

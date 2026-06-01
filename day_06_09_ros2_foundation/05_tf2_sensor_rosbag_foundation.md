@@ -119,10 +119,10 @@ trans = self.tf_buffer.lookup_transform(
 
 ```text
 target_frame = base_link
-source_frame = camera_linright_marker
+source_frame = object_person_example_0
 ```
 
-launch에서는 아래처럼 바꿔서 쓴다.
+`tf_tree_demo.launch.py`처럼 marker TF 실습을 실행할 때는 launch에서 아래처럼 바꿔서 쓴다.
 
 ```python
 parameters=[{

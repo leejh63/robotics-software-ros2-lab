@@ -145,7 +145,7 @@ names:
 예시:
 
 ```yaml
-path: /home/jaeholee/datasets/my_dataset
+path: /path/to/datasets/my_dataset
 
 train: images/train
 val: images/val
@@ -160,9 +160,9 @@ names:
 `path` 아래에 `train`, `val`, `test` 경로가 붙는다고 보면 된다.
 
 ```text
-/home/jaeholee/datasets/my_dataset/images/train
-/home/jaeholee/datasets/my_dataset/images/val
-/home/jaeholee/datasets/my_dataset/images/test
+/path/to/datasets/my_dataset/images/train
+/path/to/datasets/my_dataset/images/val
+/path/to/datasets/my_dataset/images/test
 ```
 
 ---
@@ -374,7 +374,7 @@ yolo detect train \
 ```python
 from pathlib import Path
 
-dataset = Path("/home/jaeholee/datasets/my_dataset")
+dataset = Path("/path/to/datasets/my_dataset")
 
 for split in ["train", "val", "test"]:
     image_dir = dataset / "images" / split
@@ -405,7 +405,7 @@ for split in ["train", "val", "test"]:
 ```python
 from pathlib import Path
 
-label_root = Path("/home/jaeholee/datasets/my_dataset/labels")
+label_root = Path("/path/to/datasets/my_dataset/labels")
 num_classes = 3
 
 bad_files = []

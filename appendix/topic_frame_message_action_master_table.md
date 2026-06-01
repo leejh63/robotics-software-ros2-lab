@@ -90,7 +90,7 @@ map_robot_ns -> odom_robot_ns -> base_footprint -> base_link -> base_scan
 | Action | Type | 주 서버 | 의미 |
 |---|---|---|---|
 | `/robot_ns/navigate_to_pose` | `nav2_msgs/action/NavigateToPose` | bt_navigator | 목표 pose까지 이동 |
-| 사용자 정의 action 예제 | `my_if/action/...` | my_robot_action 예제 | action 구조 학습용 |
+| 사용자 정의 action 예제 | `ros2_foundation_interfaces/action/...` | `ros2_action_examples` 예제 | action 구조 학습용 |
 
 Nav2 goal 예시의 핵심:
 
@@ -104,7 +104,7 @@ goal pose의 header.frame_id는 map_robot_ns 기준이어야 한다.
 
 | Service | Type | 의미 |
 |---|---|---|
-| custom AddTwoNum 계열 | `my_if/srv/...` | service request/response 학습 |
+| custom AddTwoNum 계열 | `ros2_foundation_interfaces/srv/...` | service request/response 학습 |
 | `/map_server/load_map` 계열 | Nav2 map server service | map load 관련 |
 | lifecycle 관련 service | `lifecycle_msgs/srv/...` | configure/activate 상태 전환 |
 

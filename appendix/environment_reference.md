@@ -23,15 +23,18 @@ $ROS2_WS
 
 ```text
 lee_robot_description
-camera_pkg
-tf_pkg_example
-my_if
-my_robot_service
-my_robot_action
-this_test
-lee_pkg
-py_launch_example
+ros2_topic_examples
+ros2_cpp_examples
+ros2_foundation_interfaces
+ros2_service_examples
+ros2_action_examples
+ros2_camera_examples
+ros2_launch_examples
+ros2_tf_examples
+pid_arm_lab
 ```
+
+원본 실습명으로 남아 있던 `camera_pkg`, `my_if`, `tf_pkg_example` 등은 현재 정리본에서 각각 `ros2_camera_examples`, `ros2_foundation_interfaces`, `ros2_tf_examples`처럼 역할 기준 패키지명으로 분리했다.
 
 ---
 

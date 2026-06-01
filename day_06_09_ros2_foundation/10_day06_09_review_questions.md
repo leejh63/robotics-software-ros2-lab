@@ -52,7 +52,7 @@
 2. `use_viewer` argument는 실제로 어떤 프로그램을 조건부 실행하는가?
 3. `camera_yolo_pipeline.launch.py`에서 `get_package_share_directory('ros2_camera_examples')`는 왜 필요한가?
 4. `pub_cam_params.yaml`의 최상위 키가 `image_publisher`여야 하는 이유는 무엇인가?
-5. `image_publisher.py`에서 `topic_name`, `image_size`, `frame_id` parameter는 각각 어디에 반영되는가?
+5. `image_publisher.py`에서 `topic_name`, `image_size`, `camera_index`, `frame_id` parameter는 각각 어디에 반영되는가?
 6. parameter를 바꾼 뒤 timer 주기를 다시 만드는 이유는 무엇인가?
 
 ---

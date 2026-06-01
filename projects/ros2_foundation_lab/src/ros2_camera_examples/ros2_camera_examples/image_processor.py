@@ -76,11 +76,18 @@ class ImageProcessor(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    node = ImageProcessor()
+    node = None
     try:
+        node = ImageProcessor()
         rclpy.spin(node)
     except KeyboardInterrupt:
         pass
-    node.destroy_node()
-    cv2.destroyAllWindows()
-    rclpy.shutdown()
+    finally:
+        if node is not None:
+            node.destroy_node()
+        cv2.destroyAllWindows()
+        rclpy.shutdown()
+
+
+if __name__ == '__main__':
+    main()

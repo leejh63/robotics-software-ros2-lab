@@ -280,9 +280,9 @@ YOLO result
 실제 연결 파일은 아래다.
 
 ```text
-$ROS2_WS/src/my_if/msg/ObjectDetection.msg
-$ROS2_WS/src/my_if/msg/ObjectDetectionArray.msg
-$ROS2_WS/src/camera_pkg/camera_pkg/imgYOLOlee.py
+$ROS2_WS/src/ros2_foundation_interfaces/msg/ObjectDetection.msg
+$ROS2_WS/src/ros2_foundation_interfaces/msg/ObjectDetectionArray.msg
+$ROS2_WS/src/ros2_camera_examples/ros2_camera_examples/yolo_detection_publisher.py
 ```
 
 이 흐름을 이해하면 “YOLO를 돌렸다”에서 끝나지 않고, detection 결과를 로봇 시스템의 데이터로 바꾸는 관점으로 넘어갈 수 있다.

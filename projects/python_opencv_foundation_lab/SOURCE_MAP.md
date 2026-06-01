@@ -25,6 +25,8 @@
 | 학습 흐름 설명 | `day_01_05_python_opencv_foundation/` |
 | 실제 코드/노트북/이미지 샘플 | `projects/python_opencv_foundation_lab/` |
 | YOLO fine-tuning 참고 문서 | `appendix/yolo_finetuning_pipeline/` |
+| asset/notebook 유지 기준 | `projects/python_opencv_foundation_lab/ASSET_AND_NOTEBOOK_POLICY.md` |
+| Stage 6 asset/notebook 정리 결과 | `projects/python_opencv_foundation_lab/ASSET_NOTEBOOK_INVENTORY_STAGE06.md` |
 | 내부 작업 로그 | `__revision_worklog_do_not_commit/` |
 
 ---

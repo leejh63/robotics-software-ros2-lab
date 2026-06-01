@@ -5,6 +5,8 @@
 
 이 문서는 기록된 rosbag 데이터를 사용해서 다음 흐름을 분리해서 확인하는 문서입니다.
 
+실제 통과 기준은 [`RUNTIME_VALIDATION_CHECKLIST.md`](RUNTIME_VALIDATION_CHECKLIST.md)의 rosbag workflow 항목과 함께 확인합니다.
+
 ```text
 1. rosbag replay로 /scan, /odom, /tf, /tf_static을 공급한다.
 2. slam_toolbox가 LaserScan과 TF를 사용해서 OccupancyGrid map을 만든다.

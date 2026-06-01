@@ -28,6 +28,12 @@ def generate_launch_description():
         description='Run tf_listener for a selected object frame.',
     )
 
+    camera_index_arg = DeclareLaunchArgument(
+        'camera_index',
+        default_value='0',
+        description='OpenCV camera index used by image_publisher.',
+    )
+
     class_filter_arg = DeclareLaunchArgument(
         'class_filter',
         default_value='person',
@@ -74,7 +80,10 @@ def generate_launch_description():
         package='ros2_camera_examples',
         executable='image_publisher',
         name='image_publisher',
-        parameters=[camera_config],
+        parameters=[camera_config, {
+            'camera_index': ParameterValue(
+                LaunchConfiguration('camera_index'), value_type=int),
+        }],
         output='screen',
     )
 
@@ -175,6 +184,7 @@ def generate_launch_description():
         use_rviz_arg,
         use_rqt_tree_arg,
         use_listener_arg,
+        camera_index_arg,
         class_filter_arg,
         frame_name_tag_arg,
         listener_source_frame_arg,

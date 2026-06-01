@@ -13,7 +13,7 @@ blur/edge/contour를 적용한다.
 웹캠 frame을 반복 처리한다.
 ```
 
-이 흐름은 뒤의 ROS2 `camera_pkg`에서 거의 그대로 다시 등장한다.
+이 흐름은 뒤의 ROS2 `ros2_camera_examples`에서 거의 그대로 다시 등장한다.
 
 ---
 
@@ -149,7 +149,7 @@ threshold가 높다
   -> 확실한 edge만 남음, 필요한 선도 사라질 수 있음
 ```
 
-ROS2 camera 실습의 `imageOPENlee.py`는 이 흐름을 ROS2 topic으로 바꾼 예다.
+ROS2 camera 실습의 `image_processor.py`는 이 흐름을 ROS2 topic으로 바꾼 예다.
 
 ```text
 /image_raw0 subscribe

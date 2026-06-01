@@ -99,12 +99,13 @@ node 이름과 YAML 최상위 키가 다르면 parameter가 적용되지 않을 
 
 ## 4. image_publisher.py의 parameter 해석
 
-`image_publisher.py`는 네 가지 parameter를 선언한다.
+`image_publisher.py`는 다섯 가지 주요 parameter를 선언한다.
 
 ```python
 self.declare_parameter('publish_rate', 15.0)
 self.declare_parameter('topic_name', 'image_raw')
 self.declare_parameter('image_size', [640, 480])
+self.declare_parameter('camera_index', 0)
 self.declare_parameter('frame_id', 'camera_link')
 ```
 
@@ -115,6 +116,7 @@ self.declare_parameter('frame_id', 'camera_link')
 | `publish_rate` | 이미지 발행 주기 | timer 주기 변경에 사용 |
 | `topic_name` | 발행 topic 이름 | publisher 생성에 사용 |
 | `image_size` | resize 크기 | camera width/height와 `cv2.resize()`에 사용 |
+| `camera_index` | OpenCV camera index | `cv2.VideoCapture(camera_index)`에 사용 |
 | `frame_id` | Image header frame | `msg.header.frame_id`에 사용 |
 
 주의할 점은 `topic_name`은 publisher 생성 시점에 반영된다는 것이다. 실행 중 topic 이름을 바꾸는 동적 publisher 재생성까지는 이 예제에서 다루지 않는다.
@@ -141,6 +143,7 @@ self.timer = self.create_timer(1.0 / self.rate, self.timer_callback)
 ```bash
 ros2 param list /image_publisher
 ros2 param get /image_publisher publish_rate
+ros2 param get /image_publisher camera_index
 ros2 param set /image_publisher publish_rate 5.0
 ros2 param set /image_publisher image_size "[320, 240]"
 ros2 param set /image_publisher frame_id camera_link

@@ -17,6 +17,9 @@ notebooks/14_03_04_rrtstar.ipynb
 
 이 프로젝트는 Nav2 planner plugin을 구현하지 않습니다. Navigation 시스템에서 사용하는 경로 탐색 개념을 Python 예제로 이해하기 위한 실습입니다.
 
+
+RRT* notebook은 알고리즘 개념과 rewiring 흐름을 확인하는 교육용 예제입니다. 반복 횟수가 늘어나면 경로 품질이 개선될 수 있지만, 이 저장소의 notebook을 실시간 로봇 주행용 최적 planner나 Nav2 planner plugin으로 해석하면 안 됩니다.
+
 ## 실행 준비
 
 ```bash

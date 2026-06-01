@@ -88,11 +88,18 @@ class YoloDetectionPublisher(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    node = YoloDetectionPublisher()
+    node = None
     try:
+        node = YoloDetectionPublisher()
         rclpy.spin(node)
     except KeyboardInterrupt:
         pass
-    node.destroy_node()
-    rclpy.shutdown()
+    finally:
+        if node is not None:
+            node.destroy_node()
+        rclpy.shutdown()
+
+
+if __name__ == '__main__':
+    main()
 

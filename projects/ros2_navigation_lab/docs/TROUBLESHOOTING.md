@@ -111,3 +111,33 @@ wall follower를 테스트할 때만 명시적으로 켭니다.
 ```bash
 ros2 launch lee_robot_description gazebo.launch.py use_avoidance:=true
 ```
+
+---
+
+## rosbag remap 후 TF가 맞지 않을 때
+
+`ros2 bag play`의 topic remap은 topic 이름만 바꾸고 message 내부 `header.frame_id`, `child_frame_id` 문자열은 바꾸지 않습니다. 따라서 rosbag workflow에서 `/odom:=/lee/odom`으로 remap해도 TF frame은 여전히 `odom -> base_footprint`일 수 있습니다.
+
+확인 명령:
+
+```bash
+ros2 run tf2_ros tf2_echo map_lee odom --ros-args -r /tf:=/lee/tf -r /tf_static:=/lee/tf_static
+ros2 run tf2_ros tf2_echo odom base_footprint --ros-args -r /tf:=/lee/tf -r /tf_static:=/lee/tf_static
+```
+
+Gazebo workflow에서는 `odom_lee`를 쓰고, rosbag workflow에서는 bag 내부 frame인 `odom`을 쓰는 구분을 유지해야 합니다.
+
+---
+
+## LaserScan subscriber가 scan을 받지 못할 때
+
+LaserScan은 sensor data 성격이므로 subscriber QoS가 publisher QoS와 맞지 않으면 topic은 보이지만 callback이 오지 않을 수 있습니다. `lidar_wall_follower.py`는 `/lee/scan` subscriber에 `qos_profile_sensor_data`를 사용합니다.
+
+확인 명령:
+
+```bash
+ros2 topic info /lee/scan -v
+ros2 topic echo /lee/scan --once
+```
+
+Nav2 costmap 쪽에서 같은 증상이 나면 costmap parameter의 `observation_sources.scan.topic`과 launch remap을 함께 확인합니다.

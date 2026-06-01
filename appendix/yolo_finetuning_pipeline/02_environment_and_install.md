@@ -127,7 +127,7 @@ cat datasets/my_dataset/data.yaml
 예시:
 
 ```yaml
-path: /home/jaeholee/work/yolo_project/datasets/my_dataset
+path: /path/to/yolo_project/datasets/my_dataset
 
 train: images/train
 val: images/val

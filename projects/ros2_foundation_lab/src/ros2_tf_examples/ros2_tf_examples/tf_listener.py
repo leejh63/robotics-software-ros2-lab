@@ -8,7 +8,7 @@ class TfListener(Node):
         super().__init__('tf_listener')
 
         self.declare_parameter('target_frame', 'base_link')
-        self.declare_parameter('source_frame', 'camera_linright_marker')
+        self.declare_parameter('source_frame', 'object_person_example_0')
 
         self.target_frame = self.get_parameter(
             'target_frame').get_parameter_value().string_value

@@ -30,6 +30,7 @@ ros2 param list /image_publisher
 ros2 param get /image_publisher publish_rate
 ros2 param get /image_publisher image_size
 ros2 param get /image_publisher topic_name
+ros2 param get /image_publisher camera_index
 ```
 
 변경:

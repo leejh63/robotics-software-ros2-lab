@@ -6,6 +6,8 @@
 
 기본 workflow는 `slam.world`와 `maps/slam_map.yaml`을 사용합니다. `lee_world.world`와 `maps/room_map.yaml`은 작은 방 환경 테스트용으로 유지합니다.
 
+실행 성공 여부를 문서나 README에 확정해서 적기 전에는 [`RUNTIME_VALIDATION_CHECKLIST.md`](RUNTIME_VALIDATION_CHECKLIST.md)의 통과 기준을 먼저 확인합니다.
+
 ---
 
 ## 1. Build
