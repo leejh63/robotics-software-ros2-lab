@@ -101,7 +101,7 @@ rosbag 기반 SLAM/Nav2 실행 흐름은 [`projects/ros2_navigation_lab/docs/BAG
 python3 tools/static_repo_check.py
 ```
 
-이 검사는 Python/XML/YAML/notebook JSON/notebook output/Markdown link/민감 경로 잔존 여부만 확인합니다. ROS2, Gazebo, Nav2, camera, controller runtime 성공은 각 프로젝트의 runtime checklist와 session guide에서 별도로 확인해야 합니다. 결과를 공개 문서에 반영하기 전에는 [RUNTIME_VALIDATION_RESULT_TEMPLATE.md](RUNTIME_VALIDATION_RESULT_TEMPLATE.md)에 실제 관찰 결과를 남깁니다. 원본 archive와 현재 수정본의 차이는 [REVISION_SUMMARY.md](REVISION_SUMMARY.md)와 [docs/revision_history/](docs/revision_history/)에서 확인합니다.
+이 검사는 Python/XML/YAML/notebook JSON/notebook output/Markdown link/민감 경로 잔존 여부만 확인합니다. ROS2, Gazebo, Nav2, camera, controller runtime 성공은 각 프로젝트의 runtime checklist와 session guide에서 별도로 확인해야 합니다. 결과를 공개 문서에 반영하기 전에는 [RUNTIME_VALIDATION_RESULT_TEMPLATE.md](RUNTIME_VALIDATION_RESULT_TEMPLATE.md)에 실제 관찰 결과를 남깁니다.
 
 ---
 
