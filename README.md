@@ -56,8 +56,6 @@ rosbag 기반 SLAM/Nav2 실행 흐름은 [`projects/ros2_navigation_lab/docs/BAG
 | topic / frame / message / action 기준 | [appendix/table_reference_guide.md](appendix/table_reference_guide.md), [appendix/topic_frame_message_action_master_table.md](appendix/topic_frame_message_action_master_table.md) |
 | 명령어 실행 규칙 | [appendix/command_execution_conventions.md](appendix/command_execution_conventions.md) |
 | 문제 발생 시 빠른 진단 | [appendix/troubleshooting_quick_diagnosis.md](appendix/troubleshooting_quick_diagnosis.md) |
-| 공개 전 검증 기준 | [PUBLICATION_CHECKLIST.md](PUBLICATION_CHECKLIST.md) |
-| 원본 대비 수정 요약 | [REVISION_SUMMARY.md](REVISION_SUMMARY.md) |
 | Runtime 결과 기록 양식 | [RUNTIME_VALIDATION_RESULT_TEMPLATE.md](RUNTIME_VALIDATION_RESULT_TEMPLATE.md) |
 | Notebook/asset 정리 결과 | [projects/python_opencv_foundation_lab/ASSET_NOTEBOOK_INVENTORY_STAGE06.md](projects/python_opencv_foundation_lab/ASSET_NOTEBOOK_INVENTORY_STAGE06.md) |
 
