@@ -21,6 +21,62 @@ cd "$TB3_WS"
 source ~/envs/tb3_humble.bash
 ```
 
+## 빠른 흐름: Cartographer -> map_saver_cli -> Navigation2
+
+### 터미널 1 — Gazebo
+
+```bash
+cd "$TB3_WS"
+source ~/envs/tb3_humble.bash
+ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
+```
+
+### 터미널 2 — Cartographer
+
+```bash
+cd "$TB3_WS"
+source ~/envs/tb3_humble.bash
+ros2 launch turtlebot3_cartographer cartographer.launch.py use_sim_time:=True
+```
+
+### 터미널 3 — Teleop
+
+```bash
+cd "$TB3_WS"
+source ~/envs/tb3_humble.bash
+ros2 run turtlebot3_teleop teleop_keyboard
+```
+
+### 터미널 4 — map_saver_cli
+
+```bash
+cd "$TB3_WS"
+source ~/envs/tb3_humble.bash
+mkdir -p "$TB3_WS/maps"
+ros2 run nav2_map_server map_saver_cli -f "$TB3_WS/maps/tb3_map"
+```
+
+### 터미널 2 종료 후 — Navigation2
+
+```bash
+pkill -f cartographer
+pkill -f teleop_keyboard
+
+cd "$TB3_WS"
+source ~/envs/tb3_humble.bash
+ros2 launch turtlebot3_navigation2 navigation2.launch.py \
+use_sim_time:=True \
+map:="$TB3_WS/maps/tb3_map.yaml"
+```
+
+### RViz
+
+```text
+Fixed Frame = map
+2D Pose Estimate
+Navigation2 Goal
+```
+
 ## 2. SLAM 지도 만들기
 
 ### 터미널 1 — Gazebo

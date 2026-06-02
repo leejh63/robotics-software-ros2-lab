@@ -20,6 +20,7 @@ $TB3_WS/maps
 2. 각 터미널에서 `source ~/envs/tb3_humble.bash`로 필요한 환경만 적용한다.
 3. 지도 저장 경로는 `maps/`로 통일한다.
 4. Cartographer 지도 저장은 `.pbstream` 저장 후 `.pgm + .yaml` 변환 방식을 기준으로 한다.
+   단, 빠른 실습 절차에서는 `map_saver_cli`로 현재 `/map`을 바로 `.pgm + .yaml`로 저장하는 방식을 별도 문서로 둔다.
 5. AMCL/Nav2 단계에서는 임시 `static_transform_publisher map odom`을 사용하지 않는다.
 6. `map -> odom`은 AMCL이 초기 위치를 받은 뒤 추정해서 발행한다.
 7. `navigation2.launch.py`를 사용할 때는 개별 `map_server`, `amcl`, `lifecycle_manager`와 중복 실행하지 않는다.
@@ -47,6 +48,7 @@ source ~/envs/tb3_humble.bash
 | `04_navigation2_run.md` | 저장된 지도 기반 Navigation2 실행 |
 | `05_runtime_notes.md` | 실행 중 확인한 판단 기준과 주의사항 |
 | `06_auto_exploration_explore_lite.md` | slam_toolbox + Nav2 + Explore Lite 자동 탐색 확장 흐름 |
+| `07_quick_cartographer_map_saver_nav2.md` | Cartographer, teleop, map_saver_cli, Navigation2를 한 번에 이어 보는 빠른 실습 흐름 |
 | `commands/turtlebot3_day15_commands.md` | 실제 실행 명령어만 모은 문서 |
 | `troubleshooting/turtlebot3_day15_troubleshooting.md` | 이번 실습 중 겪은 문제와 해결 |
 
@@ -61,14 +63,16 @@ Day 15는 목적이 다른 두 흐름을 분리해서 정리한다.
 → Gazebo 실행
 → Cartographer SLAM 실행
 → Teleop 주행
-→ /write_state로 pbstream 저장
-→ pbstream_to_ros_map으로 pgm/yaml 변환
+→ 지도 저장
+  - 정식 보존: /write_state로 pbstream 저장 후 pgm/yaml 변환
+  - 빠른 실습: map_saver_cli로 현재 /map을 pgm/yaml로 저장
 → map_server + AMCL 실행
 → /initialpose로 초기 위치 설정
 → Navigation2 실행
 ```
 
 이 흐름은 먼저 지도를 만들고, 저장된 지도에서 AMCL로 위치를 추정한 뒤 Nav2 목표 주행을 확인하는 방식이다.
+빠르게 전체 절차만 확인할 때는 [`07_quick_cartographer_map_saver_nav2.md`](07_quick_cartographer_map_saver_nav2.md)를 본다.
 
 ### 흐름 B — Explore Lite 자동 탐색
 
