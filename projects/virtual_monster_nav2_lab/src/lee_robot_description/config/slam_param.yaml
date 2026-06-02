@@ -1,0 +1,22 @@
+slam_toolbox:
+  ros__parameters:
+    use_sim_time: true              # Gazebo 시뮬레이션 시간(/clock) 사용
+
+    odom_frame: odom_lee            # 오도메트리 좌표계 프레임, 현재 Gazebo diff drive가 발행
+    map_frame: map_lee              # SLAM이 만드는 맵 좌표계, 이 로봇용 map frame 이름
+    base_frame: base_footprint      # 로봇 기준 좌표계, URDF/Gazebo의 robot_base_frame과 일치
+
+    scan_topic: /lee/scan           # LiDAR LaserScan 토픽, turtlebot_gaze.xacro에서 발행
+
+    mode: mapping                   # SLAM 모드, mapping은 맵 생성, localization은 위치 추정
+    transform_publish_period: 0.02  # map_lee -> odom_lee TF 발행 주기, 0.02초는 약 50Hz
+    map_update_interval: 1.0        # Occupancy Grid 맵 업데이트 주기, 초 단위
+    resolution: 0.05                # Occupancy Grid 맵 해상도, 0.05m는 5cm
+    max_laser_range: 3.5            # 지도 작성에 사용할 LiDAR 최대 거리, 현재 센서 max와 일치
+
+    minimum_time_interval: 0.2      # 새 스캔을 처리하기 위한 최소 시간 간격
+    minimum_travel_distance: 0.05   # 맵 업데이트 최소 직진 이동 거리, m 단위
+    minimum_travel_heading: 0.05    # 맵 업데이트 최소 회전 각도, rad 단위
+
+    use_scan_matching: true         # 스캔 매칭 활성화, 오도메트리 drift 보정
+    do_loop_closing: true           # 루프 클로징 활성화, 이전 경로 재방문 시 지도 보정

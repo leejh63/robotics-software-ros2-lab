@@ -1,0 +1,93 @@
+# 가상 몬스터는 Gazebo 물리 모델이 아니라 RViz Marker + /lee/virtual_scan으로 표현한다.
+# 랜덤 스폰/벽 충돌 검사는 기본 실행 맵인 slam_map.yaml 기준이므로 obstacle_frame은 map_lee를 사용한다.
+obstacle_frame: map_lee
+scan_frame: base_scan
+scan_topic: /lee/virtual_scan
+marker_topic: /lee/virtual_obstacle_markers
+state_topic: /lee/virtual_monster_states
+update_rate: 10.0
+sample_count: 360
+angle_min: -3.141592653589793
+angle_max: 3.12413936106985
+range_min: 0.12
+range_max: 3.5
+default_height: 0.6
+
+
+# RViz 표시 스타일이다.
+# 실제 Nav2 주입 반경은 radius이고, body_radius_scale은 화면에 보이는 몸체만 줄인다.
+# show_collision_radius=true이면 바닥에 반투명 원판으로 실제 충돌/scan 반경을 함께 표시한다.
+marker_style:
+  body_type: sphere
+  body_radius_scale: 0.55
+  body_alpha: 0.95
+  show_collision_radius: true
+  collision_radius_alpha: 0.18
+  show_target_line: false
+
+# 맵 기반 필터링 규칙이다.
+# 벽/unknown 주변에는 몬스터 중심점이 들어가지 못하도록 random_spawn.wall_clearance와 함께 검사한다.
+map_filter:
+  enabled: true
+  map_yaml: maps/slam_map.yaml
+  unknown_is_blocked: true
+
+# 랜덤 몬스터 스폰 규칙이다.
+# enabled=true이면 아래 obstacles 고정 path 목록은 사용하지 않고, 맵의 free 영역에서 몬스터를 생성한다.
+random_spawn:
+  enabled: true
+  target_count: 3
+  respawn_delay: 0.0
+
+  radius_min: 0.25
+  radius_max: 0.35
+  speed_min: 0.12
+  speed_max: 0.28
+
+  wall_clearance: 0.25
+  robot_spawn_clearance: 1.00
+  monster_clearance: 0.60
+
+  target_min_distance: 0.80
+  target_max_distance: 2.00
+  path_check_step: 0.05
+  max_spawn_attempts: 300
+  max_target_attempts: 120
+
+  # true이면 map_lee -> base_scan TF가 잡힌 뒤에만 스폰한다.
+  # 따라서 AMCL 초기 위치를 주기 전에는 몬스터가 생성되지 않을 수 있다.
+  require_robot_tf_for_spawn: true
+
+# TurtleBot이 가상 몬스터를 제거할 때 사용하는 기본 규칙이다.
+# 이번 단계에서는 Gazebo 모델 spawn/despawn 없이 Marker + virtual_scan 상태만 제거한다.
+clear_rule:
+  enabled: true
+  service_name: /lee/clear_nearest_virtual_obstacle
+  attack_range: 0.70
+  attack_fov_deg: 60.0
+  attack_cooldown: 1.0
+
+# random_spawn.enabled=true이면 아래 고정 path 목록은 무시된다.
+# 나중에 고정 시나리오로 되돌릴 때 random_spawn.enabled=false로 바꾸면 사용할 수 있다.
+obstacles:
+  - name: crossing_1
+    shape: circle
+    radius: 0.35
+    speed: 0.25
+    loop: ping_pong
+    clearable: true
+    path:
+      - [0.8, -1.0]
+      - [0.8, 1.0]
+
+  - name: crossing_2
+    shape: circle
+    radius: 0.28
+    speed: 0.18
+    loop: loop
+    clearable: true
+    path:
+      - [1.4, 0.4]
+      - [2.0, 0.4]
+      - [2.0, 1.1]
+      - [1.4, 1.1]
