@@ -1,0 +1,63 @@
+# Stage 4 mission configuration.
+# Goal: detector candidates interrupt a map-wide patrol, then the robot hunts,
+# clears monsters, and navigates to exit_pose after target_kill_count.
+
+monster_detector_node:
+  ros__parameters:
+    use_sim_time: true
+    scan_topic: /lee/virtual_scan
+    candidate_topic: /lee/detected_monster_candidates
+    map_frame: map_lee
+    scan_frame: base_scan
+    map_yaml: maps/slam_map.yaml
+    unknown_is_blocked: true
+    min_range: 0.12
+    max_range: 1.30
+    detection_fov_deg: 110.0
+    cluster_distance: 0.30
+    min_cluster_points: 3
+    max_candidates: 3
+    publish_empty: true
+
+monster_mission_node:
+  ros__parameters:
+    use_sim_time: true
+    candidate_topic: /lee/detected_monster_candidates
+    mission_status_topic: /lee/monster_mission_status
+    patrol_marker_topic: /lee/patrol_waypoint_markers
+    clear_service_name: /lee/clear_nearest_virtual_obstacle
+    navigate_action_name: /lee/navigate_to_pose
+    map_frame: map_lee
+    robot_frame: base_scan
+
+    target_kill_count: 3
+    update_rate: 2.0
+    autostart: true
+
+    # Detector candidates are scan hit clusters, so they usually represent the
+    # visible monster surface rather than the true monster center.
+    approach_distance: 0.75
+    clear_distance: 0.90
+    candidate_center_offset: 0.25
+    max_clear_attempts: 4
+    clear_retry_delay_sec: 0.4
+    candidate_freshness_sec: 2.0
+    max_candidate_distance: 1.60
+
+    # patrol_mode:
+    #   map_grid: automatically sample free cells from map_yaml for wide coverage patrol.
+    #   manual: use search_waypoints exactly as written below.
+    patrol_mode: map_grid
+    map_yaml: maps/slam_map.yaml
+    patrol_grid_spacing: 0.80
+    patrol_wall_clearance: 0.28
+    patrol_max_waypoints: 80
+    patrol_start_nearest: true
+    patrol_unknown_is_blocked: true
+
+    # Manual fallback or explicit manual mode waypoints.
+    search_waypoints: "0.0,0.0,0.0;0.8,0.0,0.0;0.8,0.8,1.57;0.0,0.8,3.14"
+
+    # Known exit pose. Adjust in RViz for the actual exit.
+    exit_pose: "0.0,0.0,0.0"
+    escape_state_reserved: true

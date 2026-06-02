@@ -31,6 +31,9 @@ map_filter:
   enabled: true
   map_yaml: maps/slam_map.yaml
   unknown_is_blocked: true
+  # true이면 robot -> monster 선분 사이에 벽/unknown이 있을 때 virtual_scan에 마킹하지 않는다.
+  scan_occlusion_enabled: true
+  occlusion_check_step: 0.04
 
 # 랜덤 몬스터 스폰 규칙이다.
 # enabled=true이면 아래 obstacles 고정 path 목록은 사용하지 않고, 맵의 free 영역에서 몬스터를 생성한다.
@@ -63,9 +66,11 @@ random_spawn:
 clear_rule:
   enabled: true
   service_name: /lee/clear_nearest_virtual_obstacle
-  attack_range: 0.70
-  attack_fov_deg: 60.0
-  attack_cooldown: 1.0
+  # Stage 4 fix3: broaden clear rule so mission can remove detected monsters reliably.
+  # Keep this wider than monster_mission.clear_distance.
+  attack_range: 1.35
+  attack_fov_deg: 160.0
+  attack_cooldown: 0.3
 
 # random_spawn.enabled=true이면 아래 고정 path 목록은 무시된다.
 # 나중에 고정 시나리오로 되돌릴 때 random_spawn.enabled=false로 바꾸면 사용할 수 있다.

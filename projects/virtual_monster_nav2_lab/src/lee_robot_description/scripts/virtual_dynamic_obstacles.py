@@ -226,8 +226,17 @@ class OccupancyMap:
             return float(pixel) / 255.0
         return (255.0 - float(pixel)) / 255.0
 
+    def is_unknown_cell(self, mx: int, row: int) -> bool:
+        # STAGE4-CHECKPOINT:
+        # ROS map_server trinary PGM maps commonly encode unknown cells as 205.
+        # The probability threshold alone can misclassify that value as free,
+        # so block it explicitly when unknown_is_blocked=true.
+        return abs(self._pixel(mx, row) - 205) <= 1
+
     def is_free_cell(self, mx: int, row: int, unknown_is_blocked: bool) -> bool:
         if mx < 0 or row < 0 or mx >= self.width or row >= self.height:
+            return False
+        if unknown_is_blocked and self.is_unknown_cell(mx, row):
             return False
         probability = self.occupancy_probability(mx, row)
         if probability >= self.occupied_thresh:
@@ -250,6 +259,11 @@ class VirtualDynamicObstacles(Node):
         self.declare_parameter('clear_service_name', '')
         self.declare_parameter('reset_service_name', '')
         self.declare_parameter('target_count', -1)
+        self.declare_parameter('attack_range', -1.0)
+        self.declare_parameter('attack_fov_deg', -1.0)
+        self.declare_parameter('attack_cooldown', -1.0)
+        self.declare_parameter('scan_occlusion_enabled', True)
+        self.declare_parameter('occlusion_check_step', -1.0)
 
         self.config_file = ''
         self.config = self._load_config()
@@ -285,14 +299,21 @@ class VirtualDynamicObstacles(Node):
             'clear_service_name',
             str(self.clear_rule.get('service_name', '/lee/clear_nearest_virtual_obstacle')),
         )
-        self.attack_range = self._float_from_map(
-            self.clear_rule, 'attack_range', 0.70, minimum=0.01
+        self.attack_range = self._float_param_override(
+            'attack_range',
+            self._float_from_map(self.clear_rule, 'attack_range', 1.20, minimum=0.01),
+            minimum=0.01,
         )
-        self.attack_fov_rad = math.radians(
-            self._float_from_map(self.clear_rule, 'attack_fov_deg', 60.0, minimum=1.0)
+        self.attack_fov_deg = self._float_param_override(
+            'attack_fov_deg',
+            self._float_from_map(self.clear_rule, 'attack_fov_deg', 140.0, minimum=1.0),
+            minimum=1.0,
         )
-        self.attack_cooldown = self._float_from_map(
-            self.clear_rule, 'attack_cooldown', 1.0, minimum=0.0
+        self.attack_fov_rad = math.radians(self.attack_fov_deg)
+        self.attack_cooldown = self._float_param_override(
+            'attack_cooldown',
+            self._float_from_map(self.clear_rule, 'attack_cooldown', 0.4, minimum=0.0),
+            minimum=0.0,
         )
         self.last_clear_stamp: Optional[Time] = None
         self.last_removed_stamp: Optional[Time] = None
@@ -375,7 +396,16 @@ class VirtualDynamicObstacles(Node):
 
         self.occupancy_map: Optional[OccupancyMap] = None
         self.unknown_is_blocked = bool(self.map_filter.get('unknown_is_blocked', True))
-        if self.random_spawn_enabled or bool(self.map_filter.get('enabled', False)):
+        self.scan_occlusion_enabled = self._bool_param_override(
+            'scan_occlusion_enabled',
+            bool(self.map_filter.get('scan_occlusion_enabled', True)),
+        )
+        self.occlusion_check_step = self._float_param_override(
+            'occlusion_check_step',
+            self._float_from_map(self.map_filter, 'occlusion_check_step', 0.04, minimum=0.01),
+            minimum=0.01,
+        )
+        if self.random_spawn_enabled or bool(self.map_filter.get('enabled', False)) or self.scan_occlusion_enabled:
             map_yaml = self._resolve_path(str(self.map_filter.get('map_yaml', 'maps/slam_map.yaml')))
             self.occupancy_map = OccupancyMap(map_yaml, self.get_logger())
 
@@ -385,6 +415,10 @@ class VirtualDynamicObstacles(Node):
             self.obstacles = self._load_obstacles(self.config.get('obstacles', []))
             if not self.obstacles:
                 raise ValueError('At least one virtual obstacle must be configured.')
+
+        # Random monsters get unique names even when an old dead slot is reused.
+        # The list index is the stable RViz/state slot id; the name is the spawn instance id.
+        self.next_random_obstacle_id = 1
 
         self.tf_buffer = tf2_ros.Buffer()
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer, self)
@@ -442,6 +476,12 @@ class VirtualDynamicObstacles(Node):
                 f'range={self.attack_range:.2f}m, '
                 f'fov={math.degrees(self.attack_fov_rad):.1f}deg'
             )
+        if self.scan_occlusion_enabled:
+            self.get_logger().info(
+                'Virtual scan occlusion filter enabled: '
+                f'unknown_is_blocked={self.unknown_is_blocked}, '
+                f'check_step={self.occlusion_check_step:.3f}m'
+            )
         self.get_logger().info(
             f'Virtual monster reset service: {self.reset_service_name}. '
             'Runtime target count can be changed with parameter "target_count".'
@@ -487,6 +527,18 @@ class VirtualDynamicObstacles(Node):
             return value
         return fallback
 
+    def _bool_param_override(self, name: str, fallback: bool) -> bool:
+        value = self.get_parameter(name).value
+        if isinstance(value, bool):
+            return value
+        if isinstance(value, str):
+            text = value.strip().lower()
+            if text in ('true', '1', 'yes', 'on'):
+                return True
+            if text in ('false', '0', 'no', 'off'):
+                return False
+        return bool(fallback)
+
     def _int_param(self, name: str, fallback: int) -> int:
         value = self.get_parameter(name).value
         if value is None:
@@ -511,6 +563,26 @@ class VirtualDynamicObstacles(Node):
         minimum: Optional[float] = None,
     ) -> float:
         return self._float_from_map(self.config, name, fallback, minimum)
+
+    def _float_param_override(
+        self,
+        name: str,
+        fallback: float,
+        minimum: Optional[float] = None,
+    ) -> float:
+        value = self.get_parameter(name).value
+        try:
+            value = float(value)
+        except (TypeError, ValueError):
+            return float(fallback)
+        if value < 0.0:
+            return float(fallback)
+        if minimum is not None and value < minimum:
+            self.get_logger().warn(
+                f'Parameter {name}={value} is below {minimum}. Falling back to {fallback}.'
+            )
+            return float(fallback)
+        return float(value)
 
     def _float_from_map(
         self,
@@ -726,11 +798,28 @@ class VirtualDynamicObstacles(Node):
                 return
 
             self.failed_spawn_count = 0
-            self.obstacles.append(obstacle)
+            slot_index = self._store_random_obstacle(obstacle)
             self.get_logger().info(
-                f'Spawned random monster "{obstacle.name}" '
+                f'Spawned random monster "{obstacle.name}" in slot={slot_index} '
                 f'at x={obstacle.position[0]:.2f}, y={obstacle.position[1]:.2f}'
             )
+
+    def _first_dead_random_slot_index(self) -> Optional[int]:
+        for index, obstacle in enumerate(self.obstacles):
+            if obstacle.alive:
+                continue
+            if obstacle.random_motion:
+                return index
+        return None
+
+    def _store_random_obstacle(self, obstacle: VirtualObstacle) -> int:
+        dead_slot_index = self._first_dead_random_slot_index()
+        if dead_slot_index is None:
+            self.obstacles.append(obstacle)
+            return len(self.obstacles) - 1
+
+        self.obstacles[dead_slot_index] = obstacle
+        return dead_slot_index
 
     def _spawn_random_obstacle(self, robot_position: Optional[Point2]) -> Optional[VirtualObstacle]:
         radius = self.random.uniform(self.radius_min, self.radius_max)
@@ -746,9 +835,10 @@ class VirtualDynamicObstacles(Node):
             if not self._is_far_from_alive_obstacles(position, radius):
                 continue
 
-            obstacle_index = len(self.obstacles) + 1
+            obstacle_name = f'random_monster_{self.next_random_obstacle_id}'
+            self.next_random_obstacle_id += 1
             obstacle = VirtualObstacle(
-                name=f'random_monster_{obstacle_index}',
+                name=obstacle_name,
                 shape='circle',
                 radius=radius,
                 height=self.default_height,
@@ -894,6 +984,40 @@ class VirtualDynamicObstacles(Node):
     def _distance(self, first: Point2, second: Point2) -> float:
         return math.hypot(first[0] - second[0], first[1] - second[1])
 
+    def _should_apply_scan_occlusion(self) -> bool:
+        return self.scan_occlusion_enabled and self.occupancy_map is not None
+
+    def _has_line_of_sight(self, start: Point2, end: Point2) -> bool:
+        if self.occupancy_map is None:
+            return True
+
+        distance = self._distance(start, end)
+        if distance <= 1.0e-9:
+            return True
+
+        steps = max(1, int(math.ceil(distance / self.occlusion_check_step)))
+        for index in range(1, steps):
+            ratio = float(index) / float(steps)
+            point = (
+                start[0] + (end[0] - start[0]) * ratio,
+                start[1] + (end[1] - start[1]) * ratio,
+            )
+            cell = self.occupancy_map.world_to_map(point[0], point[1])
+            if cell is None:
+                return False
+            mx, row = cell
+            if not self.occupancy_map.is_free_cell(mx, row, self.unknown_is_blocked):
+                return False
+        return True
+
+    def _log_occlusion_tf_wait_once(self) -> None:
+        self.missing_robot_tf_count += 1
+        if self.missing_robot_tf_count in (1, 20, 100):
+            self.get_logger().warn(
+                f'Waiting for robot TF {self.obstacle_frame} -> {self.scan_frame} '
+                'before virtual scan occlusion check.'
+            )
+
     def _publish_scan(self, stamp: Time, transform) -> None:
         scan = LaserScan()
         scan.header.stamp = stamp.to_msg()
@@ -908,8 +1032,18 @@ class VirtualDynamicObstacles(Node):
         scan.ranges = [math.inf] * self.sample_count
         scan.intensities = [0.0] * self.sample_count
 
+        robot_position = None
+        if self._should_apply_scan_occlusion():
+            robot_position = self._lookup_robot_position_in_obstacle_frame()
+            if robot_position is None:
+                self._log_occlusion_tf_wait_once()
+                self.scan_pub.publish(scan)
+                return
+
         for obstacle in self.obstacles:
             if not obstacle.alive:
+                continue
+            if robot_position is not None and not self._has_line_of_sight(robot_position, obstacle.position):
                 continue
             x, y, _ = self._transform_point(
                 obstacle.position[0],
@@ -1142,7 +1276,13 @@ class VirtualDynamicObstacles(Node):
             response.message = f'waiting for TF {self.obstacle_frame} -> {self.scan_frame}: {exc}'
             return response
 
-        candidate = self._find_nearest_clearable_obstacle(transform)
+        robot_position = self._lookup_robot_position_in_obstacle_frame()
+        if self._should_apply_scan_occlusion() and robot_position is None:
+            response.success = False
+            response.message = f'waiting for robot TF {self.obstacle_frame} -> {self.scan_frame} for occlusion check'
+            return response
+
+        candidate = self._find_nearest_clearable_obstacle(transform, robot_position)
         if candidate is None:
             response.success = False
             response.message = (
@@ -1176,7 +1316,7 @@ class VirtualDynamicObstacles(Node):
         elapsed = (now - self.last_clear_stamp).nanoseconds * 1.0e-9
         return elapsed < self.attack_cooldown
 
-    def _find_nearest_clearable_obstacle(self, transform):
+    def _find_nearest_clearable_obstacle(self, transform, robot_position: Optional[Point2]):
         best = None
         half_fov = self.attack_fov_rad * 0.5
 
@@ -1196,6 +1336,12 @@ class VirtualDynamicObstacles(Node):
             if distance > self.attack_range:
                 continue
             if abs(angle) > half_fov:
+                continue
+            if (
+                robot_position is not None
+                and self._should_apply_scan_occlusion()
+                and not self._has_line_of_sight(robot_position, obstacle.position)
+            ):
                 continue
 
             if best is None or distance < best[2]:

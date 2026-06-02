@@ -35,6 +35,9 @@ def _launch_setup(context, *args, **kwargs):
         state_topic = _topic(namespace, 'virtual_monster_states')
 
     monster_count = LaunchConfiguration('monster_count')
+    attack_range = LaunchConfiguration('attack_range')
+    attack_fov_deg = LaunchConfiguration('attack_fov_deg')
+    attack_cooldown = LaunchConfiguration('attack_cooldown')
 
     return [
         Node(
@@ -53,6 +56,9 @@ def _launch_setup(context, *args, **kwargs):
                     'clear_service_name': clear_service_name,
                     'reset_service_name': reset_service_name,
                     'target_count': ParameterValue(monster_count, value_type=int),
+                    'attack_range': ParameterValue(attack_range, value_type=float),
+                    'attack_fov_deg': ParameterValue(attack_fov_deg, value_type=float),
+                    'attack_cooldown': ParameterValue(attack_cooldown, value_type=float),
                     'use_sim_time': use_sim_time,
                 },
             ],
@@ -108,6 +114,21 @@ def generate_launch_description():
             'monster_count',
             default_value='-1',
             description='Override random_spawn.target_count. -1 uses the YAML value.',
+        ),
+        DeclareLaunchArgument(
+            'attack_range',
+            default_value='-1.0',
+            description='Override clear_rule.attack_range in meters. -1 uses the YAML value.',
+        ),
+        DeclareLaunchArgument(
+            'attack_fov_deg',
+            default_value='-1.0',
+            description='Override clear_rule.attack_fov_deg. -1 uses the YAML value.',
+        ),
+        DeclareLaunchArgument(
+            'attack_cooldown',
+            default_value='-1.0',
+            description='Override clear_rule.attack_cooldown in seconds. -1 uses the YAML value.',
         ),
         DeclareLaunchArgument(
             'use_sim_time',

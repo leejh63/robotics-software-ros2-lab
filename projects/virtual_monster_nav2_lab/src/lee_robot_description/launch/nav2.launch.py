@@ -30,6 +30,9 @@ def generate_launch_description():
     reset_service_name = LaunchConfiguration('reset_service_name')
     state_topic = LaunchConfiguration('state_topic')
     monster_count = LaunchConfiguration('monster_count')
+    attack_range = LaunchConfiguration('attack_range')
+    attack_fov_deg = LaunchConfiguration('attack_fov_deg')
+    attack_cooldown = LaunchConfiguration('attack_cooldown')
     use_sim_time = LaunchConfiguration('use_sim_time')
     use_rviz = LaunchConfiguration('use_rviz')
     use_virtual_obstacles = LaunchConfiguration('use_virtual_obstacles')
@@ -104,6 +107,21 @@ def generate_launch_description():
             'monster_count',
             default_value='-1',
             description='Override random_spawn.target_count. -1 uses the YAML value.',
+        ),
+        DeclareLaunchArgument(
+            'attack_range',
+            default_value='-1.0',
+            description='Override virtual obstacle clear_rule.attack_range in meters. -1 uses the YAML value.',
+        ),
+        DeclareLaunchArgument(
+            'attack_fov_deg',
+            default_value='-1.0',
+            description='Override virtual obstacle clear_rule.attack_fov_deg. -1 uses the YAML value.',
+        ),
+        DeclareLaunchArgument(
+            'attack_cooldown',
+            default_value='-1.0',
+            description='Override virtual obstacle clear_rule.attack_cooldown in seconds. -1 uses the YAML value.',
         ),
         DeclareLaunchArgument(
             'use_sim_time',
@@ -185,6 +203,9 @@ def generate_launch_description():
                 'reset_service_name': reset_service_name,
                 'state_topic': state_topic,
                 'monster_count': monster_count,
+                'attack_range': attack_range,
+                'attack_fov_deg': attack_fov_deg,
+                'attack_cooldown': attack_cooldown,
                 'use_sim_time': use_sim_time,
             }.items(),
         ),

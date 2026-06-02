@@ -176,9 +176,9 @@ src/lee_robot_description/config/virtual_obstacles.yaml
 clear_rule:
   enabled: true
   service_name: /lee/clear_nearest_virtual_obstacle
-  attack_range: 0.70
-  attack_fov_deg: 60.0
-  attack_cooldown: 1.0
+  attack_range: 1.20
+  attack_fov_deg: 140.0
+  attack_cooldown: 0.4
 ```
 
 제거 후 살아있는 몬스터 수가 현재 `target_count`보다 작아지면 새 몬스터가 유효 위치에 다시 생성됩니다.
@@ -405,6 +405,7 @@ RViz Marker 표시
 /lee/virtual_monster_states 발행
 Nav2 costmap 장애물 반영
 근접 제거 서비스
+단일 몬스터 접근/제거 hunter 노드
 ```
 
 나중에 추가할 수 있는 범위:
@@ -413,7 +414,6 @@ Nav2 costmap 장애물 반영
 Gazebo 몬스터 모델 spawn/despawn
 카메라 이미지 위 몬스터 overlay
 키보드/버튼 기반 attack command
-자동 추적 후 제거하는 monster_hunter_node
 Nav2 Behavior Tree와 제거 행동 연동
 ```
 
@@ -424,3 +424,217 @@ pgrep -af 'gazebo|gzserver|gzclient|ros2 launch|spawn_entity|nav2|amcl|map_serve
 ```
 
 필요한 경우 현재 테스트 세션에서 실행한 프로세스만 종료합니다.
+
+
+## 15-1. clear 후 기존 몬스터 유지 확인
+
+`clear_nearest_virtual_obstacle`는 전체 랜덤 리셋이 아니다. 1마리를 제거하면 나머지 살아있는 몬스터는 같은 슬롯에 유지되고, `target_count`를 맞추기 위해 제거된 슬롯만 새 몬스터로 보충된다.
+
+상태 토픽으로 전후를 비교한다.
+
+```bash
+ros2 topic echo /lee/virtual_monster_states --once
+
+ros2 service call /lee/clear_nearest_virtual_obstacle std_srvs/srv/Trigger "{}"
+
+ros2 topic echo /lee/virtual_monster_states --once
+```
+
+확인 기준:
+
+```text
+처리하지 않은 몬스터의 id/slot과 위치가 갑자기 재생성되지 않아야 한다.
+제거된 몬스터 슬롯만 새 name으로 보충될 수 있다.
+alive_count는 target_count를 유지한다.
+known_count는 불필요하게 계속 증가하지 않는다.
+```
+
+## 16. Stage 3 단일 Hunter 노드 실행
+
+Nav2와 가상 몬스터가 이미 실행 중인 상태에서 별도 터미널에서 실행한다.
+
+```bash
+cd ~/Downloads/test/projects/virtual_monster_nav2_lab
+source install/setup.bash
+
+ros2 launch lee_robot_description monster_hunter.launch.py
+```
+
+기본값은 가장 가까운 몬스터 1마리만 접근/제거한다.
+
+```bash
+ros2 launch lee_robot_description monster_hunter.launch.py target_kill_count:=1
+```
+
+여러 마리 테스트는 다음처럼 진행한다.
+
+```bash
+ros2 launch lee_robot_description monster_hunter.launch.py target_kill_count:=3
+```
+
+동작 흐름:
+
+```text
+/lee/virtual_monster_states 구독
+현재 로봇 위치 TF 확인
+가장 가까운 살아있는 몬스터 선택
+몬스터 중심이 아니라 주변 approach pose로 Nav2 goal 전송
+도착 후 /lee/clear_nearest_virtual_obstacle 호출
+kill_count가 target_kill_count에 도달하면 종료 상태로 전환
+```
+
+주의:
+
+```text
+이 노드는 아직 최종 미션 노드가 아니다.
+exit pose 이동은 Stage 4에서 추가한다.
+탐색/patrol fallback은 Stage 5에서 추가한다.
+```
+
+## 9. Stage 4 탐색형 미션 실행
+
+Stage 4는 기존 Stage 3 hunter를 지우지 않고 별도 mission manager로 실행합니다.
+
+핵심 차이는 다음과 같습니다.
+
+```text
+Stage 3 hunter:
+  /lee/virtual_monster_states를 직접 보고 몬스터 좌표로 이동
+
+Stage 4 mission:
+  /lee/virtual_monster_states를 사용하지 않음
+  /lee/virtual_scan + static map 비교로 몬스터 후보를 감지
+  waypoint 순찰 중 후보 발견 시 접근/clear
+  target_kill_count 달성 후 exit_pose로 이동
+  ESCAPE_TO_EXIT 상태는 예약만 하고 실제 탈출 로직은 추후 구현
+```
+
+Terminal 1에서 기존 통합 실행:
+
+```bash
+ros2 launch lee_robot_description nav2.launch.py \
+  use_rviz:=true \
+  use_virtual_obstacles:=true
+```
+
+초기 위치 지정 후 Terminal 2에서 Stage 4 mission 실행:
+
+```bash
+ros2 launch lee_robot_description monster_mission.launch.py \
+  target_kill_count:=3 \
+  exit_pose:="0.0,0.0,0.0"
+```
+
+`exit_pose`는 placeholder입니다. 실제 출구 좌표를 RViz에서 확인한 뒤 `x,y,yaw` 형식으로 넣습니다.
+
+예시:
+
+```bash
+ros2 launch lee_robot_description monster_mission.launch.py \
+  target_kill_count:=3 \
+  search_waypoints:="0.0,0.0,0.0;0.8,0.0,0.0;0.8,0.8,1.57;0.0,0.8,3.14" \
+  exit_pose:="1.5,-0.8,0.0"
+```
+
+Detector 후보 확인:
+
+```bash
+ros2 topic echo /lee/detected_monster_candidates --once
+```
+
+Detector 감지 범위가 너무 넓으면 다음처럼 줄입니다.
+
+```bash
+ros2 launch lee_robot_description monster_mission.launch.py \
+  target_kill_count:=3 \
+  detection_max_range:=1.0 \
+  detection_fov_deg:=90.0 \
+  max_candidate_distance:=1.2 \
+  exit_pose:="1.5,-0.8,0.0"
+```
+
+기준:
+
+```text
+detection_max_range   detector가 scan hit를 후보로 보는 최대 거리
+max_candidate_distance mission manager가 후보를 실제 타겟으로 채택하는 최대 거리
+detection_fov_deg     전방 감지 시야각, 360.0이면 전방/후방 전체 감지
+```
+
+장애물 제거가 잘 안 되면 clear 범위를 넓힙니다. 이 값들은 `nav2.launch.py`에서 가상 몬스터 노드에 적용되고, `monster_mission.launch.py`에서 mission의 접근/공격 판단에 적용됩니다.
+
+Terminal 1 예시:
+
+```bash
+ros2 launch lee_robot_description nav2.launch.py \
+  use_rviz:=true \
+  use_virtual_obstacles:=true \
+  attack_range:=1.25 \
+  attack_fov_deg:=160.0 \
+  attack_cooldown:=0.3
+```
+
+Terminal 2 예시:
+
+```bash
+ros2 launch lee_robot_description monster_mission.launch.py \
+  target_kill_count:=3 \
+  approach_distance:=0.85 \
+  clear_distance:=1.10 \
+  max_clear_attempts:=4 \
+  clear_retry_delay_sec:=0.4 \
+  exit_pose:="1.5,-0.8,0.0"
+```
+
+```text
+attack_range       clear service가 실제 몬스터를 제거할 수 있는 거리
+attack_fov_deg     clear service가 허용하는 정면 각도
+clear_distance     mission이 clear service를 호출하기 시작하는 거리
+approach_distance  몬스터 중심에서 떨어져서 접근할 거리
+max_clear_attempts clear 실패 후 포기 전 재시도 횟수
+```
+
+Mission 상태 확인:
+
+```bash
+ros2 topic echo /lee/monster_mission_status --once
+```
+
+Stage 4 관련 추적 문서:
+
+```text
+docs/STAGE4_MISSION_PROGRESS.md
+docs/STAGE4_CHANGELOG.md
+docs/STAGE4_HANDOFF_NOTES.md
+```
+
+
+## Stage 4 - map-wide patrol tuning
+
+Default Stage 4 mission patrol now uses map-generated coverage waypoints instead of the old small four-point square.
+
+```bash
+ros2 launch lee_robot_description monster_mission.launch.py   target_kill_count:=3   patrol_mode:=map_grid   patrol_grid_spacing:=0.80   patrol_wall_clearance:=0.28   patrol_max_waypoints:=80   exit_pose:="1.5,-0.8,0.0"
+```
+
+RViz에서 생성된 순찰 포인트를 확인하려면 MarkerArray display를 추가한다.
+
+```text
+Topic: /lee/patrol_waypoint_markers
+Fixed Frame: map_lee
+```
+
+튜닝 기준:
+
+```text
+patrol_grid_spacing 작게  -> 더 촘촘히 탐색하지만 goal 수 증가
+patrol_grid_spacing 크게  -> 더 빠르게 순찰하지만 사각지대 증가
+patrol_wall_clearance 크게 -> 벽에서 더 멀리 떨어진 안전한 waypoint만 사용
+patrol_max_waypoints 작게 -> 전체 루프가 짧아짐
+```
+
+기존처럼 직접 좌표를 넣어서 테스트하려면 다음처럼 manual mode를 사용한다.
+
+```bash
+ros2 launch lee_robot_description monster_mission.launch.py   patrol_mode:=manual   search_waypoints:="0.0,0.0,0.0;0.8,0.0,0.0;0.8,0.8,1.57;0.0,0.8,3.14"
+```

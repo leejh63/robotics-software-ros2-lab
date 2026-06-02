@@ -162,11 +162,11 @@ Stage 3의 1차 기능은 다음이다.
 성공/실패 로그 출력
 ```
 
-Stage 3에서는 아직 다음 작업은 하지 않는다.
+Stage 3에서는 최소 테스트용 `target_kill_count`만 사용한다. 아직 다음 작업은 하지 않는다.
 
 ```text
-kill_count 목표 관리
 목표 수 달성 후 exit pose 이동
+복잡한 미션 상태 머신 고도화
 frontier exploration 연동
 복잡한 behavior tree 구성
 ```
@@ -177,7 +177,56 @@ frontier exploration 연동
 
 ```text
 Stage 3: 단일 몬스터 접근/제거 hunter node 추가
-Stage 4: kill_count + exit pose 미션 상태 머신 추가
+Stage 4: kill_count + exit pose 미션 상태 머신 고도화
 Stage 5: patrol/exploration fallback 추가
 Stage 6: Gazebo/카메라/시각 효과 확장
 ```
+
+
+## Stage 2/3 적용 결과
+
+Stage 2에서는 hunter가 직접 읽을 수 있는 상태 토픽을 추가했다.
+
+```text
+/lee/virtual_monster_states
+std_msgs/msg/String JSON payload
+```
+
+Stage 2 보정으로 `clear_nearest_virtual_obstacle` 이후의 보충 정책을 명확히 했다.
+
+```text
+처리한 몬스터 슬롯만 새 랜덤 몬스터로 교체
+처리하지 않은 살아있는 몬스터는 유지
+known_count가 clear마다 계속 증가하지 않도록 dead random slot 재사용
+```
+
+Stage 3에서는 완전 미션이 아니라 단일 hunter 테스트 노드만 추가했다.
+
+```text
+monster_hunter_node.py
+monster_hunter.launch.py
+```
+
+Stage 3의 범위는 다음으로 제한한다.
+
+```text
+상태 토픽 구독
+가장 가까운 몬스터 선택
+approach pose 계산
+Nav2 NavigateToPose goal 전송
+기존 clear service 호출
+kill_count가 target_kill_count에 도달하면 종료
+```
+
+아직 추가하지 않은 항목은 다음과 같다.
+
+```text
+exit pose 이동
+미션 상태 머신 고도화
+patrol/exploration fallback
+Gazebo 몬스터 모델
+카메라 overlay
+```
+
+---
+

@@ -13,6 +13,10 @@ AMCL + Nav2 자율주행                    유지
 /lee/virtual_scan 장애물 주입            구현됨
 local/global costmap 연동                구현됨
 근접 몬스터 제거 서비스                  구현됨
+Stage 3 좌표 기반 hunter                 구현됨
+Stage 4 scan/map 기반 detector           추가됨
+Stage 4 mission manager                  추가됨
+ESCAPE_TO_EXIT 예약 상태                 추가됨
 맵 기반 랜덤 몬스터 스폰                 구현됨
 벽/unknown/로봇 주변 스폰 제한           구현됨
 벽을 뚫지 않는 랜덤 waypoint 이동        구현됨
@@ -31,18 +35,64 @@ virtual_monster_nav2_lab/
     └── lee_robot_description/
         ├── config/
         │   ├── virtual_obstacles.yaml
+        │   ├── monster_mission.yaml
         │   └── nav2_params_virtual_obstacles.yaml
         ├── launch/
         │   ├── nav2.launch.py
-        │   └── virtual_dynamic_obstacles.launch.py
+        │   ├── virtual_dynamic_obstacles.launch.py
+        │   ├── monster_hunter.launch.py
+        │   └── monster_mission.launch.py
         ├── maps/
         │   ├── slam_map.yaml        # 기본 실행/몬스터 스폰 기준 맵
         │   ├── slam_map.pgm
         │   ├── room_map.yaml        # 작은 방 테스트용 보조 맵
         │   └── room_map.pgm
         └── scripts/
-            └── virtual_dynamic_obstacles.py
+            ├── virtual_dynamic_obstacles.py
+            ├── monster_hunter_node.py
+            ├── monster_detector_node.py
+            └── monster_mission_node.py
 ```
+
+
+## Stage 4 탐색형 미션
+
+Stage 4는 기존 Stage 3 hunter를 보존한 채 별도 mission manager로 추가되었습니다.
+
+```text
+monster_detector_node.py
+  ├── /lee/virtual_scan 구독
+  ├── scan hit를 map_lee 좌표로 변환
+  ├── static map에서는 free인데 scan에 잡힌 지점을 몬스터 후보로 분류
+  └── /lee/detected_monster_candidates 발행
+
+monster_mission_node.py
+  ├── /lee/detected_monster_candidates 구독
+  ├── search_waypoints 순찰
+  ├── 후보 발견 시 Nav2로 접근
+  ├── /lee/clear_nearest_virtual_obstacle 호출
+  ├── target_kill_count 달성 시 exit_pose로 이동
+  └── ESCAPE_TO_EXIT 상태는 예약만 하고 실제 탈출 로직은 추후 구현
+```
+
+중요한 제한은 다음과 같습니다.
+
+```text
+Stage 4 mission 로직은 /lee/virtual_monster_states를 직접 사용하지 않습니다.
+/lee/virtual_monster_states는 디버그/검증용으로 유지합니다.
+```
+
+실행 예시는 `COMMANDS.md`의 Stage 4 섹션과 `docs/STAGE4_MISSION_PROGRESS.md`를 참고합니다.
+
+Detector는 너무 먼 몬스터까지 반응하지 않도록 기본값을 보수적으로 둡니다.
+
+```text
+기본 감지 최대 거리: detection_max_range=1.40m
+기본 감지 시야각: detection_fov_deg=120deg
+mission 후보 허용 거리: max_candidate_distance=1.60m
+```
+
+감지가 너무 빠르면 `detection_max_range` 또는 `max_candidate_distance`를 줄이고, 감지가 너무 늦으면 값을 늘립니다.
 
 ## 동작 구조
 
@@ -233,9 +283,9 @@ ros2 service call /lee/reset_virtual_obstacles std_srvs/srv/Trigger "{}"
 clear_rule:
   enabled: true
   service_name: /lee/clear_nearest_virtual_obstacle
-  attack_range: 0.70
-  attack_fov_deg: 60.0
-  attack_cooldown: 1.0
+  attack_range: 1.20
+  attack_fov_deg: 140.0
+  attack_cooldown: 0.4
 ```
 
 의미는 다음과 같습니다.
@@ -245,6 +295,9 @@ attack_range   : 로봇 기준 제거 가능 거리
 attack_fov_deg : 로봇 정면 기준 제거 가능 각도
 attack_cooldown: 제거 서비스 재사용 대기 시간
 ```
+
+
+Stage 4 mission에서는 기본적으로 `approach_distance=0.85`, `clear_distance=1.10`을 사용합니다. `clear_distance`는 `attack_range`보다 약간 작게 두는 것이 안전합니다. 제거가 계속 실패하면 `attack_range`/`attack_fov_deg`를 넓히고, 너무 멀리 있는 몬스터가 삭제되면 값을 줄입니다.
 
 현재 방식에서는 몬스터가 제거되면 Gazebo 객체가 삭제되는 것이 아니라, 해당 가상 몬스터가 `virtual_scan`과 Marker 발행 대상에서 제외됩니다. `random_spawn.target_count` 또는 `monster_count`로 지정한 유지 개수보다 살아있는 몬스터가 적어지면 새 몬스터가 맵의 유효 위치에 다시 생성됩니다.
 
@@ -262,3 +315,27 @@ random_spawn:
 ## 실행 명령
 
 자세한 실행 순서는 `COMMANDS.md`를 기준으로 사용합니다.
+
+
+## Stage 2/3 상태 토픽과 단일 Hunter 테스트
+
+가상 몬스터 노드는 hunter가 읽을 수 있도록 JSON 상태 토픽을 발행합니다.
+
+```bash
+ros2 topic echo /lee/virtual_monster_states --once
+```
+
+`clear_nearest_virtual_obstacle`로 몬스터 1마리를 제거하면, 나머지 살아있는 몬스터 슬롯은 유지됩니다. `target_count`를 유지해야 할 경우에는 제거된 슬롯만 새 랜덤 몬스터로 보충합니다.
+
+단일 몬스터 접근/제거 테스트는 별도 launch로 실행합니다. 이 노드는 가장 가까운 살아있는 몬스터를 선택하고, Nav2 goal을 보낸 뒤 근접하면 기존 clear service를 호출합니다.
+
+```bash
+ros2 launch lee_robot_description monster_hunter.launch.py
+```
+
+기본값은 1마리만 처리하는 테스트입니다.
+
+```bash
+ros2 launch lee_robot_description monster_hunter.launch.py target_kill_count:=1
+```
+

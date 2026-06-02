@@ -12,6 +12,7 @@
   <depend>urdf</depend>
   <depend>xacro</depend>
 
+  <exec_depend>action_msgs</exec_depend>
   <exec_depend>gazebo_plugins</exec_depend>
   <exec_depend>gazebo_ros</exec_depend>
   <exec_depend>geometry_msgs</exec_depend>
@@ -27,6 +28,7 @@
   <exec_depend>nav2_controller</exec_depend>
   <exec_depend>nav2_costmap_2d</exec_depend>
   <exec_depend>nav2_lifecycle_manager</exec_depend>
+  <exec_depend>nav2_msgs</exec_depend>
   <exec_depend>nav2_map_server</exec_depend>
   <exec_depend>nav2_navfn_planner</exec_depend>
   <exec_depend>nav2_planner</exec_depend>

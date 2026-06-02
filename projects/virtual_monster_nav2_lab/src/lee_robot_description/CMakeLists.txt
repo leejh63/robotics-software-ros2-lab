@@ -19,6 +19,9 @@ install(
   PROGRAMS
     scripts/lidar_wall_follower.py
     scripts/virtual_dynamic_obstacles.py
+    scripts/monster_hunter_node.py
+    scripts/monster_detector_node.py
+    scripts/monster_mission_node.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
