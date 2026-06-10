@@ -81,19 +81,8 @@ ros2 param set /pid_arm_controller kd 0.5
 ros2 param set /pid_arm_controller setpoint 0.5
 ```
 
-
-## Parameter notes
-
-`gravity_gain`은 실제 로봇 동역학 모델을 완전히 보상하는 항이 아니라, 이 실습 arm에서 중력 방향 effort bias를 관찰하기 위한 feed-forward 실습 항입니다. 기본값은 `0.0`이며, 값을 키울 때는 작은 값부터 조정합니다.
-
-`use_actual_dt`가 `true`이면 timer 주기 대신 실제 callback 간격을 사용해 derivative/integral 계산을 합니다. 재현성을 우선할 때는 launch argument로 `use_actual_dt:=false`를 넘겨 고정 `dt`를 사용할 수 있습니다.
-
-`reset_integral_on_setpoint_change`는 목표각을 바꿀 때 누적 오차를 초기화해 이전 목표의 integral 영향이 다음 목표에 남지 않게 합니다.
-
 ---
 
 ## 관련 문서
 
-- Runtime validation checklist: [`docs/RUNTIME_VALIDATION_CHECKLIST.md`](docs/RUNTIME_VALIDATION_CHECKLIST.md)
-- Runtime session guide: [`docs/RUNTIME_SESSION_GUIDE.md`](docs/RUNTIME_SESSION_GUIDE.md)
 - Day 14 PID notes: [`../../day_14_control_and_path_planning/pid_control/`](../../day_14_control_and_path_planning/pid_control/)

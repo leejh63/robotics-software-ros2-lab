@@ -1,0 +1,21 @@
+# Local colcon outputs for this project workspace
+build/
+install/
+log/
+
+# Python caches
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Local recordings and large exported data
+large_bags/
+*.mcap
+*.bag
+
+# Editor / OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

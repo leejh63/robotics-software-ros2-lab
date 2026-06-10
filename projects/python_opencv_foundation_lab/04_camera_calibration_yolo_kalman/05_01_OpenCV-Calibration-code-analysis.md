@@ -273,7 +273,7 @@ SQUARE_SIZE = 0.030
 ### 4.3 CALIB_IMAGE_GLOB
 
 ```python
-CALIB_IMAGE_GLOB = "/path/to/calib_images/*.*"
+CALIB_IMAGE_GLOB = "/home/jaeholee/work/calib_images/*.*"
 ```
 
 캘리브레이션 이미지들을 찾는 경로다.
@@ -490,7 +490,7 @@ image_paths = sorted(glob.glob(image_glob))
 현재 설정에서는 다음 폴더를 본다.
 
 ```text
-/path/to/calib_images/
+/home/jaeholee/work/calib_images/
 ```
 
 ### 7.2 이미지 크기 검사
@@ -1227,7 +1227,7 @@ SQUARE_SIZE = 0.025
 현재 캘리브레이션 이미지 경로는 절대 경로다.
 
 ```python
-CALIB_IMAGE_GLOB = "/path/to/calib_images/*.*"
+CALIB_IMAGE_GLOB = "/home/jaeholee/work/calib_images/*.*"
 ```
 
 혼자 쓰는 실습 환경에서는 괜찮다.
@@ -1286,7 +1286,7 @@ fy = 710.40
 ```python
 CHECKERBOARD = (9, 6)
 SQUARE_SIZE = 0.025
-CALIB_IMAGE_GLOB = "/path/to/calib_images/*.*"
+CALIB_IMAGE_GLOB = "/home/jaeholee/work/calib_images/*.*"
 ALPHA = 0.0
 ```
 

@@ -73,8 +73,6 @@ def generate_launch_description():
         DeclareLaunchArgument('max_effort', default_value='50.0'),
         DeclareLaunchArgument('integral_limit', default_value='10.0'),
         DeclareLaunchArgument('gravity_gain', default_value='0.0'),
-        DeclareLaunchArgument('use_actual_dt', default_value='true'),
-        DeclareLaunchArgument('reset_integral_on_setpoint_change', default_value='true'),
         DeclareLaunchArgument('joint_states_topic', default_value='/joint_states'),
         DeclareLaunchArgument('command_topic', default_value='/effort_controller/commands'),
         sim_launch,

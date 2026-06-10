@@ -4,7 +4,7 @@
   <name>lee_robot_description</name>
   <version>0.1.0</version>
   <description>ROS2 Humble integration package for Gazebo, SLAM, AMCL, and Nav2 practice.</description>
-  <maintainer email="leejh63@users.noreply.github.com">Jaeho Lee</maintainer>
+  <maintainer email="jaeholee@example.com">Jaeho Lee</maintainer>
   <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

@@ -18,7 +18,7 @@ setup(
     install_requires=['setuptools'],
     zip_safe=True,
     maintainer='Jaeho Lee',
-    maintainer_email='leejh63@users.noreply.github.com',
+    maintainer_email='jaeholee@example.com',
     description='Reproducible ROS2 Humble Gazebo Classic PID control lab for a one degree-of-freedom arm.',
     license='Apache-2.0',
     tests_require=['pytest'],

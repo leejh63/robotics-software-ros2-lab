@@ -98,8 +98,6 @@ GUI가 필요한 OpenCV 실습은 WSL/SSH/headless 환경에서 창이 뜨지 �
 
 실행 명령어는 [`RUN_COMMANDS.md`](RUN_COMMANDS.md)에 따로 정리했다.
 
-이미지, GIF, notebook output의 유지/검토 기준은 [`ASSET_AND_NOTEBOOK_POLICY.md`](ASSET_AND_NOTEBOOK_POLICY.md)에 따로 정리했다. Stage 6에서는 참조되는 이미지/GIF asset은 유지하고 notebook output/execution count는 제거했다. 세부 결과는 [`ASSET_NOTEBOOK_INVENTORY_STAGE06.md`](ASSET_NOTEBOOK_INVENTORY_STAGE06.md)를 본다.
-
 ---
 
 ## 6. 정리하면서 제외한 것

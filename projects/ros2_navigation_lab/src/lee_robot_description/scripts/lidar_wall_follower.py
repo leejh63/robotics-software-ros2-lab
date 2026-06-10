@@ -5,7 +5,6 @@ import math
 import rclpy
 from geometry_msgs.msg import Twist
 from rclpy.node import Node
-from rclpy.qos import qos_profile_sensor_data
 from sensor_msgs.msg import LaserScan
 
 
@@ -42,7 +41,7 @@ class SimpleLidarAvoider(Node):
             LaserScan,
             self.scan_topic,
             self.scan_callback,
-            qos_profile_sensor_data,
+            10,
         )
 
         control_rate = float(self.get_parameter('control_rate').value)

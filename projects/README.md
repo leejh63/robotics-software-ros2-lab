@@ -8,7 +8,8 @@ projects/
 ├── ros2_foundation_lab/
 ├── ros2_navigation_lab/
 ├── ros2_pid_arm_lab/
-└── path_planning_algorithms_lab/
+├── path_planning_algorithms_lab/
+└── tb3_tilt_lidar_mapper/
 ```
 
 | Project | Description |
@@ -18,5 +19,6 @@ projects/
 | [`ros2_navigation_lab/`](ros2_navigation_lab/) | Gazebo, SLAM, AMCL, Nav2 실행 흐름 정리 |
 | [`ros2_pid_arm_lab/`](ros2_pid_arm_lab/) | Gazebo + ros2_control 기반 1-DOF arm PID 제어 실습 |
 | [`path_planning_algorithms_lab/`](path_planning_algorithms_lab/) | Dijkstra, A*, RRT, RRT* notebook 실습 |
+| [`tb3_tilt_lidar_mapper/`](tb3_tilt_lidar_mapper/) | TurtleBot3 2D LiDAR와 IMU sample bag을 PointCloud2로 변환하는 실습 |
 
 `day_*` 폴더는 개념과 실습 흐름을 설명하는 문서이고, `projects/` 폴더는 해당 내용을 실제 파일 구조와 실행 명령으로 확인하기 위한 공간입니다.
